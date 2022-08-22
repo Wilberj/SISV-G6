@@ -1,2 +1,5 @@
 # SISV-G6
-INTEGRANTES:  Gerson Gabriel Ramos Navarro  Junior Alejandro Zamora Navarrete  SISTEMA DE GESTIÓN DE INFORMACIÓN CLÍNICA  Sistema de gestión de información clínica aplicado al programa Universidad inclusiva (U-Inclusiva) de la UNAN -Managua liderado por FAREM – Carazo, el cual atiende el seguimiento de pacientes con necesidades especiales y específicas.  Con este sistema se pretende mejorar la gestión de la información relativa al historial clínico de los miembros de la comunidad universitaria (estudiantes, docentes y administrativos), generados por personal médico designado por el programa.
+INTEGRANTES:  
+Gerson Gabriel Ramos Navarro  
+Junior Alejandro Zamora Navarrete  
+SISTEMA DE GESTIÓN DE CALIDAD PARA PROCESOS ESTRATEGICOS DEL CENTRO TECNOLOGICO RICARDO MORALES AVILES
