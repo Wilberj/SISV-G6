@@ -1,0 +1,121 @@
+﻿@inherits LayoutComponentBase
+@using QualityManagementApp.Shared
+@inject NavigationManager NavigationManager
+
+@*@if (Auth.User == null)
+{
+    <div class="mat-layout-grid">
+        <main>
+            @Body
+        </main>
+    </div>
+}
+else
+{*@
+    <MatDrawerContainer Style="width: 100vw; height: 100vh;">
+        <MatDrawer @bind-Opened="@OpenedMenu" Mode="@MatDrawerMode.Modal">
+            <div class="item-menu align-content-center">
+                <img src="@logoSource" alt="logo" width="40" height="40" />
+                <MatH6>Gestión de la calidad</MatH6>
+            </div>
+            <MatNavMenu>
+                <div class="item-menu margin-bottom-10-less">
+                    <MatSubtitle1 Class="margin-left-5-more">Procesos estratégicos</MatSubtitle1>
+                </div>
+                <MatRipple Color="@MatRippleColor.Primary">
+                    <MatNavItem Class="item-menu" OnClick="@(() => NavigateTo(""))"><MatIcon Icon="assignment"></MatIcon>&nbsp; Planificaciones</MatNavItem>
+                </MatRipple>
+                <MatRipple Color="@MatRippleColor.Primary">
+                    <MatNavItem Class="item-menu" OnClick="@(() => NavigateTo(""))"><MatIcon Icon="poll"></MatIcon>&nbsp; Seguimiento</MatNavItem>
+                </MatRipple>
+                <MatRipple Color="@MatRippleColor.Primary">
+                    <MatNavItem Class="item-menu" OnClick="@(() => NavigateTo("surveys"))"><MatIcon Icon="ballot"></MatIcon>&nbsp; Encuestas</MatNavItem>
+                </MatRipple>
+                <div class="item-menu margin-bottom-10-less">
+                    <MatSubtitle1 Class="margin-left-5-more">Otros</MatSubtitle1>
+                </div>
+                <MatNavSubMenu @bind-Expanded="@navSubMenuOpenState">
+                    <MatRipple Color="@MatRippleColor.Primary">
+                        <MatNavSubMenuHeader>
+                            <MatNavItem AllowSelection="false"><MatIcon Icon="dashboard"></MatIcon>&nbsp; Catálogos</MatNavItem>
+                        </MatNavSubMenuHeader>
+                    </MatRipple>
+                    <MatNavSubMenuList>
+                        <MatRipple Color="@MatRippleColor.Primary">
+                            <MatNavItem OnClick="@(() => NavigateTo(""))"><MatIcon Icon="label"></MatIcon>&nbsp; Ciudades</MatNavItem>
+                        </MatRipple>
+                        <MatRipple Color="@MatRippleColor.Primary">
+                            <MatNavItem OnClick="@(() => NavigateTo(""))"><MatIcon Icon="label"></MatIcon>&nbsp; Departamentos</MatNavItem>
+                        </MatRipple>
+                        <MatRipple Color="@MatRippleColor.Primary">
+                            <MatNavItem OnClick="@(() => NavigateTo(""))"><MatIcon Icon="label"></MatIcon>&nbsp; Posiciones</MatNavItem>
+                        </MatRipple>
+                        <MatRipple Color="@MatRippleColor.Primary">
+                            <MatNavItem OnClick="@(() => NavigateTo(""))"><MatIcon Icon="label"></MatIcon>&nbsp; Estados</MatNavItem>
+                        </MatRipple>
+                    </MatNavSubMenuList>
+                </MatNavSubMenu>
+            </MatNavMenu>
+            <div class="item-menu"></div>
+        </MatDrawer>
+        <MatDrawerContent>
+            <MatAppBarContainer>
+                <MatAppBar Fixed="true">
+                    <MatAppBarRow>
+                        <MatAppBarSection>
+                            <MatIconButton OnClick="@(() => OpenedMenu = !OpenedMenu)" Icon="menu"></MatIconButton>
+                            <MatAppBarTitle>Procesos estratégicos</MatAppBarTitle>
+                        </MatAppBarSection>
+                        @*<MatAppBarSection Align="@MatAppBarSectionAlign.End">
+                    <MatIconButton Icon="favorite"></MatIconButton>
+                    </MatAppBarSection>*@
+                    </MatAppBarRow>
+                </MatAppBar>
+                <MatAppBarContent>
+                    <div class="mat-layout-grid">
+                        <main>
+                            @Body
+                        </main>
+                    </div>
+                </MatAppBarContent>
+            </MatAppBarContainer>
+        </MatDrawerContent>
+    </MatDrawerContainer>
+@*}*@
+
+@code
+{
+    /// <value>Valor del menu</value>
+    bool OpenedMenu = false;
+
+    /// <value>Valor del submenu</value>
+    bool navSubMenuOpenState { get; set; }
+
+    string? logoSource = $"images/logo.png";
+
+    /// <summary>
+    /// Método para navegar a una página
+    /// </summary>
+    void NavigateTo(string navigateTo)
+    {
+        OpenedMenu = !OpenedMenu;
+        NavigationManager.NavigateTo("/" + navigateTo);
+    }
+}
+
+@*<div class="alert alert-secondary mt-4">
+    <span class="oi oi-pencil me-2" aria-hidden="true"></span>
+    <strong>@Title</strong>
+
+    <span class="text-nowrap">
+        Please take our
+        <a target="_blank" class="font-weight-bold link-dark" href="https://go.microsoft.com/fwlink/?linkid=2148851">brief survey</a>
+    </span>
+    and tell us what you think.
+</div>
+
+@code {
+    // Demonstrates how a parent component can supply parameters
+    [Parameter]
+    public string? Title { get; set; }
+}*@

@@ -1,0 +1,26 @@
+﻿<MatThemeProvider Theme="@theme">
+    <Router AppAssembly="@typeof(App).Assembly">
+        <Found Context="routeData">
+            <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+            <FocusOnNavigate RouteData="@routeData" Selector="MatH4" />
+        </Found>
+        <NotFound>
+            <PageTitle>Not found</PageTitle>
+            <LayoutView Layout="@typeof(MainLayout)">
+                <p role="alert">Ups, dirección no encontrada.</p>
+            </LayoutView>
+        </NotFound>
+    </Router>
+
+    <MatPortalHost></MatPortalHost>
+</MatThemeProvider>
+
+@code
+{
+    MatTheme theme = new MatTheme()
+        {
+            Primary = "#00796b",
+            Secondary = "#212121",
+            Surface = "#fafafa"
+        };
+}

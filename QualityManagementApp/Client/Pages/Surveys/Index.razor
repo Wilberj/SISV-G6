@@ -1,0 +1,74 @@
+﻿@page "/surveys"
+@using QualityManagementApp.Shared
+@inject ISurveyService SurveyService
+@inject NavigationManager navigation
+
+<PageTitle>Encuestas</PageTitle>
+
+<div class="mat-layout-grid-inner">
+    <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%"></div>
+    <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%">
+        <MatH4><MatIcon Style="font-size:32px; margin-top:-5%" Icon="ballot"></MatIcon> Encuestas</MatH4>
+    </div>
+    <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%"></div>
+</div>
+<div class="mat-layout-grid-inner" style="margin-bottom:5%">
+    <div class="mat-layout-grid-cell">
+        <MatButton Icon="add_circle" OnClick="@(() => navigation.NavigateTo("survey_details"))" Label="Nueva encuesta"></MatButton>
+    </div>
+    <div class="mat-layout-grid-cell">
+    </div>
+    <div class="mat-layout-grid-cell"></div>
+</div>
+
+@if (SurveyService.Surveys == null)
+{
+    <div class="mat-layout-grid-inner">
+        <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%"></div>
+        <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%">
+            <MatProgressCircle Indeterminate="true" Size="MatProgressCircleSize.Large" />
+        </div>
+        <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%"></div>
+    </div>
+}
+else if (SurveyService.Surveys.Length == 0)
+{
+    <div class="mat-layout-grid-inner">
+        <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%"></div>
+        <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%">
+            <MatH6>Parece que no tienes encuestas elaboradas.</MatH6>
+        </div>
+        <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%"></div>
+    </div>
+}
+else
+{
+    <MatTable Items="@SurveyService.Surveys" SelectionChanged="@((row) => navigation.NavigateTo("survey_details/" + ((Model.Survey)row).PkSurvey))" AllowSelection="true" FilterByColumnName="Title" DebounceMilliseconds="150">
+        <MatTableHeader>
+            <th style="width:10%">Fecha de creación</th>
+            <th style="width:30%">Título</th>
+            <th style="width:10%">Categoría</th>
+            <th style="width:40%">Descripción</th>
+            <th style="width:10%">Disponibilidad</th>
+        </MatTableHeader>
+        <MatTableRow>
+            <td>@String.Format("{0:dd/MMMM/yyyy}", context.CreationDate)</td>
+            <td>@context.Title</td>
+            <td>@(SurveyService.SurveyCategories.Where(c => c.PkSurveyCategory == context.FkSurveyCategory).Select(s => s.Title).FirstOrDefault())</td>
+            <td>@context.Description</td>
+            <td>@(context.Status == true ? "Activada" : "Desactivada")</td>
+        </MatTableRow>
+    </MatTable>
+}
+
+<MatSnackbar @bind-IsOpen="@SurveyService.Snackbar.SnackbarIsOpen" Leading="true">
+    <MatSnackbarContent>@SurveyService.Snackbar.Message</MatSnackbarContent>
+</MatSnackbar>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await SurveyService.GetSurveyCategories();
+        await SurveyService.GetSurveys();
+    }
+}

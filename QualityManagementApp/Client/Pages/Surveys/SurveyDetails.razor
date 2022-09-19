@@ -1,0 +1,150 @@
+﻿@page "/survey_details"
+@page "/survey_details/{surveyId}"
+@using QualityManagementApp.Shared
+@using System.Threading
+@implements IDisposable
+@inject ClipboardService ClipboardService
+@inject NavigationManager navigation
+@inject IMatDialogService MatDialogService
+@inject ISurveyService SurveyService
+
+<MatProgressBar Indeterminate="true" Closed="@(!SurveyService.IsBusy)"></MatProgressBar>
+<EditForm Model="@SurveyService.Survey" OnValidSubmit="@SurveyService.AddSurvey">
+    <div class="mat-layout-grid-inner">
+        <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%"></div>
+        <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%">
+
+            <MatH4>@(SurveyId == null ? "Nueva encuesta" : "Detalles de la encuesta")</MatH4>
+
+                <MatH6>Código de la encuesta: @SurveyService.Survey.PkSurvey</MatH6>
+                <div>
+                    <MatSelectValue Disabled="@IsDisable" Outlined="true" Class="flex-width" Label="Categoría a encuestar" @bind-Value="@SurveyService.Survey.FkSurveyCategory" Items="@SurveyService.SurveyCategories" ValueSelector="@(sc => sc.PkSurveyCategory)">
+                        <ItemTemplate Context="category">
+                            <span>@category?.Title</span>
+                        </ItemTemplate>
+                    </MatSelectValue>
+                    <ValidationMessage class="mat-caption" For="@(() => SurveyService.Survey.FkSurveyCategory)" />
+                </div>
+                <br>
+                <div>
+                    <MatTextField Disabled="@IsDisable" Outlined="true" Class="flex-width" TValue="string" Label="Título" @bind-Value="@SurveyService.Survey.Title" OnFocusOut="@SurveyService.GenerateCode" />
+                    <ValidationMessage class="mat-caption" For="@(() => SurveyService.Survey.Title)" />
+                </div>
+                <br>
+                <div>
+                    <MatTextField Disabled="@IsDisable" Outlined="true" Class="flex-width" Label="Descripción" TextArea="true" @bind-Value="@SurveyService.Survey.Description" />
+                </div>
+                <br>
+                <div>
+                    <MatCheckbox Disabled="@IsDisable" Label="Estado de disponibilidad" @bind-Value="@SurveyService.Survey.Status" />
+                </div>
+
+                <DataAnnotationsValidator />
+
+                <br>
+                <br>
+                <br>
+            </div>
+            <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%">
+                <br>
+                <br>
+                <br>
+            @if (IsDisable == false)
+            {
+                <MatButton Type="submit" disabled="@(SurveyService.Questions.Capacity == 0? true : false)" Icon="add_circle" Label="Agregar encuesta"></MatButton>
+            }
+            else
+            {
+                <MatButton Type="button" Disabled="@state.IsDisabled" Icon="@state.Icon" OnClick="@(async () => await CopyToClipboard())">@state.Text</MatButton>
+            }
+        </div>
+    </div>
+
+</EditForm>
+
+<div class="mat-layout-grid-inner">
+    <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%"></div>
+    <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%">
+        @if (IsDisable == false)
+        {
+            <MatButton Icon="add_box" disabled="@(string.IsNullOrEmpty(SurveyService.Survey.PkSurvey)? true : false)" OnClick="@(async () => await MatDialogService.OpenAsync(typeof(DialogAddQuestion), null))">Añadir pregunta</MatButton>
+        }
+
+        @if (SurveyService.Questions == null)
+        {
+            <MatH6>Cargando tus preguntas...</MatH6>
+        }
+        else if (SurveyService.Questions.Capacity == 0)
+        {
+            <MatH6>No tienes preguntas añadidas.</MatH6>
+        }
+        else
+        {
+            <MatH6>Lista de preguntas.</MatH6>
+            <MatList SingleSelection="true" TwoLine="true">
+                @foreach (var question in SurveyService.Questions)
+                {
+                    <MatListItem>
+                        <MatListItemText>
+                            <MatListItemPrimaryText>@question.Title</MatListItemPrimaryText>
+                            <MatListItemSecondaryText>Categoría: @(SurveyService.TypesQA.Where(tqa => tqa.PkTypeQA == question.FkTypeQA).Select(t => t.Title).FirstOrDefault())</MatListItemSecondaryText>
+                            </MatListItemText>
+                        </MatListItem>
+                }
+            </MatList>
+        }
+        <br>
+        <br>
+        <br>
+    </div>
+    <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%"></div>
+</div>
+
+@code {
+    [Parameter]
+    public string? SurveyId { get; set; }
+
+    bool IsDisable { get; set; }
+
+    CancellationTokenSource cts = new(); //link 
+    State state = new("Copiar para compartir", "share");
+    record State(string Text, string Icon, bool IsDisabled = false);
+
+    protected override async Task OnParametersSetAsync()
+    {
+        SurveyService.IsBusy = true;
+        if (SurveyId == null)
+        {
+            IsDisable = false;
+            SurveyService.Survey = new();
+            SurveyService.Questions = new List<Model.Question>();
+        }
+        else
+        {
+            IsDisable = true;
+            await SurveyService.GetSurvey(SurveyId);
+        }
+        SurveyService.IsBusy = false;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await SurveyService.GetSurveyCategories();
+        await SurveyService.GetTypesQA();
+    }
+
+    async Task CopyToClipboard()
+    {
+        var temp = state;//done
+        state = new("Copiado", "check", IsDisabled: true);
+        await ClipboardService.WriteTextAsync(navigation.BaseUri + "survey/" + SurveyService.Survey.PkSurvey);
+        await Task.Delay(TimeSpan.FromSeconds(2), cts.Token);
+        state = temp;
+    }
+
+    public void Dispose()
+    {
+        cts.Cancel();
+        cts.Dispose();
+    }
+}

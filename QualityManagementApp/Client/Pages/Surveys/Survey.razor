@@ -1,0 +1,98 @@
+﻿@page "/survey/{surveyId}"
+@inject ISurveyService SurveyService
+@using QualityManagementApp.Shared
+<PageTitle>Encuesta</PageTitle>
+<MatProgressBar Indeterminate="true" Closed="@(!SurveyService.IsBusy)"></MatProgressBar>
+
+@if (!string.IsNullOrEmpty(SurveyService.Survey.PkSurvey))
+{
+    <MatH6>Encuesta @SurveyService.Survey.PkSurvey</MatH6>
+    <MatSubtitle1>@SurveyService.Survey.Title</MatSubtitle1>
+    <MatSubtitle2>@SurveyService.Survey.Description</MatSubtitle2>
+    <MatCaption>Elaborada el @String.Format("{0:dd/MMMM/yyyy}", SurveyService.Survey.CreationDate)</MatCaption>
+
+    <div class="mat-layout-grid-inner">
+        <div class="mat-layout-grid-cell"></div>
+        <div class="mat-layout-grid-cell">
+
+            @SurveyService.SelectedAnswers
+            @SurveyService.Interviewed
+            @foreach (var question in SurveyService.Questions)
+            {
+                <MatH6>@question.Title</MatH6>
+                Model.Answer[] answers = (Model.Answer[])SurveyService.ReturnAnswersByTypeQA(question.FkTypeQA).Result;
+
+                @answers
+                switch (question.FkTypeQA)
+                {
+                    case (int)ISurveyService.TypeAnswer.Cerradas:
+                        @*<MatSelectValue Outlined="true" Class="flex-width" Label="Seleccione su respuesta" Items="@answers" TValue="int?" TItem="Model.Answer" ValueSelector="@(i => i.PkAnswer)" ValueChanged="@((a) => SurveyService.AddSelectedAnswer(question.FkTypeQA, a))" ValueExpression="@(() => question.FkTypeQA)">
+                            <ItemTemplate Context="answer">
+                                <span>@answer?.AnswerName</span>
+                            </ItemTemplate>
+                        </MatSelectValue>*@
+                        <p>Cerrada</p>
+                        break;
+                    case (int)ISurveyService.TypeAnswer.Abiertas:
+                        @*<MatTextField TValue="string" Outlined="true"></MatTextField>*@
+                        <p>Abierta</p>
+                        break;
+                    case (int)ISurveyService.TypeAnswer.Calificativa_cualitativa:
+                    case (int)ISurveyService.TypeAnswer.Calificativa_cuantitativa:
+                        @*<MatH6>Seleccione su respuesta</MatH6>
+                        <MatRadioGroup Items="@answers" TValue="Model.Answer" ValueChanged="@((a) => SurveyService.AddSelectedAnswer(question.FkTypeQA, a.PkAnswer))" ValueExpression="@(() => answers[0])">
+                            <ItemTemplate>
+                                <div>
+                                    <MatRadioButton Value="@context">@context.AnswerName</MatRadioButton>
+                                </div>
+                            </ItemTemplate>
+                        </MatRadioGroup>*@
+                        <p>Calificativa</p>
+                        break;
+                }
+            }
+            <MatTextField Outlined="true" Class="flex-width" TValue="string" Label="Observaciones" @bind-Value="@SurveyService.Interviewed.Observation" />
+            <MatButton Icon="send" OnClick="@(async () => await SurveyService.AddSelectedAnswers())" Label="Enviar"></MatButton>
+        </div>
+        <div class="mat-layout-grid-cell"></div>
+    </div>
+}
+
+
+<MatDialog @bind-IsOpen="@dialogIsOpen">
+    <MatDialogTitle>Hola @SurveyService.Interviewed.Name</MatDialogTitle>
+    <MatDialogContent>
+        <MatH6>¿Cúal es su nombre?</MatH6>
+        <MatTextField @bind-Value="@SurveyService.Interviewed.Name" Outlined="true"></MatTextField>
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton OnClick="@(async () => await OkClick())" Icon="trending_flat" Label="Continuar"></MatButton>
+    </MatDialogActions>
+</MatDialog>
+
+
+@code {
+    [Parameter]
+    public string SurveyId { get; set; } = null!;
+
+    public bool dialogIsOpen { get; set; } = false;
+
+    protected override void OnParametersSet()
+    {
+        SurveyService.Interviewed = new();
+        dialogIsOpen = true;
+    }
+
+    protected override void OnInitialized()
+    {
+        //await SurveyService.GetSurveyCategories();
+        //await SurveyService.GetTypesQA();
+    }
+
+    public async Task OkClick()
+    {        
+        dialogIsOpen = false;
+        SurveyService.Interviewed.PkInterviewed = await SurveyService.AddInterviewed();
+        await SurveyService.GetSurvey(SurveyId);
+    }
+}
