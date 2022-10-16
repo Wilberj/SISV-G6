@@ -1,74 +1,150 @@
-﻿@page "/survey/{surveyId}"
+﻿@layout EmptyLayout
+@page "/survey/{surveyId}"
 @inject ISurveyService SurveyService
-@using QualityManagementApp.Shared
+
 <PageTitle>Encuesta</PageTitle>
 <MatProgressBar Indeterminate="true" Closed="@(!SurveyService.IsBusy)"></MatProgressBar>
 
-@if (!string.IsNullOrEmpty(SurveyService.Survey.PkSurvey))
+@if (ShowContent == true)
 {
-    <MatH6>Encuesta @SurveyService.Survey.PkSurvey</MatH6>
-    <MatSubtitle1>@SurveyService.Survey.Title</MatSubtitle1>
-    <MatSubtitle2>@SurveyService.Survey.Description</MatSubtitle2>
-    <MatCaption>Elaborada el @String.Format("{0:dd/MMMM/yyyy}", SurveyService.Survey.CreationDate)</MatCaption>
-
-    <div class="mat-layout-grid-inner">
+    <MatPaper Elevation="20" Style="width:100%; background-color:#182b48">
+        <div class="mat-layout-grid">
+            @*<div class="mat-layout-grid-inner">*@
+            <MatH6 Class="white-color">Encuesta @SurveyService.Survey.PkSurvey</MatH6>
+            <MatSubtitle1 Class="white-color">@SurveyService.Survey.Title</MatSubtitle1>
+            <MatSubtitle2 Class="white-color">@SurveyService.Survey.Description</MatSubtitle2>
+            <MatCaption Class="white-color">Elaborada el @String.Format("{0:dd/MMMM/yyyy}", SurveyService.Survey.CreationDate)</MatCaption>
+            @*</div>*@
+        </div>
+    </MatPaper>
+    @*<div class="mat-layout-grid-inner">
         <div class="mat-layout-grid-cell"></div>
         <div class="mat-layout-grid-cell">
+            <button @onclick="@VerData">consola</button>
 
-            @SurveyService.SelectedAnswers
-            @SurveyService.Interviewed
             @foreach (var question in SurveyService.Questions)
             {
                 <MatH6>@question.Title</MatH6>
-                Model.Answer[] answers = (Model.Answer[])SurveyService.ReturnAnswersByTypeQA(question.FkTypeQA).Result;
 
-                @answers
-                switch (question.FkTypeQA)
-                {
-                    case (int)ISurveyService.TypeAnswer.Cerradas:
-                        @*<MatSelectValue Outlined="true" Class="flex-width" Label="Seleccione su respuesta" Items="@answers" TValue="int?" TItem="Model.Answer" ValueSelector="@(i => i.PkAnswer)" ValueChanged="@((a) => SurveyService.AddSelectedAnswer(question.FkTypeQA, a))" ValueExpression="@(() => question.FkTypeQA)">
-                            <ItemTemplate Context="answer">
-                                <span>@answer?.AnswerName</span>
-                            </ItemTemplate>
-                        </MatSelectValue>*@
-                        <p>Cerrada</p>
-                        break;
-                    case (int)ISurveyService.TypeAnswer.Abiertas:
-                        @*<MatTextField TValue="string" Outlined="true"></MatTextField>*@
-                        <p>Abierta</p>
-                        break;
-                    case (int)ISurveyService.TypeAnswer.Calificativa_cualitativa:
-                    case (int)ISurveyService.TypeAnswer.Calificativa_cuantitativa:
-                        @*<MatH6>Seleccione su respuesta</MatH6>
-                        <MatRadioGroup Items="@answers" TValue="Model.Answer" ValueChanged="@((a) => SurveyService.AddSelectedAnswer(question.FkTypeQA, a.PkAnswer))" ValueExpression="@(() => answers[0])">
-                            <ItemTemplate>
-                                <div>
-                                    <MatRadioButton Value="@context">@context.AnswerName</MatRadioButton>
-                                </div>
-                            </ItemTemplate>
-                        </MatRadioGroup>*@
-                        <p>Calificativa</p>
-                        break;
-                }
+                Model.Answer MyProperty = new();
+                <p>Current value: @(MyProperty.PkAnswer + ", " + MyProperty.AnswerName + ", " + MyProperty.FkTypeQA)</p>
+*@
+                @*List<Model.Answer> temp = null!;*@
+                @*<div hidden="hidden">@(async () => temp = await SurveyService.ReturnAnswersByTypeQA(question.FkTypeQA))</div>
+                temp.ForEach(a => Console.WriteLine(a.AnswerName));*@
+
+
+                @*var items = SurveyService.ReturnAnswersByTypeQA(question.FkTypeQA);
+                <MatRadioGroup Context="con" TValue="Model.Answer" @bind-Value="@MyProperty" Items="items">
+                    <ItemTemplate>
+                        <div>
+                            <MatRadioButton Value="@con">@con.AnswerName</MatRadioButton>
+                        </div>
+                    </ItemTemplate>
+                </MatRadioGroup>*@
             }
-            <MatTextField Outlined="true" Class="flex-width" TValue="string" Label="Observaciones" @bind-Value="@SurveyService.Interviewed.Observation" />
-            <MatButton Icon="send" OnClick="@(async () => await SurveyService.AddSelectedAnswers())" Label="Enviar"></MatButton>
+
+
+            @*@foreach (var question in SurveyService.Questions)
+        {
+        <MatH6>@question.Title</MatH6>*@
+            @*<div hidden="">@(async () => await AddAnswer(question.FkTypeQA))</div>*@
+
+
+            @* List<Model.Answer> temp = null!;
+        <div hidden="hidden">@(async () => temp = await SurveyService.ReturnAnswersByTypeQA(question.FkTypeQA))</div>
+        *@
+            @*Model.Answer MyProperty = new();
+        <p>Current value: @(MyProperty.PkAnswer + ", " + MyProperty.AnswerName + ", " + MyProperty.FkTypeQA)</p>
+        *@
+            @*switch (question.FkTypeQA)
+        {
+        case (int)ISurveyService.TypeAnswer.Calificativa_cualitativa:
+        case (int)ISurveyService.TypeAnswer.Calificativa_cuantitativa:
+        case (int)ISurveyService.TypeAnswer.Cerradas:*@
+            @*<MatRadioGroup Context="context" Items="@temp">
+        <ItemTemplate>
+        <div>
+        <MatRadioButton Value="@context">@context.AnswerName</MatRadioButton>
+        </div>
+        </ItemTemplate>
+        </MatRadioGroup>
+
+
+        string Val3 = "";
+        <h3>Items with ItemTemplate: @Val3</h3>
+
+        string[] Val3Items =
+        {
+        "Winter",
+        "Spring",
+        "Summer",
+        "Autumn"
+        };
+        <MatRadioGroup Context="con" @bind-Value="@Val3" Items="@Val3Items">
+        <ItemTemplate>
+        <div>
+        <MatRadioButton Value="@con">@con</MatRadioButton>
+        </div>
+        </ItemTemplate>
+        </MatRadioGroup>*@
+            @*<p>Cerrada</p> <p> o Calificativa</p>
+        break;
+        case (int)ISurveyService.TypeAnswer.Abiertas:
+        <MatTextField TValue="string" Outlined="true"></MatTextField>
+        <p>Abierta</p>
+        break;
+        }*@
+            @* }*@
+
+            @*<MatSelectValue Outlined="true" Class="flex-width" Label="Seleccione su respuesta" Items="@temp" TValue="int?" TItem="Model.Answer" ValueSelector="@(i => i.PkAnswer?? 0)" ValueChanged="@((a) => SurveyService.AddSelectedAnswer(question.FkTypeQA, Convert.ToInt32(a)))" ValueExpression="@(() => question.FkTypeQA?? 0)">
+        <ItemTemplate Context="answer">
+        <span>@answer?.AnswerName</span>
+        </ItemTemplate>
+        </MatSelectValue>*@
+
+            @*<MatTextField Outlined="true" Class="flex-width" TValue="string" Label="Observaciones" @bind-Value="@SurveyService.Interviewed.Observation" />
+            <MatButton Icon="send" OnClick="@(async () => await SurveyService.AddSelectedAnswersInterviewed())" Label="Enviar"></MatButton>
         </div>
         <div class="mat-layout-grid-cell"></div>
     </div>
 }
 
 
-<MatDialog @bind-IsOpen="@dialogIsOpen">
-    <MatDialogTitle>Hola @SurveyService.Interviewed.Name</MatDialogTitle>
+<MudStack>
+    <MudPaper Class="pa-4">
+        <MudStack Row="true">
+            <MudAvatar Image="images/mony.jpg" Size="Size.Large" />
+            <MudStack Justify="Justify.Center" Spacing="0">
+                <MudText Typo="Typo.body1">Mony Larsson</MudText>
+                <MudText Typo="Typo.body2">onebiteonekill@mony.dog</MudText>
+            </MudStack>
+        </MudStack>
+    </MudPaper>
+
+    <MudPaper Class="pa-4">
+        <MudStack Spacing="4">
+            <MudTextField T="string" Label="Card number" Mask="@(new PatternMask("0000 0000 0000 0000"))" />
+            <MudStack Row="true">
+                <MudTextField T="string" Label="Expires" Mask="@(new DateMask("MM/YY", 'Y', 'M'))" />
+                <MudTextField T="string" Label="CVC" Mask="@(new PatternMask("000"))" />
+            </MudStack>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" DisableElevation="true">Pay Now</MudButton>
+        </MudStack>
+    </MudPaper>
+</MudStack>
+
+
+<MatDialog @bind-IsOpen="@dialogIsOpen" CanBeClosed="false">
+    <MatDialogTitle><b>Encuesta: </b> @SurveyService.Survey.Title <br /><b>Acerca de: </b> @SurveyService.Survey.Description</MatDialogTitle>
     <MatDialogContent>
-        <MatH6>¿Cúal es su nombre?</MatH6>
-        <MatTextField @bind-Value="@SurveyService.Interviewed.Name" Outlined="true"></MatTextField>
+        <br />
+        <MatTextField Label="Escriba su Nombre y apellido" Class="flex-width" @bind-Value="@SurveyService.Interviewed.Name" Outlined="true"></MatTextField>
     </MatDialogContent>
     <MatDialogActions>
-        <MatButton OnClick="@(async () => await OkClick())" Icon="trending_flat" Label="Continuar"></MatButton>
+        <MatButton OnClick="@(() => OkClick())" Label="Continuar"></MatButton>
     </MatDialogActions>
-</MatDialog>
+</MatDialog>*@
 
 
 @code {
@@ -77,22 +153,70 @@
 
     public bool dialogIsOpen { get; set; } = false;
 
+    public bool ShowContent { get; set; } = false;
+
+    public string Val3 { get; set; } = "";
+    //public Model.Answer[] Answers { get; set; } = null!;
+
     protected override void OnParametersSet()
     {
-        SurveyService.Interviewed = new();
         dialogIsOpen = true;
     }
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        //await SurveyService.GetSurveyCategories();
-        //await SurveyService.GetTypesQA();
-    }
-
-    public async Task OkClick()
-    {        
-        dialogIsOpen = false;
-        SurveyService.Interviewed.PkInterviewed = await SurveyService.AddInterviewed();
+        SurveyService.Interviewed = new();
+        SurveyService.Survey = new();
         await SurveyService.GetSurvey(SurveyId);
     }
+
+    public void OkClick()
+    {
+        dialogIsOpen = false;
+        ShowContent = true;
+    }
+
+    //public async Task AddAnswer(int? fkTypeQA)
+    //{
+    //    var item = await SurveyService.ReturnAnswersByTypeQA(fkTypeQA);
+    //    Answers.Append(item[0] ?? null!);
+    //}
+
+    public void VerData()
+    {
+        Console.WriteLine(
+        SurveyService.Survey.Description + " , " +
+        SurveyService.Survey.CreationDate + " , " +
+        SurveyService.Survey.FkSurveyCategory + " , " +
+        SurveyService.Survey.LastModificationDate + " , " +
+        SurveyService.Survey.PkSurvey + " , " +
+        SurveyService.Survey.Status + " , " +
+        SurveyService.Survey.Title + "******");
+
+        foreach (var item in SurveyService.SelectedAnswers)
+        {
+            Console.WriteLine(
+                item.FkAnswer + " , " +
+                item.FkInterviewed + " , " +
+                item.FkQuestion + " , " +
+                item.PkSelectedAnswer + "******");
+        }
+
+        Console.WriteLine(
+        SurveyService.Interviewed.CreationDate + " , " +
+        SurveyService.Interviewed.Name + " , " +
+        SurveyService.Interviewed.Observation + " , " +
+        SurveyService.Interviewed.PkInterviewed + "******");
+
+        //Console.WriteLine(MyProperty);
+    }
+
+    //////////////////////////////
+    //void DoThing(int s) //value changed event.
+    //{
+    //    MyProperty.PkAnswer = s; //get the current selected value and assign to the Model.
+    //}
+    //define a class to get/set the dropdownlist selected value.
+
+
 }

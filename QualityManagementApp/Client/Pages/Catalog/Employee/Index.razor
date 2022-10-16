@@ -1,0 +1,83 @@
+﻿@page "/employees"
+@using QualityManagementApp.Client.Services.Contracts.Catalog
+@using QualityManagementApp.Shared
+@inject IEmployeeService EmployeeService
+@inject NavigationManager navigation
+
+<PageTitle>Empleados</PageTitle>
+
+<div class="mat-layout-grid-inner">
+    <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%"></div>
+    <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%">
+        <MatH4><MatIcon Style="font-size:32px; margin-top:-5%" Icon="ballot"></MatIcon> Empleados</MatH4>
+    </div>
+    <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%"></div>
+</div>
+
+<div class="mat-layout-grid-inner" style="margin-bottom:5%">
+    <div class="mat-layout-grid-cell">
+        <MatButton Icon="add_circle" OnClick="@(() => navigation.NavigateTo("employee_details"))" Label="Nuevo Empleado"></MatButton>
+    </div>
+    <div class="mat-layout-grid-cell">
+    </div>
+    <div class="mat-layout-grid-cell"></div>
+</div>
+
+@if (EmployeeService.Employees == null)
+{
+    <div class="mat-layout-grid-inner">
+        <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%"></div>
+        <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%">
+            <MatProgressCircle Indeterminate="true" Size="MatProgressCircleSize.Large" />
+        </div>
+        <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%"></div>
+    </div>
+}
+else if (EmployeeService.Employees.Length == 0)
+{
+    <div class="mat-layout-grid-inner">
+        <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%"></div>
+        <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%">
+            <MatH6>Parece que no tienes ningun empleado añadido.</MatH6>
+        </div>
+        <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%"></div>
+    </div>
+}
+else
+{
+
+    @*<MatTable SelectionChanged="@((row) => navigation.NavigateTo("employee_details/" + ((Model.Employee)row).PkEmployee))" Items="@EmployeeService.Employees" AllowSelection="true" FilterByColumnName="Title" DebounceMilliseconds="150">
+        <MatTableHeader>
+            <th style="width:20%">Identificación</th>
+            <th style="width:40%">Nombre Completo</th>
+            <th style="width:40%">Ciudad</th>
+            <th style="width:40%">Direccion exacta</th>
+            <th style="width:40%">Celular</th>
+            <th style="width:40%">Cargo</th>
+            <th style="width:40%">Fecha de Creacion</th>
+        </MatTableHeader>
+        <MatTableRow>
+            <td>@context.IdentificationCard</td>
+            <td>@context.FirstName @context.SecondName @context.FirstSurname @context.SecondSurname</td>
+            <td>@(EmployeeService.Cities.Where(c => c.PkCity == context.FkCity).Select(s => s.Name).FirstOrDefault())</td>
+            <td>@context.HomeAddress</td>
+            <td>@context.Telephone</td>
+            <td>@(EmployeeService.Positions.Where(c => c.PkPosition == context.FkPosition).Select(s => s.Title).FirstOrDefault())</td>
+            <td>@String.Format("{0:dd/MMMM/yyyy}", context.CreationDate)</td>
+        </MatTableRow>
+    </MatTable>*@
+}
+
+@*<MatSnackbar @bind-IsOpen="@EmployeeService.Snackbar.SnackbarIsOpen" Leading="true">
+    <MatSnackbarContent>@EmployeeService.Snackbar.Message</MatSnackbarContent>
+</MatSnackbar>*@
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await EmployeeService.GetEmployees();
+        await EmployeeService.GetPositions();
+        await EmployeeService.GetCity();
+    }
+}
+

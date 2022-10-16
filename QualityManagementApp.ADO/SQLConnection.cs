@@ -13,20 +13,19 @@ namespace QualityManagementApp.ADO
         public static GData QMA = null!;
         #pragma warning restore CA2211 // Los campos no constantes no deben ser visibles
         static readonly string DataBaseName = "QMA";
-        static readonly string Server = "JUNIOR";
+        static readonly string Server = ".";
 
-        static public bool StartConnection(string user, string password)
+        static public bool StartConnection()
         {
             try
             {
-                UserSQLConection = "Data Source=" + Server +
-                    "; Initial Catalog=" + DataBaseName + "; User ID=" +
-                    user + ";Password=" + password + ";Trusted_Connection=True;";
+                UserSQLConection = "Data Source=" + Server + "; Initial Catalog=" + DataBaseName + ";Trusted_Connection=True;";
                 QMA = new GData(UserSQLConection);
                 return true;
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Console.WriteLine(e.ToString());
                 return false;
                 throw;
             }

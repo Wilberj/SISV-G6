@@ -1,26 +1,30 @@
-﻿<MatThemeProvider Theme="@theme">
-    <Router AppAssembly="@typeof(App).Assembly">
-        <Found Context="routeData">
-            <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
-            <FocusOnNavigate RouteData="@routeData" Selector="MatH4" />
-        </Found>
-        <NotFound>
-            <PageTitle>Not found</PageTitle>
-            <LayoutView Layout="@typeof(MainLayout)">
-                <p role="alert">Ups, dirección no encontrada.</p>
-            </LayoutView>
-        </NotFound>
-    </Router>
-
-    <MatPortalHost></MatPortalHost>
-</MatThemeProvider>
+﻿<MudThemeProvider Theme="@theme" />
+<Router AppAssembly="@typeof(App).Assembly">
+    <Found Context="routeData">
+        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+    </Found>
+    <NotFound>
+        <PageTitle>No encontrada</PageTitle>
+        <LayoutView Layout="@typeof(EmptyLayout)">
+            <p role="alert">Ups, dirección no encontrada.</p>
+        </LayoutView>
+    </NotFound>
+</Router>
+@*<MudDialogProvider />*@
+@*<MudSnackbarProvider />*@
 
 @code
 {
-    MatTheme theme = new MatTheme()
+    MudTheme theme = new()
         {
-            Primary = "#00796b",
-            Secondary = "#212121",
-            Surface = "#fafafa"
+            Palette = new Palette()
+            {
+                Primary = "#182b48",
+                Secondary = "#18a3b5",
+                Surface = "#ffffff",
+                AppbarBackground = "#ffffff",
+                AppbarText = Colors.Shades.Black
+            }
         };
 }

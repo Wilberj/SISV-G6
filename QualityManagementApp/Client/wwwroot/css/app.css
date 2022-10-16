@@ -3,10 +3,48 @@
     margin: 0 !important;
 }
 
-/*.Background {
-    background: rgb(1,59,6);
-    background: linear-gradient(0deg, rgba(1,59,6,1) 0%, rgba(0,163,145,1) 0%, rgba(0,96,85,1) 80%);
-}*/
+.white-color {
+    color: white !important;
+}
+
+.loading-progress {
+    position: relative;
+    display: block;
+    width: 8rem;
+    height: 8rem;
+    margin: 20vh auto 1rem auto;
+}
+
+    .loading-progress circle {
+        fill: none;
+        stroke: #fafafa;
+        stroke-width: 0.6rem;
+        transform-origin: 50% 50%;
+    }
+
+        .loading-progress circle:last-child {
+            stroke: #182b48;
+            stroke-dasharray: calc(3.141 * var(--blazor-load-percentage, 33.3%) * 0.8), 500%;
+            animation: rotate 1.33s linear infinite;
+        }
+
+.loading-progress-text {
+    position: absolute;
+    text-align: center;
+    font-weight: bold;
+    inset: calc(20vh + 3.25rem) 0 auto 0.2rem;
+}
+
+    .loading-progress-text:after {
+        content: var(--blazor-load-percentage-text, "Cargando");
+        color: #182b48;
+    }
+
+@keyframes rotate {
+    to {
+        transform: rotate(360deg);
+    }
+}
 
 .flex-width {
     width: 100% !important;

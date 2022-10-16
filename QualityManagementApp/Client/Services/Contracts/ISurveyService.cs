@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components.Web;
+using MudBlazor;
 using QualityManagementApp.Shared;
 using static QualityManagementApp.Shared.Model;
 
@@ -15,11 +16,8 @@ namespace QualityManagementApp.Client.Services.Contracts
             Calificativa_cualitativa = 4
         }
 
-        /// <value>Boolean</value>
+        /// <value>Estado de la transacción</value>
         bool IsBusy { get; set; }
-
-        /// <value>Valores de un Snackbar</value>
-        Snackbar Snackbar { get; set; }
 
         /// <value>Valores de una encuesta</value>
         Survey Survey { get; set; }
@@ -42,71 +40,74 @@ namespace QualityManagementApp.Client.Services.Contracts
         /// <value>Valores de todas las posibles respuestas</value>
         Answer[]? AnswersByTypeQA { get; set; }
 
+        /// <value>Valores de un invitado</value>
         Interviewed Interviewed { get; set; }
 
         /// <value>Valores de todas las respuestas seleccionadas</value>
         List<SelectedAnswer> SelectedAnswers { get; set; }
 
         /// <summary>
-        /// Método para agregar una respuesta seleccionada
+        /// Agrega una respuesta seleccionada
         /// </summary>
+        /// /// <param name="questionId"></param>
+        /// /// <param name="answerId"></param>
         void AddSelectedAnswer(int? questionId, int? answerId);
 
         /// <summary>
-        /// Método que agrega todas las respuestas seleccionadas por un invitado
+        /// Agrega al invitado y todas las respuestas seleccionadas por un invitado
         /// </summary>
-        Task AddSelectedAnswers();
+        Task AddSelectedAnswersInterviewed();
 
         /// <summary>
         /// Método que agrega los datos de un invitado
         /// </summary>
-        Task<int> AddInterviewed();
+        //Task<int> AddInterviewed();
 
         /// <summary>
-        /// Método que agrega todas las respuestas seleccionadas por un invitado
+        /// Retorna todas las posibles respuestas apartir del Id de un tipo de QA
         /// </summary>
-        /// <returns>Array de las respuestas por el tipo: Answer[]</returns>
-        Task<Answer[]> ReturnAnswersByTypeQA(int? typeQAId);
+        /// <returns>Array de las respuestas por el tipo: List<Answer>?</returns>
+        List<Answer> ReturnAnswersByTypeQA(int? typeQAId);
 
         /// <summary>
-        /// Método que obtiene todas las posibles respuestas
+        /// Obtiene todas las posibles respuestas apartir del Id de un tipo de QA
         /// </summary>
         Task GetAnswersByTypeQA(int? typeQAId);
 
         /// <summary>
-        /// Método para agregar una nueva pregunta
+        /// Agrega una nueva pregunta a la encuesta
         /// </summary>
         void AddQuestion();
 
         /// <summary>
-        /// Método que obtiene todos los tipos de preguntas
+        /// Obtiene todos los tipos de preguntas
         /// </summary>
         Task GetTypesQA();
 
         /// <summary>
-        /// Método para guardar una encuesta y sus preguntas
+        /// Guardar una encuesta y sus preguntas
         /// </summary>
         Task AddSurvey();
 
         /// <summary>
-        /// Método que obtiene una encuesta
+        /// Obtiene una encuesta apartir de su Id
         /// </summary>
         Task GetSurvey(string surveyId);
 
         /// <summary>
-        /// Método que obtiene todas las encuestas
+        /// Obtiene todas las encuestas
         /// </summary>
         Task GetSurveys();
 
         /// <summary>
-        /// Método que obtiene todas las categorias de la encuesta
+        /// Obtiene todas las categorias de la encuesta
         /// </summary>
         Task GetSurveyCategories();
 
         /// <summary>
-        /// Método para generar el código de la encuesta a partir del título y la fecha actual
+        /// Generar el código de la encuesta a partir del título y la fecha actual
         /// </summary>
-        /// <param name="focusEvent"></param>
-        void GenerateCode(FocusEventArgs focusEvent);
+        /// <param name="callbackString"></param>
+        void GenerateCode(string callbackString);
     }
 }

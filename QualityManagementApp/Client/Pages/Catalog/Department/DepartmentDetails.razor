@@ -1,0 +1,89 @@
+﻿@page "/department_details"
+@page "/department_details/{departmentId}"
+@using QualityManagementApp.Shared
+@using QualityManagementApp.Client.Services.Contracts.Catalog
+@using System.Threading
+@implements IDisposable
+@inject ClipboardService ClipboardService
+@inject NavigationManager navigation
+@*@inject IMatDialogService MatDialogService*@
+@inject IDepartmentService DepartmentService
+
+<MatProgressBar Indeterminate="true" Closed="@(!DepartmentService.IsBusy)"></MatProgressBar>
+<EditForm Model="@DepartmentService.Department" OnValidSubmit="@DepartmentService.AddDepartment">
+    <div class="mat-layout-grid-inner">
+        <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%"></div>
+        <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%">
+
+            <MatH4>@(DepartmentId == null ? "Nuevo departamento" : "Detalles del departamento")</MatH4>
+                @*Disabled="@IsDisable"*@
+                <br>
+                <div>
+                    @*<MatTextField  Outlined="true" Class="flex-width" Label="Nombre del departamento" @bind-Value="@DepartmentService.Department.Name" />*@
+                </div>
+                <br>
+
+                @*<DataAnnotationsValidator />*@
+
+                <br>
+                <br>
+                <br>
+            </div>
+            <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%">
+                <br>
+                <br>
+            @if (IsDisable == false)
+            {
+                <MatButton Type="submit"  Icon="add_circle" Label="Agregar Departamento"></MatButton>
+            }
+        </div>
+    </div>
+    @*disabled="@(DepartmentService.Department.Name == null? true : false)"*@
+</EditForm>
+
+<div class="mat-layout-grid-inner">
+    <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%"></div>
+    <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%">
+        <br>
+        <br>
+        <br>
+    </div>
+    <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%"></div>
+</div>
+@code {
+    [Parameter]
+    public string? DepartmentId { get; set; }
+
+    bool IsDisable { get; set; }
+
+    CancellationTokenSource cts = new(); //link
+    State state = new("Copiar para compartir", "share");
+    record State(string Text, string Icon, bool IsDisabled = false);
+
+    protected override async Task OnParametersSetAsync()
+    {
+        DepartmentService.IsBusy = true;
+        if (DepartmentId == null)
+        {
+            IsDisable = false;
+            DepartmentService.Department = new();
+        }
+        else
+        {
+            IsDisable = true;
+            await DepartmentService.GetDepartment(DepartmentId);
+        }
+        DepartmentService.IsBusy = false;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await DepartmentService.GetDepartments();
+    }
+
+    public void Dispose()
+    {
+        cts.Cancel();
+        cts.Dispose();
+    }
+}

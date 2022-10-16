@@ -1,0 +1,46 @@
+﻿@layout EmptyLayout
+@page "/"
+@inject ILoginService LoginService
+
+<PageTitle>Iniciar sesión</PageTitle>
+<BusyOverlay @bind-visible="@LoginService.IsBusy" />
+
+<MudGrid Spacing="0" Justify="Justify.Center">
+    <MudItem />
+    <MudItem>
+        <MudPaper Width="100%" Outlined="true" Class="rounded-lg px-16 py-6" Style="@($"background-color:{Color.Surface};")">
+            <div class="d-flex justify-center">
+                <MudImage Src="images/logo.png" Alt="Logo" Width="80" Height="80" Fluid="true" />
+            </div>
+            <MudText Class="mt-n3" Typo="Typo.h6" Align="Align.Center">Gestión de la calidad</MudText>
+
+            <EditForm Model="LoginService.User" OnValidSubmit="@LoginService.Login">
+                <DataAnnotationsValidator />
+
+                <MudTextField Variant="Variant.Outlined" Label="Usuario" HelperText="Ingrese su usuario" Class="mt-8" @bind-Value="@LoginService.User.Username" For="@(() => LoginService.User.Username)" />
+                <MudTextField Variant="Variant.Outlined" Label="Contraseña" HelperText="Ingrese su contraseña" Class="mt-4" @bind-Value="@LoginService.User.Password" For="@(() => LoginService.User.Password)" InputType="InputType.Password" />
+
+                <div class="d-flex justify-center my-5">
+                    <MudButton ButtonType="ButtonType.Submit" Size="Size.Large" Variant="Variant.Filled" Color="Color.Primary">Iniciar sesion</MudButton>
+                </div>
+            </EditForm>
+
+            @if (!string.IsNullOrEmpty(LoginService.Message))
+            {
+                <MudAlert Severity="Severity.Error" Dense="true">@LoginService.Message</MudAlert>
+            }
+
+        </MudPaper>
+    </MudItem>
+    <MudItem />
+</MudGrid>
+
+@code {
+    protected override void OnInitialized()
+    {
+        if (LoginData.UserLogin != null)
+        {
+            NavigationManager.NavigateTo("/surveys");
+        }
+    }
+}

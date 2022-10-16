@@ -1,0 +1,38 @@
+﻿@page "/survey_insights/{surveyId}"
+@inject ISurveyInsightsService InsightsService
+
+<PageTitle>Estadisticas</PageTitle>
+<BusyOverlay @bind-visible="@InsightsService.IsBusy" />
+
+<MudStack Spacing="9" Class="my-9">
+    <MudText Align="Align.Center" Color="Color.Secondary" Typo="Typo.h4">Estadisticas de la encuesta</MudText>
+
+    <MudStack>
+        <MudText Typo="Typo.h6">Resultados por pregunta</MudText>
+        <MudChart ChartType="ChartType.Bar" ChartSeries="@Series" XAxisLabels="@XAxisLabels" Width="100%" Height="350px" />
+    </MudStack>
+    
+    <MudStack>
+        <MudText Typo="Typo.h6">Resultados por pregunta</MudText>
+        <MudChart ChartType="ChartType.Bar" ChartSeries="@Series" XAxisLabels="@XAxisLabels" Width="100%" Height="350px" />
+    </MudStack>
+
+    <MudStack>
+        <MudText Typo="Typo.h6">Resultados por pregunta</MudText>
+        <MudChart ChartType="ChartType.Bar" ChartSeries="@Series" XAxisLabels="@XAxisLabels" Width="100%" Height="350px" />
+    </MudStack>
+</MudStack>
+
+
+@code {
+    [Parameter]
+    public string? SurveyId { get; set; }
+
+    public List<ChartSeries> Series = new List<ChartSeries>()
+    {
+        new ChartSeries() { Name = "United States", Data = new double[] { 40, 20, 25, 27, 46, 60, 48, 80, 15 } },
+        new ChartSeries() { Name = "Germany", Data = new double[] { 19, 24, 35, 13, 28, 15, 13, 16, 31 } },
+        new ChartSeries() { Name = "Sweden", Data = new double[] { 8, 6, 11, 13, 4, 16, 10, 16, 18 } },
+    };
+    public string[] XAxisLabels = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep" };
+}

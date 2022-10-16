@@ -1,69 +1,62 @@
 ﻿@page "/surveys"
-@using QualityManagementApp.Shared
 @inject ISurveyService SurveyService
-@inject NavigationManager navigation
 
-<PageTitle>Encuestas</PageTitle>
+<PageTitle>Medición de satisfacción</PageTitle>
 
-<div class="mat-layout-grid-inner">
-    <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%"></div>
-    <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%">
-        <MatH4><MatIcon Style="font-size:32px; margin-top:-5%" Icon="ballot"></MatIcon> Encuestas</MatH4>
-    </div>
-    <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%"></div>
-</div>
-<div class="mat-layout-grid-inner" style="margin-bottom:5%">
-    <div class="mat-layout-grid-cell">
-        <MatButton Icon="add_circle" OnClick="@(() => navigation.NavigateTo("survey_details"))" Label="Nueva encuesta"></MatButton>
-    </div>
-    <div class="mat-layout-grid-cell">
-    </div>
-    <div class="mat-layout-grid-cell"></div>
-</div>
+<MudStack Class="my-5" Row="true" Spacing="0" Justify="Justify.Center" AlignItems="AlignItems.Center">
+    <MudIcon Color="Color.Secondary" Icon="@Icons.Material.Rounded.Ballot" Size="Size.Large" />
+    <MudText Color="Color.Secondary" Typo="Typo.h4">Medición de satisfacción</MudText>
+</MudStack>
 
 @if (SurveyService.Surveys == null)
 {
-    <div class="mat-layout-grid-inner">
-        <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%"></div>
-        <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%">
-            <MatProgressCircle Indeterminate="true" Size="MatProgressCircleSize.Large" />
-        </div>
-        <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%"></div>
-    </div>
+    <MudStack Class="my-8" Spacing="1">
+        <MudSkeleton Class="my-8" SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave" Width="180px" Height="25px" />
+
+        <MudSkeleton Class="mb-2" SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave" Width="100%" Height="45px" />
+        <MudSkeleton Class="mb-2" SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave" Width="100%" Height="45px" />
+        <MudSkeleton Class="mb-2" SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave" Width="100%" Height="45px" />
+        <MudSkeleton Class="mb-2" SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave" Width="100%" Height="45px" />
+        <MudSkeleton Class="mb-2" SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave" Width="100%" Height="45px" />
+        <MudSkeleton Class="mb-2" SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave" Width="100%" Height="45px" />
+        <MudSkeleton Class="mb-2" SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave" Width="100%" Height="45px" />
+        <MudSkeleton Class="mb-2" SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave" Width="100%" Height="45px" />
+    </MudStack>
 }
 else if (SurveyService.Surveys.Length == 0)
 {
-    <div class="mat-layout-grid-inner">
-        <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%"></div>
-        <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%">
-            <MatH6>Parece que no tienes encuestas elaboradas.</MatH6>
-        </div>
-        <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%"></div>
-    </div>
+    <MudText Class="mt-13" Color="Color.Dark" Align="Align.Center" Typo="Typo.h6">Parece que no tienes encuestas elaboradas.</MudText>
 }
 else
 {
-    <MatTable Items="@SurveyService.Surveys" SelectionChanged="@((row) => navigation.NavigateTo("survey_details/" + ((Model.Survey)row).PkSurvey))" AllowSelection="true" FilterByColumnName="Title" DebounceMilliseconds="150">
-        <MatTableHeader>
-            <th style="width:10%">Fecha de creación</th>
-            <th style="width:30%">Título</th>
-            <th style="width:10%">Categoría</th>
-            <th style="width:40%">Descripción</th>
-            <th style="width:10%">Disponibilidad</th>
-        </MatTableHeader>
-        <MatTableRow>
-            <td>@String.Format("{0:dd/MMMM/yyyy}", context.CreationDate)</td>
-            <td>@context.Title</td>
-            <td>@(SurveyService.SurveyCategories.Where(c => c.PkSurveyCategory == context.FkSurveyCategory).Select(s => s.Title).FirstOrDefault())</td>
-            <td>@context.Description</td>
-            <td>@(context.Status == true ? "Activada" : "Desactivada")</td>
-        </MatTableRow>
-    </MatTable>
+    <MudTable Elevation="0" RowClass="cursor-pointer" SortLabel="Ordenar por" Class="mt-6 mb-16" Items="@SurveyService.Surveys" Virtualize="true" T="Model.Survey" Hover="true" SelectedItemChanged="@((item) => NavigationManager.NavigateTo("survey_details/" + item.PkSurvey))">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Lista de encuestas</MudText>
+            <MudSpacer />
+            @*<MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>*@
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh><MudTableSortLabel InitialDirection="SortDirection.Descending" SortBy="new Func<Model.Survey, object>(z => z.CreationDate?? DateTime.Now)">Fecha de creación</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Model.Survey, object>(z => z.Title)">Título</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Model.Survey, object>(z => z.FkSurveyCategory?? 0)">Categoría</MudTableSortLabel></MudTh>
+            <MudTh>Descripción</MudTh>
+            <MudTh>Disponibilidad</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Fecha de creación">@String.Format("{0:dd/MMMM/yyyy}", context.CreationDate)</MudTd>
+            <MudTd DataLabel="Título">@context.Title</MudTd>
+            <MudTd DataLabel="Categoría">@(SurveyService.SurveyCategories.Where(c => c.PkSurveyCategory == context.FkSurveyCategory).Select(s => s.Title).FirstOrDefault())</MudTd>
+                <MudTd DataLabel="Descripción">@context.Description</MudTd>
+                <MudTd DataLabel="Disponibilidad">@(context.Status == true ? "Activada" : "Desactivada")</MudTd>
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager HidePageNumber="true" HorizontalAlignment="HorizontalAlignment.Left" />
+            </PagerContent>
+        </MudTable>
 }
 
-<MatSnackbar @bind-IsOpen="@SurveyService.Snackbar.SnackbarIsOpen" Leading="true">
-    <MatSnackbarContent>@SurveyService.Snackbar.Message</MatSnackbarContent>
-</MatSnackbar>
+<MudFab Class="z-33" Style="position: sticky; right: 3.5%; bottom: 10%; float: right" Label="Nueva encuesta" Color="Color.Secondary" Size="Size.Large" StartIcon="@Icons.Material.Filled.Add" OnClick="@(() => NavigationManager.NavigateTo("survey_details"))" />
+
 
 @code {
     protected override async Task OnInitializedAsync()

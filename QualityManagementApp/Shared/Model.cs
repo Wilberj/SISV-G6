@@ -94,12 +94,12 @@ namespace QualityManagementApp.Shared
         {
             public int? PkActivityDetail { get; set; }
             public string FkActivity { get; set; } = null!;
-            public string FkEmployee { get; set; } = null!;
+            public int? FkEmployee { get; set; } = null!;
         }
 
         public class Employee : Entity
         {
-            public string PkEmployee { get; set; } = null!;
+            public int? PkEmployee { get; set; } = null!;
             public string IdentificationCard { get; set; } = null!;
             public string FirstName { get; set; } = null!;
             public string SecondName { get; set; } = null!;
@@ -183,11 +183,37 @@ namespace QualityManagementApp.Shared
             public int? FkSurveyCategory { get; set; }
         }
 
+        public class UserModel
+        {
+            public UserModel()
+            {
+
+            }
+
+            public UserModel(UserDetail tableuser)
+            {
+                this.Username = tableuser.Username;
+                this.TypeUser = tableuser.FkUserType;
+                this.CreationDate = tableuser.CreationDate;
+                this.LastModificationDate = tableuser.LastModificationDate;
+            }
+
+            public string? Username { get; set; }
+            public int? TypeUser { get; set; }
+            public DateTime? CreationDate { get; set; }
+            public DateTime? LastModificationDate { get; set; }
+        }
+
         public class UserDetail : Entity
         {
             public int? PkUser { get; set; }
+
+            [Required(ErrorMessage = "Requerido")]
             public string Username { get; set; } = null!;
+
+            [Required(ErrorMessage = "Requerido")]
             public string Password { get; set; } = null!;
+
             public DateTime? CreationDate { get; set; }
             public DateTime? LastModificationDate { get; set; }
             public int? FkUserType { get; set; } = null!;

@@ -1,0 +1,134 @@
+﻿@page "/employee_details"
+@page "/employee_details/{employeeId}"
+@using QualityManagementApp.Shared
+@using QualityManagementApp.Client.Services.Contracts.Catalog
+@using System.Threading
+@implements IDisposable
+@inject ClipboardService ClipboardService
+@inject NavigationManager navigation
+@*@inject IMatDialogService MatDialogService*@
+@inject IEmployeeService EmployeeService
+
+<MatProgressBar Indeterminate="true" Closed="@(!EmployeeService.IsBusy)"></MatProgressBar>
+@*<EditForm Model="@EmployeeService.Employee" OnValidSubmit="@EmployeeService.AddEmployee">
+    <div class="mat-layout-grid-inner">
+        <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%"></div>
+        <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%">
+
+            <MatH4>@(EmployeeId == null ? "Nuevo Empleado" : "Detalles del empleado")</MatH4>
+
+                <br>
+                <div>
+                    <MatTextField Disabled="@IsDisable" Outlined="true" Class="flex-width" Label="Identificacion" @bind-Value="@EmployeeService.Employee.IdentificationCard" />
+                </div>
+                <br>
+                <div>
+                    <MatTextField Disabled="@IsDisable" Outlined="true" Class="flex-width" Label="Primer Nombre" @bind-Value="@EmployeeService.Employee.FirstName" />
+                </div>
+                <br>
+                <div>
+                    <MatTextField Disabled="@IsDisable" Outlined="true" Class="flex-width" Label="Segundo Nombre" @bind-Value="@EmployeeService.Employee.SecondName" />
+                </div>
+                <br>
+                <div>
+                    <MatTextField Disabled="@IsDisable" Outlined="true" Class="flex-width" Label="Primer Apellido" @bind-Value="@EmployeeService.Employee.FirstSurname" />
+                </div>
+                <br>
+                <div>
+                    <MatTextField Disabled="@IsDisable" Outlined="true" Class="flex-width" Label="Segundo Apellido" @bind-Value="@EmployeeService.Employee.SecondSurname" />
+                </div>
+                <br>
+
+                <div>
+                    <MatSelectValue Disabled="@IsDisable" Outlined="true" Class="flex-width" Label="Ciudad" @bind-Value="@EmployeeService.Employee.FkCity" Items="@EmployeeService.Cities" ValueSelector="@(sc => sc.PkCity)">
+                        <ItemTemplate Context="City">
+                            <span>@City?.Name</span>
+                        </ItemTemplate>
+                    </MatSelectValue>
+                    <ValidationMessage class="mat-caption" For="@(() => EmployeeService.Employee.FkCity)" />
+                </div>
+                <br />
+                <div>
+                    <MatTextField Disabled="@IsDisable" Outlined="true" TextArea="true" Class="flex-width" Label="Direccion Exacta" @bind-Value="@EmployeeService.Employee.HomeAddress" />
+                </div>
+                <br>
+                <div>
+                    <MatTextField Disabled="@IsDisable" Outlined="true" Class="flex-width" Label="Numero de Telefono" @bind-Value="@EmployeeService.Employee.Telephone" />
+                </div>
+                <br>
+                <div>
+                    <MatSelectValue Disabled="@IsDisable" Outlined="true" Class="flex-width" Label="Cargo" @bind-Value="@EmployeeService.Employee.FkPosition" Items="@EmployeeService.Positions" ValueSelector="@(sc => sc.PkPosition)">
+                        <ItemTemplate Context="Position">
+                            <span>@Position?.Title</span>
+                        </ItemTemplate>
+                    </MatSelectValue>
+                    <ValidationMessage class="mat-caption" For="@(() => EmployeeService.Employee.FkPosition)" />
+                </div>
+                <br />
+                <DataAnnotationsValidator />
+
+                <br>
+                <br>
+                <br>
+            </div>
+            <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%">
+                <br>
+                <br>
+            @if (IsDisable == false)
+            {
+                <MatButton Type="submit" disabled="@(EmployeeService.Employee.FirstName == null? true : false)" Icon="add_circle" Label="Agregar Empleado"></MatButton>
+            }
+        </div>
+    </div>
+
+</EditForm>*@
+
+<div class="mat-layout-grid-inner">
+    <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%"></div>
+    <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%">
+        <br>
+        <br>
+        <br>
+    </div>
+    <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%"></div>
+</div>
+
+@code {
+    [Parameter]
+    public string? EmployeeId { get; set; }
+
+    bool IsDisable { get; set; }
+
+    CancellationTokenSource cts = new(); //link
+    State state = new("Copiar para compartir", "share");
+    record State(string Text, string Icon, bool IsDisabled = false);
+
+    protected override async Task OnParametersSetAsync()
+    {
+        EmployeeService.IsBusy = true;
+        if (EmployeeId == null)
+        {
+            IsDisable = false;
+            EmployeeService.Employee = new();
+        }
+        else
+        {
+            IsDisable = true;
+            await EmployeeService.GetEmployee(EmployeeId);
+        }
+        EmployeeService.IsBusy = false;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await EmployeeService.GetEmployees();
+        await EmployeeService.GetPositions();
+        await EmployeeService.GetCity();
+    }
+
+    public void Dispose()
+    {
+        cts.Cancel();
+        cts.Dispose();
+    }
+}

@@ -1,4 +1,3 @@
-global using Microsoft.EntityFrameworkCore;
 global using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.ResponseCompression;
 using System.Text.Json.Serialization;

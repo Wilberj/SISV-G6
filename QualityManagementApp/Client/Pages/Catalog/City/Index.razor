@@ -1,0 +1,72 @@
+﻿@page "/cities"
+@using QualityManagementApp.Client.Services.Contracts.Catalog
+@using QualityManagementApp.Shared
+@inject ICityService CityService
+@inject NavigationManager navigation
+
+<PageTitle>Ciudades</PageTitle>
+
+<div class="mat-layout-grid-inner">
+    <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%"></div>
+    <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%">
+        <MatH4><MatIcon Style="font-size:32px; margin-top:-5%" Icon="ballot"></MatIcon> Ciudades</MatH4>
+    </div>
+    <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%"></div>
+</div>
+
+<div class="mat-layout-grid-inner" style="margin-bottom:5%">
+    <div class="mat-layout-grid-cell">
+        <MatButton Icon="add_circle" OnClick="@(() => navigation.NavigateTo("city_details"))" Label="Nueva Ciudad"></MatButton>
+    </div>
+    <div class="mat-layout-grid-cell">
+    </div>
+    <div class="mat-layout-grid-cell"></div>
+</div>
+
+@if (CityService.Cities == null)
+{
+            <div class="mat-layout-grid-inner">
+                <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%"></div>
+                <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%">
+                    <MatProgressCircle Indeterminate="true" Size="MatProgressCircleSize.Large" />
+                </div>
+                <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%"></div>
+            </div>
+}
+else if (CityService.Cities.Length == 0)
+{
+            <div class="mat-layout-grid-inner">
+                <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%"></div>
+                <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%">
+                    <MatH6>Parece que no tienes ninguna ciudad añadido.</MatH6>
+                </div>
+                <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%"></div>
+            </div>
+}
+else
+{
+
+            @*<MatTable SelectionChanged="@((row) => navigation.NavigateTo("city_details/" + ((Model.City)row).PkCity))" Items="@CityService.Cities" AllowSelection="true" FilterByColumnName="Title" DebounceMilliseconds="150">
+                <MatTableHeader>
+                    <th style="width:20%">ID Ciudad</th>
+                    <th style="width:40%">Nombre</th>
+                    <th style="width:40%">Departamento</th>
+                </MatTableHeader>
+                <MatTableRow>
+                    <td>@context.PkCity</td>
+                    <td>@context.Name</td>
+                    <td>@(CityService.Departments.Where(c => c.PkDepartment == context.FkDepartment).Select(s => s.Name).FirstOrDefault())</td>
+                </MatTableRow>
+            </MatTable>*@
+}
+
+@*<MatSnackbar @bind-IsOpen="@CityService.Snackbar.SnackbarIsOpen" Leading="true">
+    <MatSnackbarContent>@CityService.Snackbar.Message</MatSnackbarContent>
+</MatSnackbar>*@
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await CityService.GetCities();
+    }
+}

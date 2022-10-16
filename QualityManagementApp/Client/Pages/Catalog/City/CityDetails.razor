@@ -1,0 +1,99 @@
+﻿@page "/city_details"
+@page "/city_details/{cityId}"
+@using QualityManagementApp.Shared
+@using QualityManagementApp.Client.Services.Contracts.Catalog
+@using System.Threading
+@implements IDisposable
+@inject ClipboardService ClipboardService
+@inject NavigationManager navigation
+@*@inject IMatDialogService MatDialogService*@
+@inject ICityService CityService
+
+<MatProgressBar Indeterminate="true" Closed="@(!CityService.IsBusy)"></MatProgressBar>
+<EditForm Model="@CityService.City" OnValidSubmit="@CityService.AddCity">
+    <div class="mat-layout-grid-inner">
+        <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%"></div>
+        <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%">
+
+            <MatH4>@(CityId == null ? "Nueva Ciudad" : "Detalles de la ciudad")</MatH4>
+
+                <br>
+                <div>
+                    @*<MatTextField Disabled="@IsDisable" Outlined="true" Class="flex-width" Label="Nombre de la ciudad" @bind-Value="@CityService.City.Name" />*@
+                </div>
+                <br>
+                <div>
+                    @*<MatSelectValue Disabled="@IsDisable" Outlined="true" Class="flex-width" Label="Departamento" @bind-Value="@CityService.City.FkDepartment" Items="@CityService.Departments" ValueSelector="@(sc => sc.PkDepartment)">
+                        <ItemTemplate Context="Department">
+                            <span>@Department?.Name</span>
+                        </ItemTemplate>
+                    </MatSelectValue>
+                    <ValidationMessage class="mat-caption" For="@(() => CityService.City.FkDepartment)" />
+                *@</div>
+
+                <DataAnnotationsValidator />
+
+                <br>
+                <br>
+                <br>
+            </div>
+            <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%">
+                <br>
+                <br>
+            @if (IsDisable == false)
+            {
+                <MatButton Type="submit" disabled="@(CityService.City.Name == null? true : false)" Icon="add_circle" Label="Agregar Ciudad"></MatButton>
+            }
+        </div>
+    </div>
+
+</EditForm>
+
+<div class="mat-layout-grid-inner">
+    <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%"></div>
+    <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%">
+        <br>
+        <br>
+        <br>
+    </div>
+    <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%"></div>
+</div>
+
+@code {
+    [Parameter]
+    public string? CityId { get; set; }
+
+    bool IsDisable { get; set; }
+
+    CancellationTokenSource cts = new(); //link
+    State state = new("Copiar para compartir", "share");
+    record State(string Text, string Icon, bool IsDisabled = false);
+
+    protected override async Task OnParametersSetAsync()
+    {
+        CityService.IsBusy = true;
+        if (CityId == null)
+        {
+            IsDisable = false;
+            CityService.City = new();
+        }
+        else
+        {
+            IsDisable = true;
+            await CityService.GetCity(CityId);
+        }
+        CityService.IsBusy = false;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CityService.GetCities();
+        await CityService.GetDepartments();
+    }
+
+    public void Dispose()
+    {
+        cts.Cancel();
+        cts.Dispose();
+    }
+}

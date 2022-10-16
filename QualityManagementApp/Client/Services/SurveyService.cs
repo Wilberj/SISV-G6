@@ -1,10 +1,13 @@
-﻿using MatBlazor;
-using System.Net.Http.Json;
+﻿using System.Net.Http.Json;
 using Microsoft.AspNetCore.Components;
 using static QualityManagementApp.Shared.Model;
 using Microsoft.AspNetCore.Components.Web;
 using QualityManagementApp.Shared;
 using System.Globalization;
+using System.Linq;
+using MudBlazor.Interfaces;
+using MudBlazor.Extensions;
+using MudBlazor;
 
 namespace QualityManagementApp.Client.Services
 {
@@ -20,7 +23,6 @@ namespace QualityManagementApp.Client.Services
         }
 
         public bool IsBusy { get; set; } = false;
-        public Snackbar Snackbar { get; set; } = new();
         public Survey Survey { get; set; } = new();
         public Survey[]? Surveys { get; set; } = null!;
         public SurveyCategory[] SurveyCategories { get; set; } = Array.Empty<SurveyCategory>();
@@ -45,11 +47,20 @@ namespace QualityManagementApp.Client.Services
             SelectedAnswers.Add(answer);
         }
 
-        public async Task AddSelectedAnswers()
+        public async Task AddSelectedAnswersInterviewed()
         {
             IsBusy = true;
 
-            var response = await _http.PostAsJsonAsync("api/survey/PostSelectedAnswers", SelectedAnswers);
+            Interviewed.CreationDate = DateTime.Now;
+            var response = await _http.PostAsJsonAsync("api/survey/PostInterviewed", Interviewed);
+            int id = Convert.ToInt32(await response.Content.ReadAsStringAsync());
+
+            foreach (var SelectedAnswer in SelectedAnswers)
+            {
+                SelectedAnswer.FkInterviewed = id;
+                response = await _http.PostAsJsonAsync("api/survey/PostSelectedAnswers", SelectedAnswer);
+            }
+
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
                 Interviewed = new();
@@ -62,39 +73,45 @@ namespace QualityManagementApp.Client.Services
             IsBusy = false;
         }
 
-        public async Task<int> AddInterviewed()
+        //public async Task<int> AddInterviewed()
+        //{
+        //    IsBusy = true;
+        //    Interviewed.CreationDate = DateTime.Now;
+        //    var response = await _http.PostAsJsonAsync("api/survey/PostInterviewed", Interviewed);
+        //    var result = await response.Content.ReadAsStringAsync();
+        //    IsBusy = false;
+        //    return Convert.ToInt32(result);
+        //}
+
+        public List<Answer> ReturnAnswersByTypeQA(int? typeQAId)
         {
-            IsBusy = true;
-            Interviewed.CreationDate = DateTime.Now;
-            var response = await _http.PostAsJsonAsync("api/survey/PostInterviewed", Interviewed);
-            var result = await response.Content.ReadAsStringAsync();
-            IsBusy = false;
-            return Convert.ToInt32(result);
+            var task = Task.Run(() => retur(typeQAId));
+            //var result = task.WaitAndUnwrapException();
+            var i = task.GetAwaiter().GetResult();
+            //var result = response..Content.ReadAsStringAsync();
+            return i ?? null!;
+            //return _http.GetFromJsonAsync<IEnumerable<Answer>>($"api/survey/GetAnswersByTypeQA/{typeQAId}").Result;
         }
 
-        public async Task<Answer[]> ReturnAnswersByTypeQA(int? typeQAId)
+        async Task<List<Answer>> retur(int? id)
         {
-            var result = await _http.GetFromJsonAsync<Answer[]?>($"api/survey/GetAnswersByTypeQA/{typeQAId}");
-            return result ?? null!;
+            var ify = await _http.GetFromJsonAsync<List<Answer>>($"api/survey/GetAnswersByTypeQA/{id}");
+            return ify ?? null!;
         }
 
         public async Task GetAnswersByTypeQA(int? typeQAId)
         {
-            IsBusy = true;
-            Question.FkTypeQA = typeQAId != null ? typeQAId : null;
+            Question.FkTypeQA = typeQAId;
             AnswersByTypeQA = await _http.GetFromJsonAsync<Answer[]?>($"api/survey/GetAnswersByTypeQA/{typeQAId}");
-            IsBusy = false;
         }
 
         public void AddQuestion()
         {
-            IsBusy = true;
             Question.CreationDate = DateTime.Now;
             Question.FkSurvey = Survey.PkSurvey;
             Questions.Add(Question);
             AnswersByTypeQA = null;
             Question = new();
-            IsBusy = false;
         }
 
         public async Task GetTypesQA()
@@ -122,9 +139,6 @@ namespace QualityManagementApp.Client.Services
                 {
                     Console.WriteLine(await response.Content.ReadAsStringAsync());
                 }
-
-                Snackbar.SnackbarIsOpen = true;
-                Snackbar.Message = $"La encuesta fue agregada con exito";
 
                 IsBusy = false;
                 _navigation.NavigateTo("surveys");
@@ -154,17 +168,24 @@ namespace QualityManagementApp.Client.Services
             IsBusy = false;
         }
 
-        public void GenerateCode(FocusEventArgs focusEvent)
+        public void GenerateCode(string callbackString)
         {
-            if (Survey.Title != "" && Survey.Title != null)
+            try
             {
-                var code = "";
-                foreach (string schar in from c in Survey.Title.Split(' ') select c[..1])
+                if (Survey.Title != "" && Survey.Title != null)
                 {
-                    code += schar;
-                }
+                    var code = "";
+                    foreach (string schar in from c in Survey.Title.Split(' ') select c[..1])
+                    {
+                        code += schar;
+                    }
 
-                Survey.PkSurvey = code + DateTime.Now.Day + DateTime.Now.Month + DateTime.Now.Year;
+                    Survey.PkSurvey = code + DateTime.Now.Day + DateTime.Now.Month + DateTime.Now.Year;
+                }
+            }
+            catch (Exception)
+            {
+                //throw;
             }
         }
     }

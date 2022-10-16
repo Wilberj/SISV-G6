@@ -1,0 +1,22 @@
+﻿<MudOverlay @bind-Visible="_visible" ZIndex="99" LightBackground="true" AutoClose="false" LockScroll="true">
+    <MudProgressCircular Color="Color.Primary" Style="height:8rem;width:8rem;" Indeterminate="true" />
+</MudOverlay>
+
+@code {
+    bool _visible;
+
+    [Parameter]
+    public bool visible
+    {
+        get => _visible;
+        set
+        {
+            if (_visible == value) return;
+            _visible = value;
+            visibleChanged.InvokeAsync(value);
+        }
+    }
+
+    [Parameter]
+    public EventCallback<bool> visibleChanged { get; set; }
+}

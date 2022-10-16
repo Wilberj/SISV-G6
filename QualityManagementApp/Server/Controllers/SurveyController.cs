@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using NuGet.Protocol;
+//using Microsoft.EntityFrameworkCore;
+//using NuGet.Protocol;
 using QualityManagementApp.Shared;
 using static QualityManagementApp.Shared.Model;
 
@@ -12,7 +12,10 @@ namespace QualityManagementApp.Server.Controllers
     {
         public SurveyController()
         {
-            Auth.LoginIn("tcalidad", "tcalidad");
+            if (Auth.VerifyConnection() == false)
+            {
+                Auth.StartConnection();
+            }
         }
 
         [HttpGet]
@@ -105,15 +108,11 @@ namespace QualityManagementApp.Server.Controllers
         }
 
         [HttpPost]
-        public ActionResult PostSelectedAnswers(List<SelectedAnswer> selectedAnswer)
+        public ActionResult PostSelectedAnswer(SelectedAnswer selectedAnswer)
         {
             try
             {
-                foreach (var selected in selectedAnswer)
-                {
-                    selected.Save();
-                }
-                return Ok();
+                return Ok(selectedAnswer.Save());
             }
             catch (Exception)
             {

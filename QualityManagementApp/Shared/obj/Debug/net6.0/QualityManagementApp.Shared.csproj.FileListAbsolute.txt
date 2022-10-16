@@ -1,0 +1,15 @@
+C:\Users\rgers\source\repos\alejandrozamoraaz\QualityManagementApp\QualityManagementApp\Shared\bin\Debug\net6.0\QualityManagementApp.Shared.deps.json
+C:\Users\rgers\source\repos\alejandrozamoraaz\QualityManagementApp\QualityManagementApp\Shared\bin\Debug\net6.0\QualityManagementApp.Shared.dll
+C:\Users\rgers\source\repos\alejandrozamoraaz\QualityManagementApp\QualityManagementApp\Shared\bin\Debug\net6.0\QualityManagementApp.Shared.pdb
+C:\Users\rgers\source\repos\alejandrozamoraaz\QualityManagementApp\QualityManagementApp\Shared\bin\Debug\net6.0\QualityManagementApp.ADO.dll
+C:\Users\rgers\source\repos\alejandrozamoraaz\QualityManagementApp\QualityManagementApp\Shared\bin\Debug\net6.0\QualityManagementApp.ADO.pdb
+C:\Users\rgers\source\repos\alejandrozamoraaz\QualityManagementApp\QualityManagementApp\Shared\obj\Debug\net6.0\QualityManagementApp.Shared.csproj.AssemblyReference.cache
+C:\Users\rgers\source\repos\alejandrozamoraaz\QualityManagementApp\QualityManagementApp\Shared\obj\Debug\net6.0\QualityManagementApp.Shared.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\rgers\source\repos\alejandrozamoraaz\QualityManagementApp\QualityManagementApp\Shared\obj\Debug\net6.0\QualityManagementApp.Shared.AssemblyInfoInputs.cache
+C:\Users\rgers\source\repos\alejandrozamoraaz\QualityManagementApp\QualityManagementApp\Shared\obj\Debug\net6.0\QualityManagementApp.Shared.AssemblyInfo.cs
+C:\Users\rgers\source\repos\alejandrozamoraaz\QualityManagementApp\QualityManagementApp\Shared\obj\Debug\net6.0\QualityManagementApp.Shared.csproj.CoreCompileInputs.cache
+C:\Users\rgers\source\repos\alejandrozamoraaz\QualityManagementApp\QualityManagementApp\Shared\obj\Debug\net6.0\QualityManagementApp.Shared.csproj.CopyComplete
+C:\Users\rgers\source\repos\alejandrozamoraaz\QualityManagementApp\QualityManagementApp\Shared\obj\Debug\net6.0\QualityManagementApp.Shared.dll
+C:\Users\rgers\source\repos\alejandrozamoraaz\QualityManagementApp\QualityManagementApp\Shared\obj\Debug\net6.0\refint\QualityManagementApp.Shared.dll
+C:\Users\rgers\source\repos\alejandrozamoraaz\QualityManagementApp\QualityManagementApp\Shared\obj\Debug\net6.0\QualityManagementApp.Shared.pdb
+C:\Users\rgers\source\repos\alejandrozamoraaz\QualityManagementApp\QualityManagementApp\Shared\obj\Debug\net6.0\ref\QualityManagementApp.Shared.dll

@@ -1,121 +1,94 @@
 ﻿@inherits LayoutComponentBase
-@using QualityManagementApp.Shared
-@inject NavigationManager NavigationManager
+@inject ILoginService LoginService
 
-@*@if (Auth.User == null)
+@if (LoginData.UserLogin == null)
 {
-    <div class="mat-layout-grid">
-        <main>
-            @Body
-        </main>
-    </div>
+    NavigateTo();
 }
 else
-{*@
-    <MatDrawerContainer Style="width: 100vw; height: 100vh;">
-        <MatDrawer @bind-Opened="@OpenedMenu" Mode="@MatDrawerMode.Modal">
-            <div class="item-menu align-content-center">
-                <img src="@logoSource" alt="logo" width="40" height="40" />
-                <MatH6>Gestión de la calidad</MatH6>
-            </div>
-            <MatNavMenu>
-                <div class="item-menu margin-bottom-10-less">
-                    <MatSubtitle1 Class="margin-left-5-more">Procesos estratégicos</MatSubtitle1>
-                </div>
-                <MatRipple Color="@MatRippleColor.Primary">
-                    <MatNavItem Class="item-menu" OnClick="@(() => NavigateTo(""))"><MatIcon Icon="assignment"></MatIcon>&nbsp; Planificaciones</MatNavItem>
-                </MatRipple>
-                <MatRipple Color="@MatRippleColor.Primary">
-                    <MatNavItem Class="item-menu" OnClick="@(() => NavigateTo(""))"><MatIcon Icon="poll"></MatIcon>&nbsp; Seguimiento</MatNavItem>
-                </MatRipple>
-                <MatRipple Color="@MatRippleColor.Primary">
-                    <MatNavItem Class="item-menu" OnClick="@(() => NavigateTo("surveys"))"><MatIcon Icon="ballot"></MatIcon>&nbsp; Encuestas</MatNavItem>
-                </MatRipple>
-                <div class="item-menu margin-bottom-10-less">
-                    <MatSubtitle1 Class="margin-left-5-more">Otros</MatSubtitle1>
-                </div>
-                <MatNavSubMenu @bind-Expanded="@navSubMenuOpenState">
-                    <MatRipple Color="@MatRippleColor.Primary">
-                        <MatNavSubMenuHeader>
-                            <MatNavItem AllowSelection="false"><MatIcon Icon="dashboard"></MatIcon>&nbsp; Catálogos</MatNavItem>
-                        </MatNavSubMenuHeader>
-                    </MatRipple>
-                    <MatNavSubMenuList>
-                        <MatRipple Color="@MatRippleColor.Primary">
-                            <MatNavItem OnClick="@(() => NavigateTo(""))"><MatIcon Icon="label"></MatIcon>&nbsp; Ciudades</MatNavItem>
-                        </MatRipple>
-                        <MatRipple Color="@MatRippleColor.Primary">
-                            <MatNavItem OnClick="@(() => NavigateTo(""))"><MatIcon Icon="label"></MatIcon>&nbsp; Departamentos</MatNavItem>
-                        </MatRipple>
-                        <MatRipple Color="@MatRippleColor.Primary">
-                            <MatNavItem OnClick="@(() => NavigateTo(""))"><MatIcon Icon="label"></MatIcon>&nbsp; Posiciones</MatNavItem>
-                        </MatRipple>
-                        <MatRipple Color="@MatRippleColor.Primary">
-                            <MatNavItem OnClick="@(() => NavigateTo(""))"><MatIcon Icon="label"></MatIcon>&nbsp; Estados</MatNavItem>
-                        </MatRipple>
-                    </MatNavSubMenuList>
-                </MatNavSubMenu>
-            </MatNavMenu>
-            <div class="item-menu"></div>
-        </MatDrawer>
-        <MatDrawerContent>
-            <MatAppBarContainer>
-                <MatAppBar Fixed="true">
-                    <MatAppBarRow>
-                        <MatAppBarSection>
-                            <MatIconButton OnClick="@(() => OpenedMenu = !OpenedMenu)" Icon="menu"></MatIconButton>
-                            <MatAppBarTitle>Procesos estratégicos</MatAppBarTitle>
-                        </MatAppBarSection>
-                        @*<MatAppBarSection Align="@MatAppBarSectionAlign.End">
-                    <MatIconButton Icon="favorite"></MatIconButton>
-                    </MatAppBarSection>*@
-                    </MatAppBarRow>
-                </MatAppBar>
-                <MatAppBarContent>
-                    <div class="mat-layout-grid">
-                        <main>
-                            @Body
-                        </main>
-                    </div>
-                </MatAppBarContent>
-            </MatAppBarContainer>
-        </MatDrawerContent>
-    </MatDrawerContainer>
-@*}*@
+{
+    <MudLayout>
+        <MudAppBar Style="opacity: 0.9" Elevation="0">
+            <MudTooltip Text="Menú" Class="mr-5">
+                <MudIconButton Color="Color.Dark" Icon="@Icons.Material.Filled.Menu" OnClick="@(() => DrawerToggle())" />
+            </MudTooltip>
+            @*<MudText Class="ml-5" Color="Color.Dark" Typo="Typo.body1">Procesos estratégicos</MudText>*@
+            <MudSpacer />
+            <MudTooltip Text="Cerrar sesión">
+                <MudIconButton Color="Color.Dark" Icon="@Icons.Material.Filled.Input" OnClick="@(() => LoginService.Logout())" />
+            </MudTooltip>
+        </MudAppBar>
+        <MudDrawer Elevation="1" Variant="DrawerVariant.Responsive" @bind-Open="@_drawerOpen">
+            <MudDrawerHeader>
+                <MudStack Row="true" Spacing="0" AlignItems="AlignItems.Center">
+                    <MudImage Src="images/logo.png" Alt="Logo" Width="40" Height="40" />
+                    <MudText Typo="Typo.subtitle2">Gestión de la calidad</MudText>
+                </MudStack>
+            </MudDrawerHeader>
+            <MudDrawerContainer>
+                <MudStack Spacing="0">
+                    <MudText Align="Align.Center" Typo="Typo.h6">@LoginData.UserLogin.Username</MudText>
+                    <MudText Align="Align.Center" Typo="Typo.caption">@(LoginData.UserLogin.TypeUser == (int)ILoginService.UserTypeEnum.Tecnico_Calidad ? "Técnico de Calidad" : "Director")</MudText>
+                    </MudStack>
+                    <MudStack Class="mx-3" Justify="Justify.Center" Spacing="0">
+                        <MudText Typo="Typo.caption" Class="mt-3">@("Ult modifi: " + String.Format("{0:dd/MMMM/yyyy}", LoginData.UserLogin.LastModificationDate))</MudText>
+                        <MudText Typo="Typo.caption">@("Desde: " + String.Format("{0:dd/MMMM/yyyy}", LoginData.UserLogin.CreationDate))</MudText>
+
+                        <MudDivider DividerType="DividerType.FullWidth" Class="my-3" />
+                    </MudStack>
+
+                    <MudNavMenu Rounded="true" Margin="Margin.Normal" Color="Color.Primary" Class="pa-2">
+                        <MudText Typo="Typo.subtitle1" Class="px-4"><b>Procesos estratégicos</b></MudText>
+
+                        <MudNavLink OnClick="@(() => NavigateTo(""))" Icon="@Icons.Material.Rounded.Assignment">Planificaciones</MudNavLink>
+                        <MudNavLink OnClick="@(() => NavigateTo("surveys"))" Icon="@Icons.Material.Rounded.Ballot">Medición de satisfacción</MudNavLink>
+
+                    @if (LoginData.UserLogin.TypeUser == (int)ILoginService.UserTypeEnum.Tecnico_Calidad)
+                    {
+                        <MudText Typo="Typo.subtitle1" Class="px-4"><b>Otros</b></MudText>
+
+                        <MudNavGroup Icon="@Icons.Material.Rounded.Dashboard" Title="Catálogos" Expanded="false">
+                            <MudNavLink OnClick="@(() => NavigateTo("cities"))" Icon="@Icons.Material.Rounded.Label">Ciudades</MudNavLink>
+                            <MudNavLink OnClick="@(() => NavigateTo("departments"))" Icon="@Icons.Material.Rounded.Label">Departamentos</MudNavLink>
+                            <MudNavLink OnClick="@(() => NavigateTo("positions"))" Icon="@Icons.Material.Rounded.Label">Cargos</MudNavLink>
+                            <MudNavLink OnClick="@(() => NavigateTo("employees"))" Icon="@Icons.Material.Rounded.Label">Empleados</MudNavLink>
+                            <MudNavLink OnClick="@(() => NavigateTo("presetActivities"))" Icon="@Icons.Material.Rounded.Label">Actividades Predefinidas</MudNavLink>
+                        </MudNavGroup>
+                    }
+                </MudNavMenu>
+            </MudDrawerContainer>
+        </MudDrawer>
+        <MudMainContent><MudContainer MaxWidth="MaxWidth.Medium">@Body</MudContainer></MudMainContent>
+    </MudLayout>
+}
 
 @code
 {
-    /// <value>Valor del menu</value>
-    bool OpenedMenu = false;
-
-    /// <value>Valor del submenu</value>
-    bool navSubMenuOpenState { get; set; }
-
-    string? logoSource = $"images/logo.png";
+    /// <value>Estado de la propiedad @bind-Open de "MudDrawer"</value>
+    bool _drawerOpen = true;
 
     /// <summary>
-    /// Método para navegar a una página
+    /// Cambiar valor del campo "_drawerOpen"
     /// </summary>
-    void NavigateTo(string navigateTo)
+    void DrawerToggle()
     {
-        OpenedMenu = !OpenedMenu;
-        NavigationManager.NavigateTo("/" + navigateTo);
+        _drawerOpen = !_drawerOpen;
+    }
+
+    /// <summary>
+    /// Navegar a una página determinada
+    /// </summary>
+    void NavigateTo(string uri)
+    {
+        //DrawerToggle();
+        NavigationManager.NavigateTo("/" + uri);
+    }
+
+    /// <summary>
+    /// Navegar a la página raíz
+    /// </summary>
+    void NavigateTo()
+    {
+        NavigationManager.NavigateTo("/");
     }
 }
-
-@*<div class="alert alert-secondary mt-4">
-    <span class="oi oi-pencil me-2" aria-hidden="true"></span>
-    <strong>@Title</strong>
-
-    <span class="text-nowrap">
-        Please take our
-        <a target="_blank" class="font-weight-bold link-dark" href="https://go.microsoft.com/fwlink/?linkid=2148851">brief survey</a>
-    </span>
-    and tell us what you think.
-</div>
-
-@code {
-    // Demonstrates how a parent component can supply parameters
-    [Parameter]
-    public string? Title { get; set; }
-}*@

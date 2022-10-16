@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -34,6 +35,30 @@ namespace QualityManagementApp.ADO
             if (Scalar == (object)DBNull.Value) return true;
             else return Convert.ToInt32(Scalar);
         }
+
+        //Inicio - Eliminar SOlo para fin de prueba        
+        public object ExecuteSqlProcedure(string procedure)
+        {
+            if (QMAConnection.State == ConnectionState.Closed) QMAConnection.Open();
+
+            var command = SQLCommand(procedure, QMAConnection);
+            command.CommandType = CommandType.StoredProcedure;
+            //command.Parameters.Add(new SqlParameter("@category", 1));
+
+            //var Scalar = command.ExecuteReader(CommandBehavior.Default);
+
+            DataTable dt = new();
+            var da = new SqlDataAdapter((SqlCommand)command);
+            da.Fill(dt);
+
+            //DataSet ObjDS = new();
+            //CreateDataAdapterSQL(procedure, QMAConnection).Fill(ObjDS);
+
+            var jf = dt;
+            //var iu = ObjDS.Tables[0].Copy();
+            return jf;
+        }
+        // Fin
 
         public Object InsertObject(Object obj)
         {
@@ -115,12 +140,17 @@ namespace QualityManagementApp.ADO
             }
         }
 
-        public T TakeObject<T>(Object obj, string CondSQL = "")
+        public T? TakeObject<T>(Object obj, string CondSQL = "")
         {
             try
             {
+                //Inicio - Eliminar SOlo para fin de prueba
+                //var hu = ExecuteSqlProcedure("SelectQuestionInsights");
+                // Fin
+
                 DataTable Table = BuildTable(obj, ref CondSQL);
-                List<T> ListD = ConvertDataTable<T>(Table, obj);
+                List<T>? ListD = ConvertDataTable<T>(Table, obj);
+                if (ListD.Count == 0) return default;
                 return ListD[0];
             }
             catch (Exception)

@@ -1,0 +1,12 @@
+C:\Users\rgers\source\repos\alejandrozamoraaz\QualityManagementApp\QualityManagementApp.ADO\bin\Debug\net6.0\QualityManagementApp.ADO.deps.json
+C:\Users\rgers\source\repos\alejandrozamoraaz\QualityManagementApp\QualityManagementApp.ADO\bin\Debug\net6.0\QualityManagementApp.ADO.dll
+C:\Users\rgers\source\repos\alejandrozamoraaz\QualityManagementApp\QualityManagementApp.ADO\bin\Debug\net6.0\QualityManagementApp.ADO.pdb
+C:\Users\rgers\source\repos\alejandrozamoraaz\QualityManagementApp\QualityManagementApp.ADO\obj\Debug\net6.0\QualityManagementApp.ADO.csproj.AssemblyReference.cache
+C:\Users\rgers\source\repos\alejandrozamoraaz\QualityManagementApp\QualityManagementApp.ADO\obj\Debug\net6.0\QualityManagementApp.ADO.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\rgers\source\repos\alejandrozamoraaz\QualityManagementApp\QualityManagementApp.ADO\obj\Debug\net6.0\QualityManagementApp.ADO.AssemblyInfoInputs.cache
+C:\Users\rgers\source\repos\alejandrozamoraaz\QualityManagementApp\QualityManagementApp.ADO\obj\Debug\net6.0\QualityManagementApp.ADO.AssemblyInfo.cs
+C:\Users\rgers\source\repos\alejandrozamoraaz\QualityManagementApp\QualityManagementApp.ADO\obj\Debug\net6.0\QualityManagementApp.ADO.csproj.CoreCompileInputs.cache
+C:\Users\rgers\source\repos\alejandrozamoraaz\QualityManagementApp\QualityManagementApp.ADO\obj\Debug\net6.0\QualityManagementApp.ADO.dll
+C:\Users\rgers\source\repos\alejandrozamoraaz\QualityManagementApp\QualityManagementApp.ADO\obj\Debug\net6.0\refint\QualityManagementApp.ADO.dll
+C:\Users\rgers\source\repos\alejandrozamoraaz\QualityManagementApp\QualityManagementApp.ADO\obj\Debug\net6.0\QualityManagementApp.ADO.pdb
+C:\Users\rgers\source\repos\alejandrozamoraaz\QualityManagementApp\QualityManagementApp.ADO\obj\Debug\net6.0\ref\QualityManagementApp.ADO.dll

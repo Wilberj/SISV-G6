@@ -1,0 +1,99 @@
+﻿@page "/presetActivities_details"
+@page "/presetActivities_details/{PresetActivityId}"
+@using QualityManagementApp.Shared
+@using QualityManagementApp.Client.Services.Contracts.Catalog
+@using System.Threading
+@implements IDisposable
+@inject ClipboardService ClipboardService
+@inject NavigationManager navigation
+@*@inject IMatDialogService MatDialogService*@
+@inject IPresetActivityService PresetActivityService
+
+<MatProgressBar Indeterminate="true" Closed="@(!PresetActivityService.IsBusy)"></MatProgressBar>
+@*<EditForm Model="@PresetActivityService.PresetActivity" OnValidSubmit="@PresetActivityService.AddPresetActivity">
+    <div class="mat-layout-grid-inner">
+        <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%"></div>
+        <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%">
+
+            <MatH4>@(PresetActivityId == null ? "Nueva Actividad" : "Detalles de la actividad")</MatH4>
+
+                <br>
+                <div>
+                    <MatTextField Disabled="@IsDisable" Outlined="true" Class="flex-width" Label="Nombre de la actividad" @bind-Value="@PresetActivityService.PresetActivity.Title" />
+                </div>
+                <br>
+                <div>
+                    <MatTextField Disabled="@IsDisable" TextArea="true" Outlined="true" Class="flex-width" Label="Descripción" @bind-Value="@PresetActivityService.PresetActivity.Description" />
+                </div>
+                <br />
+
+                <div>
+                    <MatTextField Disabled="@IsDisable" Outlined="true" Class="flex-width" Label="Calidad Esperada" @bind-Value="@PresetActivityService.PresetActivity.QualityExpected" />
+                </div>
+
+                <DataAnnotationsValidator />
+
+                <br>
+                <br>
+                <br>
+            </div>
+            <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%">
+                <br>
+                <br>
+            @if (IsDisable == false)
+            {
+                <MatButton Type="submit" disabled="@(PresetActivityService.PresetActivity.Title == null? true : false)" Icon="add_circle" Label="Agregar Actividad"></MatButton>
+            }
+        </div>
+    </div>
+
+</EditForm>*@
+
+<div class="mat-layout-grid-inner">
+    <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%"></div>
+    <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%">
+        <br>
+        <br>
+        <br>
+    </div>
+    <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%"></div>
+</div>
+@code {
+    [Parameter]
+    public string? PresetActivityId { get; set; }
+
+    bool IsDisable { get; set; }
+
+    CancellationTokenSource cts = new(); //link
+    State state = new("Copiar para compartir", "share");
+    record State(string Text, string Icon, bool IsDisabled = false);
+
+    protected override async Task OnParametersSetAsync()
+    {
+        PresetActivityService.IsBusy = true;
+        if (PresetActivityId == null)
+        {
+            IsDisable = false;
+            PresetActivityService.PresetActivity = new();
+        }
+        else
+        {
+            IsDisable = true;
+            await PresetActivityService.GetPresetActivity(PresetActivityId);
+        }
+        PresetActivityService.IsBusy = false;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await PresetActivityService.GetPresetActivities();
+    }
+
+    public void Dispose()
+    {
+        cts.Cancel();
+        cts.Dispose();
+    }
+}
+
+

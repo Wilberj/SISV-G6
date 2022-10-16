@@ -14,10 +14,10 @@ namespace QualityManagementApp.ADO
             return Data;
         }
 
-        public T FindObject<T>()
+        public T? FindObject<T>()
         {
             var Data = SQLConnection.QMA.TakeObject<T>(this);
-            return Data;
+            return Data ?? default;
         }
 
         public List<T> Get<T>(string condition)
