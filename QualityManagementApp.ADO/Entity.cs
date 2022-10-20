@@ -26,6 +26,14 @@ namespace QualityManagementApp.ADO
             return Data;
         }
 
+        //   Inicio prueba
+        public static T GetProcedure<T>(string procedure, Object obj, List<Object> parameters)
+        {
+            var Data = SQLConnection.QMA.ExecuteSqlProcedure<T>(procedure, obj ,parameters);
+            return Data;
+        }
+        //   Fin prueba
+
         public object Save()
         {
             return SQLConnection.QMA.InsertObject(this);

@@ -17,9 +17,6 @@ namespace QualityManagementApp.Client.Services.Contracts.Catalog
         /// <value>Valores de todas las ciudades</value>
         City[]? Cities { get; set; }
 
-        /// <value>Valores de todos los departamentos</value>
-        Department[] Departments { get; set; }
-
 
         /// <summary>
         /// Método para guardar una ciudad
@@ -29,16 +26,11 @@ namespace QualityManagementApp.Client.Services.Contracts.Catalog
         /// <summary>
         /// Método que obtiene una ciduad
         /// </summary>
-        Task GetCity(string cityId);
+        Task GetCity(int? cityId);
 
         /// <summary>
         /// Método que obtiene todas las ciudades
         /// </summary>
         Task GetCities();
-
-        /// <summary>
-        /// Método que obtiene todos los departamentos
-        /// </summary>
-        Task GetDepartments();
     }
 }

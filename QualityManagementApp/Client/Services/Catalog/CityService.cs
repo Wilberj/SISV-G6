@@ -21,13 +21,12 @@ namespace QualityManagementApp.Client.Services.Catalog
         //public Snackbar Snackbar { get; set; } = new();
         public City City { get; set; } = new();
         public City[]? Cities { get; set; } = null;
-        public Department[] Departments { get; set; } = Array.Empty<Department>();
 
         public async Task AddCity()
         {
             IsBusy = true;
 
-            var response = await _http.PostAsJsonAsync("api/city/PostCity", City);
+            await _http.PostAsJsonAsync("api/city/PostCity", City);
 
             //Snackbar.SnackbarIsOpen = true;
             //Snackbar.Message = $"La ciduad fue agregada con exito";
@@ -36,11 +35,11 @@ namespace QualityManagementApp.Client.Services.Catalog
             _navigation.NavigateTo("cities");
         }
 
-        public async Task GetCity(string cityId)
+        public async Task GetCity(int? cityId)
         {
             IsBusy = true;
             var city = await _http.GetFromJsonAsync<City>($"api/city/GetCity/{cityId}");
-            City = city ?? null!;
+            City = city!;
             IsBusy = false;
         }
 
@@ -48,13 +47,6 @@ namespace QualityManagementApp.Client.Services.Catalog
         {
             var jjh = await _http.GetFromJsonAsync<City[]>("api/city/GetCities");
             Cities = jjh;
-        }
-        public async Task GetDepartments()
-        {
-            IsBusy = true;
-            Department[]? departments = await _http.GetFromJsonAsync<Department[]?>("api/city/GetDepartments");
-            Departments = departments ?? Array.Empty<Department>();
-            IsBusy = false;
         }
     }
 }

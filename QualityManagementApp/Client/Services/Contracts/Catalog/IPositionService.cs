@@ -26,7 +26,7 @@ namespace QualityManagementApp.Client.Services.Contracts.Catalog
         /// <summary>
         /// Método que obtiene un cargo
         /// </summary>
-        Task GetPosition(string positionId);
+        Task GetPosition(int? positionId);
 
         /// <summary>
         /// Método que obtiene todos los cargos

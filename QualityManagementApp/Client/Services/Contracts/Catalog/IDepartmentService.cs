@@ -26,7 +26,7 @@ namespace QualityManagementApp.Client.Services.Contracts.Catalog
         /// <summary>
         /// Método que obtiene un departamento
         /// </summary>
-        Task GetDepartment(string departmentId);
+        Task GetDepartment(int? departmentId);
 
         /// <summary>
         /// Método que obtiene todos los departamentos

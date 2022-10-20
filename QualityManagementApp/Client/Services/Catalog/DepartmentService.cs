@@ -9,12 +9,10 @@ namespace QualityManagementApp.Client.Services.Catalog
     public class DepartmentService : IDepartmentService
     {
         private readonly HttpClient _http;
-        private readonly NavigationManager _navigation;
 
-        public DepartmentService(HttpClient http, NavigationManager navigation)
+        public DepartmentService(HttpClient http)
         {
             _http = http;
-            _navigation = navigation;
         }
 
         public bool IsBusy { get; set; } = false;
@@ -26,27 +24,27 @@ namespace QualityManagementApp.Client.Services.Catalog
         {
             IsBusy = true;
 
-            var response = await _http.PostAsJsonAsync("api/department/PostDepartment", Department);
-
+            await _http.PostAsJsonAsync("api/department/PostDepartment", Department);
+            await GetDepartments();
+            Department = new();
             //Snackbar.SnackbarIsOpen = true;
             //Snackbar.Message = $"El Departamento fue agregado con exito";
 
             IsBusy = false;
-            _navigation.NavigateTo("departments");
         }
 
-        public async Task GetDepartment(string departmentId)
+        public async Task GetDepartment(int? departmentId)
         {
             IsBusy = true;
             var department = await _http.GetFromJsonAsync<Department>($"api/department/GetDepartment/{departmentId}");
-            Department = department ?? null!;
+            Department = department!;
             IsBusy = false;
         }
 
         public async Task GetDepartments()
         {
-            var jjh = await _http.GetFromJsonAsync<Department[]>("api/department/GetDepartments");
-            Departments = jjh;
+            var departments = await _http.GetFromJsonAsync<Department[]>("api/department/GetDepartments");
+            Departments = departments!;
         }
     }
 }

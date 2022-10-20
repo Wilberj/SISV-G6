@@ -1,27 +1,38 @@
 ﻿@layout EmptyLayout
 @page "/survey/{surveyId}"
 @inject ISurveyService SurveyService
+@inject IDialogService DialogService
 
 <PageTitle>Encuesta</PageTitle>
-<MatProgressBar Indeterminate="true" Closed="@(!SurveyService.IsBusy)"></MatProgressBar>
 
-@if (ShowContent == true)
+<BusyOverlay @bind-visible="@SurveyService.IsBusy" />
+@*<button @onclick="@VerData">consola</button>*@
+@if (dialogIsOpen == false)
 {
-    <MatPaper Elevation="20" Style="width:100%; background-color:#182b48">
-        <div class="mat-layout-grid">
-            @*<div class="mat-layout-grid-inner">*@
-            <MatH6 Class="white-color">Encuesta @SurveyService.Survey.PkSurvey</MatH6>
-            <MatSubtitle1 Class="white-color">@SurveyService.Survey.Title</MatSubtitle1>
-            <MatSubtitle2 Class="white-color">@SurveyService.Survey.Description</MatSubtitle2>
-            <MatCaption Class="white-color">Elaborada el @String.Format("{0:dd/MMMM/yyyy}", SurveyService.Survey.CreationDate)</MatCaption>
-            @*</div>*@
-        </div>
-    </MatPaper>
-    @*<div class="mat-layout-grid-inner">
-        <div class="mat-layout-grid-cell"></div>
-        <div class="mat-layout-grid-cell">
-            <button @onclick="@VerData">consola</button>
+    <MudPaper Elevation="20" Class="pa-16" Width="100%" Square="true" Style="background-color:#182b48; top:0%">
+        <MudStack>
+            <MudText Typo="Typo.h6" Style="color:white">Encuesta</MudText>
+            <MudText Typo="Typo.subtitle1" Style="color:white">@SurveyService.SurveyToInterviewed.Title</MudText>
+            <MudText Typo="Typo.subtitle2" Style="color:white">@SurveyService.SurveyToInterviewed.Description</MudText>
+            <MudText Typo="Typo.caption" Style="color:white">Elaborada el @String.Format("{0:dd/MMMM/yyyy}", SurveyService.SurveyToInterviewed.CreationDate)</MudText>
+        </MudStack>
+    </MudPaper>
 
+    <MudStack>
+        @*@foreach (var question in SurveyService.Survey.Questions!)
+        {
+            <MudText Typo="Typo.h6">@question.Title</MudText>
+
+            <MudRadioGroup T="Model.Answer">
+                 @foreach (var answer in question.Answers!)
+                 {
+                     <MudRadio Option="1" Color="Color.Primary" Size="Size.Medium">@answer.AnswerName</MudRadio>
+                 }
+                
+            </MudRadioGroup>
+        }*@
+    </MudStack>
+    @*
             @foreach (var question in SurveyService.Questions)
             {
                 <MatH6>@question.Title</MatH6>
@@ -134,47 +145,40 @@
     </MudPaper>
 </MudStack>
 
-
-<MatDialog @bind-IsOpen="@dialogIsOpen" CanBeClosed="false">
-    <MatDialogTitle><b>Encuesta: </b> @SurveyService.Survey.Title <br /><b>Acerca de: </b> @SurveyService.Survey.Description</MatDialogTitle>
-    <MatDialogContent>
-        <br />
-        <MatTextField Label="Escriba su Nombre y apellido" Class="flex-width" @bind-Value="@SurveyService.Interviewed.Name" Outlined="true"></MatTextField>
-    </MatDialogContent>
-    <MatDialogActions>
-        <MatButton OnClick="@(() => OkClick())" Label="Continuar"></MatButton>
-    </MatDialogActions>
-</MatDialog>*@
-
+*@
 
 @code {
     [Parameter]
     public string SurveyId { get; set; } = null!;
 
-    public bool dialogIsOpen { get; set; } = false;
+    public bool dialogIsOpen;
 
-    public bool ShowContent { get; set; } = false;
+    //public bool ShowContent { get; set; } = false;
 
     public string Val3 { get; set; } = "";
     //public Model.Answer[] Answers { get; set; } = null!;
 
-    protected override void OnParametersSet()
-    {
-        dialogIsOpen = true;
+    protected override async Task OnParametersSetAsync()
+    {       
+        SurveyService.SurveyToInterviewed = new();
+        await SurveyService.GetSurvey(SurveyId, true);
     }
 
     protected override async Task OnInitializedAsync()
     {
-        SurveyService.Interviewed = new();
-        SurveyService.Survey = new();
-        await SurveyService.GetSurvey(SurveyId);
+        dialogIsOpen = true;
+        await SurveyService.GetSurvey(SurveyId, true);
+        Console.WriteLine(dialogIsOpen);
+        var dialog = await DialogService.Show<InterviewedDialog>("Encuesta: " + SurveyService.SurveyToInterviewed.Title, new DialogOptions { CloseOnEscapeKey = false, CloseButton = false, DisableBackdropClick = true }).Result;
+        dialogIsOpen = Convert.ToBoolean(dialog.Data.ToString());
+        Console.WriteLine(dialogIsOpen);
     }
 
-    public void OkClick()
-    {
-        dialogIsOpen = false;
-        ShowContent = true;
-    }
+    //public void OkClick()
+    //{
+    //    dialogIsOpen = false;
+    //    ShowContent = true;
+    //}
 
     //public async Task AddAnswer(int? fkTypeQA)
     //{
@@ -184,14 +188,10 @@
 
     public void VerData()
     {
+        Console.WriteLine(dialogIsOpen);
         Console.WriteLine(
-        SurveyService.Survey.Description + " , " +
-        SurveyService.Survey.CreationDate + " , " +
-        SurveyService.Survey.FkSurveyCategory + " , " +
-        SurveyService.Survey.LastModificationDate + " , " +
-        SurveyService.Survey.PkSurvey + " , " +
-        SurveyService.Survey.Status + " , " +
-        SurveyService.Survey.Title + "******");
+        SurveyService.SurveyToInterviewed.Description + " , " +
+        SurveyService.SurveyToInterviewed.Title + "******");
 
         foreach (var item in SurveyService.SelectedAnswers)
         {

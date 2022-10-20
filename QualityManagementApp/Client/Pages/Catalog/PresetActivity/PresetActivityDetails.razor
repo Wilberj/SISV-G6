@@ -2,83 +2,54 @@
 @page "/presetActivities_details/{PresetActivityId}"
 @using QualityManagementApp.Shared
 @using QualityManagementApp.Client.Services.Contracts.Catalog
-@using System.Threading
-@implements IDisposable
-@inject ClipboardService ClipboardService
-@inject NavigationManager navigation
-@*@inject IMatDialogService MatDialogService*@
+@implements IDisposable 
 @inject IPresetActivityService PresetActivityService
 
-<MatProgressBar Indeterminate="true" Closed="@(!PresetActivityService.IsBusy)"></MatProgressBar>
-@*<EditForm Model="@PresetActivityService.PresetActivity" OnValidSubmit="@PresetActivityService.AddPresetActivity">
-    <div class="mat-layout-grid-inner">
-        <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%"></div>
-        <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%">
+<PageTitle>@(PresetActivityId == null ? "Nueva Actividad Predefinida" : "Detalles de la Actividad Predefinida")</PageTitle>
 
-            <MatH4>@(PresetActivityId == null ? "Nueva Actividad" : "Detalles de la actividad")</MatH4>
+    <BusyOverlay @bind-visible="@PresetActivityService.IsBusy" />
 
-                <br>
-                <div>
-                    <MatTextField Disabled="@IsDisable" Outlined="true" Class="flex-width" Label="Nombre de la actividad" @bind-Value="@PresetActivityService.PresetActivity.Title" />
-                </div>
-                <br>
-                <div>
-                    <MatTextField Disabled="@IsDisable" TextArea="true" Outlined="true" Class="flex-width" Label="Descripción" @bind-Value="@PresetActivityService.PresetActivity.Description" />
-                </div>
-                <br />
+    <EditForm Context="presetActivity" Model="@PresetActivityService.PresetActivity" OnValidSubmit="@PresetActivityService.AddPresetActivity">
+        <DataAnnotationsValidator />
+        <MudStack Spacing="12" Class="mx-3 mb-6">
+            <MudStack Spacing="6">
+                <MudText Align="Align.Center" Class="my-5" Color="Color.Secondary" Typo="Typo.h4">@(PresetActivityId == null ? "Nueva Actividad" : "Detalles de la Actividad")</MudText>
 
-                <div>
-                    <MatTextField Disabled="@IsDisable" Outlined="true" Class="flex-width" Label="Calidad Esperada" @bind-Value="@PresetActivityService.PresetActivity.QualityExpected" />
-                </div>
 
-                <DataAnnotationsValidator />
+                <MudTextField ReadOnly="@ReadOnly" Variant="Variant.Outlined" Label="Titulo de la Actividad" HelperText="Ingrese un titulo" @bind-Value="@PresetActivityService.PresetActivity.Title" />
+                <MudTextField ReadOnly="@ReadOnly" Variant="Variant.Outlined" Label="Descripción" HelperText="Ingrese una Descripción" @bind-Value="@PresetActivityService.PresetActivity.Description" Lines="6" />
+                <MudTextField ReadOnly="@ReadOnly" Variant="Variant.Outlined" Label="Calidad Esperada" HelperText="Calidad Esperada" @bind-Value="@PresetActivityService.PresetActivity.QualityExpected" />
 
-                <br>
-                <br>
-                <br>
-            </div>
-            <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%">
-                <br>
-                <br>
-            @if (IsDisable == false)
-            {
-                <MatButton Type="submit" disabled="@(PresetActivityService.PresetActivity.Title == null? true : false)" Icon="add_circle" Label="Agregar Actividad"></MatButton>
-            }
-        </div>
-    </div>
+            </MudStack>
+        </MudStack>
 
-</EditForm>*@
 
-<div class="mat-layout-grid-inner">
-    <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%"></div>
-    <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%">
-        <br>
-        <br>
-        <br>
-    </div>
-    <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%"></div>
-</div>
+    @if (ReadOnly == false)
+    {
+        <MudFab Class="z-33" Style="position: sticky; right: 3.5%; bottom: 10%; float: right" Disabled="@(PresetActivityService.PresetActivity.Title == null? true : false)" StartIcon="@Icons.Material.Filled.Add" Size="Size.Large" Color="Color.Secondary" Label="Agregar Actividad" ButtonType="ButtonType.Submit" />
+    }
+</EditForm>
 @code {
     [Parameter]
     public string? PresetActivityId { get; set; }
 
-    bool IsDisable { get; set; }
+    bool ReadOnly { get; set; }
 
-    CancellationTokenSource cts = new(); //link
-    State state = new("Copiar para compartir", "share");
-    record State(string Text, string Icon, bool IsDisabled = false);
+    CancellationTokenSource cts = new();
+    //State state = new("Copiar para compartir", Icons.Material.Filled.ContentCopy);
+    //record State(string Text, string Icon, bool IsDisabled = false);
 
     protected override async Task OnParametersSetAsync()
     {
         PresetActivityService.IsBusy = true;
         if (PresetActivityId == null)
         {
-            IsDisable = false;
+            ReadOnly = false;
             PresetActivityService.PresetActivity = new();
         }
         else
         {
-            IsDisable = true;
+            ReadOnly = true;
             await PresetActivityService.GetPresetActivity(PresetActivityId);
         }
         PresetActivityService.IsBusy = false;
@@ -95,5 +66,3 @@
         cts.Dispose();
     }
 }
-
-

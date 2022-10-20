@@ -7,6 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static QualityManagementApp.Shared.SurveyInsightModel;
 
 namespace QualityManagementApp.Shared
 {
@@ -24,14 +25,6 @@ namespace QualityManagementApp.Shared
         {
             public int? PkStatus { get; set; }
             public string Title { get; set; } = null!;
-        }
-
-        public class Answer : Entity
-        {
-            public int? PkAnswer { get; set; }
-            public string AnswerName { get; set; } = null!;
-            public DateTime? CreationDate { get; set; }
-            public int? FkTypeQA { get; set; }
         }
 
         public class SurveyCategory : Entity
@@ -55,13 +48,19 @@ namespace QualityManagementApp.Shared
         public class City : Entity
         {
             public int? PkCity { get; set; }
+
+            [Required(ErrorMessage = "Requerido")]
             public string Name { get; set; } = null!;
+
+            [Required(ErrorMessage = "Requerido")]
             public int? FkDepartment { get; set; }
         }
 
         public class Department : Entity
         {
             public int? PkDepartment { get; set; }
+
+            [Required(ErrorMessage = "Requerido")]
             public string Name { get; set; } = null!;
         }
 
@@ -147,6 +146,14 @@ namespace QualityManagementApp.Shared
             public string FkPlanning { get; set; } = null!;
         }
 
+        public class Answer : Entity
+        {
+            public int? PkAnswer { get; set; }
+            public string AnswerName { get; set; } = null!;
+            public DateTime? CreationDate { get; set; }
+            public int? FkTypeQA { get; set; }
+        }
+
         public class Question : Entity
         {
             public int? PkQuestion { get; set; }
@@ -160,6 +167,15 @@ namespace QualityManagementApp.Shared
             public int? FkTypeQA { get; set; }
 
             public string FkSurvey { get; set; } = null!;
+
+            //public Chart Charts { get; set; } = null!;
+
+        }
+
+        public class SurveyToInterviewed : Entity {
+            public string Title { get; set; } = null!;
+            public string Description { get; set; } = null!;
+            public DateTime CreationDate { get; set; }
         }
  
         public class Survey : Entity

@@ -23,7 +23,7 @@ namespace QualityManagementApp.Server.Controllers.Catalog
         }
 
         [HttpGet("{departmentId}", Name = "GetDepartment")]
-        public ActionResult GetDepartment(string departmentId)
+        public ActionResult GetDepartment(int departmentId)
         {
             Department department = new();
             return Ok(department.Get<Department>("PkDepartment = '" + departmentId + "'").FirstOrDefault());

@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Reflection;
+using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -25,10 +26,10 @@ namespace QualityManagementApp.ADO
         protected abstract string BuildUpdateQueryByObject(object obj, string WhereProp);
         protected abstract string BuildUpdateQueryByObject(object obj, string[] WhereProps);
         protected abstract string BuildDeleteQuery(object obj);
-        
+
         public object ExecuteSqlQuery(string strQuery)
         {
-            if(QMAConnection.State == ConnectionState.Closed) QMAConnection.Open();
+            if (QMAConnection.State == ConnectionState.Closed) QMAConnection.Open();
             var command = SQLCommand(strQuery, QMAConnection);
             var Scalar = command.ExecuteScalar();
             QMAConnection.Close();
@@ -37,26 +38,64 @@ namespace QualityManagementApp.ADO
         }
 
         //Inicio - Eliminar SOlo para fin de prueba        
-        public object ExecuteSqlProcedure(string procedure)
+        public T ExecuteSqlProcedure<T>(string procedure, Object obj, List<Object> parameters)
         {
-            if (QMAConnection.State == ConnectionState.Closed) QMAConnection.Open();
+            try
+            {
+                if (QMAConnection.State == ConnectionState.Closed) QMAConnection.Open();
 
-            var command = SQLCommand(procedure, QMAConnection);
-            command.CommandType = CommandType.StoredProcedure;
-            //command.Parameters.Add(new SqlParameter("@category", 1));
+                var command = SQLCommand(procedure, QMAConnection);
+                command.CommandType = CommandType.StoredProcedure;
+                SqlCommandBuilder.DeriveParameters((SqlCommand)command);
+                QMAConnection.Close();
 
-            //var Scalar = command.ExecuteReader(CommandBehavior.Default);
+                if (parameters.Count != 0)
+                {
+                    int i = 0;
 
-            DataTable dt = new();
-            var da = new SqlDataAdapter((SqlCommand)command);
-            da.Fill(dt);
+                    foreach (var param in parameters)
+                    {
+                        var p = (SqlParameter)command.Parameters[i+1]!;
+                        p.Value = param;
+                        i++;
+                    }
+                }
 
-            //DataSet ObjDS = new();
-            //CreateDataAdapterSQL(procedure, QMAConnection).Fill(ObjDS);
+                DataTable table = GetDataSQL(Command: command);
+                T result = ConvertDataTable<T>(table, obj).FirstOrDefault()!;
+                return result;
 
-            var jf = dt;
-            //var iu = ObjDS.Tables[0].Copy();
-            return jf;
+                //for (int p = 0; p <= param.Length; p++)
+                //{
+                //    for (int v = 0; v <= value.Length; v++)
+                //    {
+
+                //    }               
+                //}   
+                //command.Parameters.Add(new SqlParameter(param[0], value[0]));
+                //command.Parameters.Add(new SqlParameter(param[1], value[1]));
+                //var Scalar = command.ExecuteReader(CommandBehavior.Default);
+
+                //DataSet ds = new();
+                //CreateDataAdapterSQL((IDbCommand)command).Fill(ds);
+                //var da = new SqlDataAdapter((SqlCommand)command);
+                //da.Fill(ds);
+
+                //DataSet ObjDS = new();
+                //CreateDataAdapterSQL(procedure, QMAConnection).Fill(ObjDS);
+
+                //DataTable jf = ds.Tables[0].Copy();
+
+                //List<T> List = ConvertDataTable<T>(jf, this);
+
+                //var iu = ObjDS.Tables[0].Copy();
+                //return List;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
         // Fin
 
@@ -111,20 +150,20 @@ namespace QualityManagementApp.ADO
 
         public DataTable GetDataSQL(string queryString)
         {
-            if(QMAConnection.State == ConnectionState.Open) QMAConnection.Close();
+            if (QMAConnection.State == ConnectionState.Open) QMAConnection.Close();
             QMAConnection.Open();
             DataSet ObjDS = new();
             CreateDataAdapterSQL(queryString, QMAConnection).Fill(ObjDS);
             return ObjDS.Tables[0].Copy();
         }
 
-        //
-        //public DataTable GetDataSQL(IDbCommand Command)
-        //{
-        //    DataSet ObjDS = new DataSet();
-        //    CreateDataAdapterSQL(Command).Fill(ObjDS);
-        //    return ObjDS.Tables[0].Copy();
-        //}
+        public DataTable GetDataSQL(IDbCommand Command)
+        {
+            DataSet ObjDS = new();
+            CreateDataAdapterSQL(Command).Fill(ObjDS);
+            return ObjDS.Tables[0].Copy();
+        }
+
         public List<T> TakeList<T>(Object obj, string CondSQL = "")
         {
             try
@@ -144,10 +183,6 @@ namespace QualityManagementApp.ADO
         {
             try
             {
-                //Inicio - Eliminar SOlo para fin de prueba
-                //var hu = ExecuteSqlProcedure("SelectQuestionInsights");
-                // Fin
-
                 DataTable Table = BuildTable(obj, ref CondSQL);
                 List<T>? ListD = ConvertDataTable<T>(Table, obj);
                 if (ListD.Count == 0) return default;

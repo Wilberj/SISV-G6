@@ -1,72 +1,63 @@
 ﻿@page "/cities"
-@using QualityManagementApp.Client.Services.Contracts.Catalog
-@using QualityManagementApp.Shared
 @inject ICityService CityService
-@inject NavigationManager navigation
+@inject IDepartmentService DepartmentService
+@inject IDialogService DialogService
 
 <PageTitle>Ciudades</PageTitle>
 
-<div class="mat-layout-grid-inner">
-    <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%"></div>
-    <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%">
-        <MatH4><MatIcon Style="font-size:32px; margin-top:-5%" Icon="ballot"></MatIcon> Ciudades</MatH4>
-    </div>
-    <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%"></div>
-</div>
+<MudStack Class="my-5" Row="true" Spacing="0" Justify="Justify.Center" AlignItems="AlignItems.Center">
+    <MudIcon Color="Color.Secondary" Icon="@Icons.Material.Rounded.LocationCity" Size="Size.Large" />
+    <MudText Color="Color.Secondary" Typo="Typo.h4">Ciudades</MudText>
+</MudStack>
 
-<div class="mat-layout-grid-inner" style="margin-bottom:5%">
-    <div class="mat-layout-grid-cell">
-        <MatButton Icon="add_circle" OnClick="@(() => navigation.NavigateTo("city_details"))" Label="Nueva Ciudad"></MatButton>
-    </div>
-    <div class="mat-layout-grid-cell">
-    </div>
-    <div class="mat-layout-grid-cell"></div>
-</div>
+<MudButton Color="@Color.Primary" Variant="Variant.Text" StartIcon="@Icons.Material.Rounded.MyLocation" Size="Size.Large" OnClick="@(() => DialogService.Show<DepartmentDialog>("Departamentos", new DialogOptions { CloseOnEscapeKey = false, CloseButton = false, DisableBackdropClick = true, MaxWidth=MaxWidth.ExtraLarge }))">Departamentos</MudButton>
 
 @if (CityService.Cities == null)
 {
-            <div class="mat-layout-grid-inner">
-                <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%"></div>
-                <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%">
-                    <MatProgressCircle Indeterminate="true" Size="MatProgressCircleSize.Large" />
-                </div>
-                <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%"></div>
-            </div>
+    <MudStack Class="my-8" Spacing="1">
+        <MudSkeleton Class="my-8" SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave" Width="180px" Height="25px" />
+
+        <MudSkeleton Class="mb-2" SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave" Width="100%" Height="45px" />
+        <MudSkeleton Class="mb-2" SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave" Width="100%" Height="45px" />
+        <MudSkeleton Class="mb-2" SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave" Width="100%" Height="45px" />
+        <MudSkeleton Class="mb-2" SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave" Width="100%" Height="45px" />
+        <MudSkeleton Class="mb-2" SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave" Width="100%" Height="45px" />
+        <MudSkeleton Class="mb-2" SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave" Width="100%" Height="45px" />
+        <MudSkeleton Class="mb-2" SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave" Width="100%" Height="45px" />
+        <MudSkeleton Class="mb-2" SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave" Width="100%" Height="45px" />
+    </MudStack>
 }
 else if (CityService.Cities.Length == 0)
 {
-            <div class="mat-layout-grid-inner">
-                <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%"></div>
-                <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%">
-                    <MatH6>Parece que no tienes ninguna ciudad añadido.</MatH6>
-                </div>
-                <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%"></div>
-            </div>
+    <MudText Class="mt-13" Color="Color.Dark" Align="Align.Center" Typo="Typo.h6">Parece que no tienes ninguna ciudad añadida.</MudText>
 }
 else
 {
-
-            @*<MatTable SelectionChanged="@((row) => navigation.NavigateTo("city_details/" + ((Model.City)row).PkCity))" Items="@CityService.Cities" AllowSelection="true" FilterByColumnName="Title" DebounceMilliseconds="150">
-                <MatTableHeader>
-                    <th style="width:20%">ID Ciudad</th>
-                    <th style="width:40%">Nombre</th>
-                    <th style="width:40%">Departamento</th>
-                </MatTableHeader>
-                <MatTableRow>
-                    <td>@context.PkCity</td>
-                    <td>@context.Name</td>
-                    <td>@(CityService.Departments.Where(c => c.PkDepartment == context.FkDepartment).Select(s => s.Name).FirstOrDefault())</td>
-                </MatTableRow>
-            </MatTable>*@
+    <MudTable Elevation="0" RowClass="cursor-pointer" SortLabel="Ordenar por" Class="mt-6 mb-16" Items="@CityService.Cities" Virtualize="true" T="Model.City" Hover="true" SelectedItemChanged="@((item) => NavigationManager.NavigateTo("city_details/" + item.PkCity))">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Lista de ciudades</MudText>
+            <MudSpacer />
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh><MudTableSortLabel InitialDirection="SortDirection.Descending" SortBy="new Func<Model.City, object>(z => z.Name)">Ciudad</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Model.City, object>(z => z.FkDepartment??0)">Departamento</MudTableSortLabel></MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Ciudad">@context.Name</MudTd>
+            <MudTd DataLabel="Departamento">@(DepartmentService.Departments != null ? DepartmentService.Departments.Where(c => c.PkDepartment == context.FkDepartment).Select(s => s.Name).FirstOrDefault() : ".")</MudTd>
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager HidePageNumber="true" HorizontalAlignment="HorizontalAlignment.Left" />
+            </PagerContent>
+        </MudTable>
 }
 
-@*<MatSnackbar @bind-IsOpen="@CityService.Snackbar.SnackbarIsOpen" Leading="true">
-    <MatSnackbarContent>@CityService.Snackbar.Message</MatSnackbarContent>
-</MatSnackbar>*@
+<MudFab Class="z-33" Style="position: sticky; right: 3.5%; bottom: 10%; float: right" Label="Nueva Ciudad" Color="Color.Secondary" Size="Size.Large" StartIcon="@Icons.Material.Filled.Add" OnClick="@(() => NavigationManager.NavigateTo("city_details"))" />
 
 @code {
     protected override async Task OnInitializedAsync()
     {
         await CityService.GetCities();
+        await DepartmentService.GetDepartments();
     }
 }

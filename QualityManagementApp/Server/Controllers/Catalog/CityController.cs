@@ -22,6 +22,13 @@ namespace QualityManagementApp.Server.Controllers.Catalog
             return Ok(ihsd);
         }
 
+        [HttpGet("{cityId}", Name = "GetCity")]
+        public ActionResult GetCity(int cityId)
+        {
+            City city = new();
+            return Ok(city.Get<City>("PkCity = '" + cityId + "'").FirstOrDefault());
+        }
+
         [HttpPost]
         public ActionResult PostCity(City city)
         {

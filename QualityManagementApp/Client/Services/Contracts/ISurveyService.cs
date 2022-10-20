@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Components.Web;
-using MudBlazor;
-using QualityManagementApp.Shared;
-using static QualityManagementApp.Shared.Model;
+﻿using static QualityManagementApp.Shared.Model;
 
 namespace QualityManagementApp.Client.Services.Contracts
 {
@@ -21,6 +18,9 @@ namespace QualityManagementApp.Client.Services.Contracts
 
         /// <value>Valores de una encuesta</value>
         Survey Survey { get; set; }
+
+        /// <value>Valores de una encuesta mostrada al invitado</value>
+        SurveyToInterviewed SurveyToInterviewed { get; set; }
 
         /// <value>Valores de todas las encuestas</value>
         Survey[]? Surveys { get; set; }
@@ -92,7 +92,7 @@ namespace QualityManagementApp.Client.Services.Contracts
         /// <summary>
         /// Obtiene una encuesta apartir de su Id
         /// </summary>
-        Task GetSurvey(string surveyId);
+        Task GetSurvey(string surveyId, bool? isTest);
 
         /// <summary>
         /// Obtiene todas las encuestas

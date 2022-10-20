@@ -31,7 +31,7 @@ namespace QualityManagementApp.Client.Services.Contracts.Catalog
         /// <summary>
         /// Método que obtiene un empleado
         /// </summary>
-        Task GetEmployee(string EmployeeId);
+        Task GetEmployee(int? EmployeeId);
 
         /// <summary>
         /// Método que obtiene todos los empleados

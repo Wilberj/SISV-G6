@@ -1,0 +1,96 @@
+﻿@inject IPositionService PositionService
+<BusyOverlay @bind-visible="@PositionService.IsBusy" />
+
+<MudDialog>
+    <DialogContent>
+        <MudGrid Justify="Justify.Center" Spacing="6">
+            <MudItem>
+                <MudPaper Width="100%" Outlined="true" Class="rounded-lg px-6 py-6">
+                    <EditForm Context="position" Model="@PositionService.Position" OnValidSubmit="@PositionService.AddPosition">
+                        <DataAnnotationsValidator />
+                        <MudStack Spacing="6" Class="mb-6">
+                            <MudText Align="Align.Center" Class="my-5" Color="Color.Secondary" Typo="Typo.h6">@(ReadOnly == false ? "Nuevo Cargo" : "Detalles del Cargo")</MudText>
+
+                                <MudTextField ReadOnly="@ReadOnly" Variant="Variant.Outlined" Label="Nombre del Cargo" HelperText="Ingrese el Cargo" @bind-Value="@PositionService.Position.Title" For="@(() => PositionService.Position.Title)" />
+                                <MudTextField ReadOnly="@ReadOnly" Variant="Variant.Outlined" Label="Descripción del Cargo" HelperText="Ingrese una descripción" @bind-Value="@PositionService.Position.Description" For="@(() => PositionService.Position.Description)" />
+
+                            </MudStack>
+
+                        @if (ReadOnly == true)
+                        {
+                            <MudButton StartIcon="@Icons.Material.Filled.ClearAll" Color="Color.Primary" OnClick="@NewPosition">Nuevo Cargo</MudButton>
+                        }
+                        else
+                        {
+                            <MudButton StartIcon="@Icons.Material.Filled.Add" Color="Color.Secondary" ButtonType="ButtonType.Submit">Agregar Cargo</MudButton>
+                        }
+                    </EditForm>
+                </MudPaper>
+            </MudItem>
+            <MudItem>
+                @if (PositionService.Positions == null)
+                {
+                    <MudStack Class="my-8" Spacing="1">
+                        <MudSkeleton Class="my-8" SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave" Width="180px" Height="25px" />
+
+                        <MudSkeleton Class="mb-2" SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave" Width="100%" Height="45px" />
+                        <MudSkeleton Class="mb-2" SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave" Width="100%" Height="45px" />
+                        <MudSkeleton Class="mb-2" SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave" Width="100%" Height="45px" />
+                    </MudStack>
+                }
+                else if (PositionService.Positions.Length == 0)
+                {
+                    <MudText Class="mt-13" Color="Color.Dark" Align="Align.Center" Typo="Typo.h6">Parece que no tienes ningun cargo añadido.</MudText>
+                }
+                else
+                {
+                    <MudTable Style="max-height: 300px; overflow-y: scroll" Elevation="0" RowClass="cursor-pointer" SortLabel="Ordenar por" Items="@PositionService.Positions" Virtualize="true" T="Model.Position" Hover="true" SelectedItemChanged="@(async (item) => await GetPosition(item.PkPosition))">
+                        <ToolBarContent>
+                            <MudText Typo="Typo.h6">Lista de Cargos</MudText>
+                            <MudSpacer />
+                        </ToolBarContent>
+                        <HeaderContent>
+                            <MudTh><MudTableSortLabel SortBy="new Func<Model.Department, object>(z => z.Name)">Ordenar</MudTableSortLabel></MudTh>
+                        </HeaderContent>
+                        <RowTemplate>
+                            <MudTd DataLabel="Cargo">@context.Title</MudTd>
+                            <MudTd DataLabel="Descripción">@context.Description</MudTd>
+                        </RowTemplate>
+                        <PagerContent>
+                            <MudTablePager HidePageNumber="true" HorizontalAlignment="HorizontalAlignment.Left" />
+                        </PagerContent>
+                    </MudTable>
+                }
+            </MudItem>
+        </MudGrid>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Primary" OnClick="@(() => MudDialog.Close())">Cerrar</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
+
+    bool ReadOnly { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        ReadOnly = false;
+        PositionService.Position = new();
+        await PositionService.GetPositions();
+    }
+
+    async Task GetPosition(int? pkPosition)
+    {
+        ReadOnly = true;
+        await PositionService.GetPosition(pkPosition);
+    }
+
+    void NewPosition()
+    {
+        ReadOnly = false;
+        PositionService.Position = new();
+    }
+}
+

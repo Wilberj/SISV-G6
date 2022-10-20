@@ -1,99 +1,87 @@
 ﻿@page "/city_details"
-@page "/city_details/{cityId}"
-@using QualityManagementApp.Shared
-@using QualityManagementApp.Client.Services.Contracts.Catalog
-@using System.Threading
-@implements IDisposable
-@inject ClipboardService ClipboardService
-@inject NavigationManager navigation
-@*@inject IMatDialogService MatDialogService*@
+@page "/city_details/{CityId:int}"
 @inject ICityService CityService
+@inject IDepartmentService DepartmentService
 
-<MatProgressBar Indeterminate="true" Closed="@(!CityService.IsBusy)"></MatProgressBar>
-<EditForm Model="@CityService.City" OnValidSubmit="@CityService.AddCity">
-    <div class="mat-layout-grid-inner">
-        <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%"></div>
-        <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%">
+<PageTitle>@(CityId == null ? "Nueva Ciudad" : "Detalles de la ciudad")</PageTitle>
 
-            <MatH4>@(CityId == null ? "Nueva Ciudad" : "Detalles de la ciudad")</MatH4>
+    <BusyOverlay @bind-visible="@CityService.IsBusy" />
 
-                <br>
-                <div>
-                    @*<MatTextField Disabled="@IsDisable" Outlined="true" Class="flex-width" Label="Nombre de la ciudad" @bind-Value="@CityService.City.Name" />*@
-                </div>
-                <br>
-                <div>
-                    @*<MatSelectValue Disabled="@IsDisable" Outlined="true" Class="flex-width" Label="Departamento" @bind-Value="@CityService.City.FkDepartment" Items="@CityService.Departments" ValueSelector="@(sc => sc.PkDepartment)">
-                        <ItemTemplate Context="Department">
-                            <span>@Department?.Name</span>
-                        </ItemTemplate>
-                    </MatSelectValue>
-                    <ValidationMessage class="mat-caption" For="@(() => CityService.City.FkDepartment)" />
-                *@</div>
+    <EditForm Context="city" Model="@CityService.City" OnValidSubmit="@CityService.AddCity">
+        <DataAnnotationsValidator />
+        <MudStack Spacing="12" Class="mx-3 mb-6">
+            <MudStack Spacing="6">
+                <MudText Align="Align.Center" Class="my-5" Color="Color.Secondary" Typo="Typo.h4">@(CityId == null ? "Nueva Ciudad" : "Detalles de la ciudad")</MudText>
 
-                <DataAnnotationsValidator />
+                <MudTextField ReadOnly="@ReadOnly" Variant="Variant.Outlined" Label="Nombre de la ciudad" HelperText="Ingrese una ciudad" @bind-Value="@CityService.City.Name" For="@(() => CityService.City.Name)" />
 
-                <br>
-                <br>
-                <br>
-            </div>
-            <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%">
-                <br>
-                <br>
-            @if (IsDisable == false)
-            {
-                <MatButton Type="submit" disabled="@(CityService.City.Name == null? true : false)" Icon="add_circle" Label="Agregar Ciudad"></MatButton>
-            }
-        </div>
-    </div>
+                @*<MudAutocomplete ReadOnly="@ReadOnly" Label="Departamento" HelperText="Seleccione un departamento" SelectValueOnTab="true" AdornmentIcon="@Icons.Material.Filled.Search" Required="true" CoerceValue="false" Variant="Variant.Outlined" ToStringFunc="@(i => i.Name)" ShowProgressIndicator="true" ResetValueOnEmptyText="true" SearchFunc="SearchCityAsync" T="Model.Department" @bind-Value="SelectedDepartment">
+                    <ProgressIndicatorTemplate>
+                        <MudProgressLinear Size="Size.Small" Indeterminate="true" Color="Color.Primary" />
+                    </ProgressIndicatorTemplate>
+                </MudAutocomplete>*@
 
+                <MudSelect ReadOnly="@ReadOnly" For="@(() => CityService.City.FkDepartment)" Variant="Variant.Outlined" Required="true" AdornmentIcon="@Icons.Material.Filled.Category" AdornmentColor="Color.Secondary" T="int?" Label="Departamento" HelperText="Seleccione un departamento" @bind-Value="@CityService.City.FkDepartment">
+                @foreach (var department in DepartmentService.Departments!)
+                {
+                    <MudSelectItem T="int?" Value="@department.PkDepartment">@department.Name</MudSelectItem>
+                }
+            </MudSelect>
+            </MudStack>
+        </MudStack>
+
+    @if (ReadOnly == false)
+    {
+        <MudFab Class="z-33" Style="position: sticky; right: 3.5%; bottom: 10%; float: right" Disabled="@(CityService.City.Name == null? true : false)" StartIcon="@Icons.Material.Filled.Add" Size="Size.Large" Color="Color.Secondary" Label="Agregar Ciudad" ButtonType="ButtonType.Submit" />
+    }
 </EditForm>
-
-<div class="mat-layout-grid-inner">
-    <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%"></div>
-    <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%">
-        <br>
-        <br>
-        <br>
-    </div>
-    <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%"></div>
-</div>
-
 @code {
     [Parameter]
-    public string? CityId { get; set; }
+    public int? CityId { get; set; }
 
-    bool IsDisable { get; set; }
+    bool ReadOnly { get; set; }
 
-    CancellationTokenSource cts = new(); //link
-    State state = new("Copiar para compartir", "share");
-    record State(string Text, string Icon, bool IsDisabled = false);
+    //Model.Department SelectedDepartment { get; set; } = new();
 
     protected override async Task OnParametersSetAsync()
     {
         CityService.IsBusy = true;
         if (CityId == null)
         {
-            IsDisable = false;
+            ReadOnly = false;
             CityService.City = new();
         }
         else
         {
-            IsDisable = true;
+            ReadOnly = true;
+            //var department = DepartmentService.Departments!;
             await CityService.GetCity(CityId);
+            //Task.Run(() => CityService.GetCity(CityId).WaitAsync(TimeSpan.MaxValue)).Wait().Start();
+            //var _departments = DepartmentService.Departments.Where(x => x.PkDepartment == CityId).FirstOrDefault();
+            //SelectedDepartment = _departments!;
         }
         CityService.IsBusy = false;
     }
 
     protected override async Task OnInitializedAsync()
     {
+        await DepartmentService.GetDepartments();
         await CityService.GetCities();
-        await CityService.GetDepartments();
     }
 
-    public void Dispose()
-    {
-        cts.Cancel();
-        cts.Dispose();
-    }
+    //async Task<IEnumerable<Model.Department>> SearchCityAsync(string value)
+    //{
+    //    await Task.Delay(1000);
+
+    //    var _departments = DepartmentService.Departments!;
+
+    //    if (string.IsNullOrEmpty(value)) return _departments.AsEnumerable<Model.Department>()!;
+    //    return _departments.Where(x => x.Name.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+    //}
+
+    //void AddCity()
+    //{
+    //    CityService.City.FkDepartment = SelectedDepartment.PkDepartment;
+    //    CityService.AddCity();
+    //}
 }

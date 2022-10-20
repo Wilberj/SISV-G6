@@ -1,5 +1,6 @@
 ﻿@page "/survey_insights/{surveyId}"
 @inject ISurveyInsightsService InsightsService
+@using static QualityManagementApp.Shared.SurveyInsightModel
 
 <PageTitle>Estadisticas</PageTitle>
 <BusyOverlay @bind-visible="@InsightsService.IsBusy" />
@@ -7,20 +8,23 @@
 <MudStack Spacing="9" Class="my-9">
     <MudText Align="Align.Center" Color="Color.Secondary" Typo="Typo.h4">Estadisticas de la encuesta</MudText>
 
-    <MudStack>
-        <MudText Typo="Typo.h6">Resultados por pregunta</MudText>
-        <MudChart ChartType="ChartType.Bar" ChartSeries="@Series" XAxisLabels="@XAxisLabels" Width="100%" Height="350px" />
-    </MudStack>
-    
-    <MudStack>
-        <MudText Typo="Typo.h6">Resultados por pregunta</MudText>
-        <MudChart ChartType="ChartType.Bar" ChartSeries="@Series" XAxisLabels="@XAxisLabels" Width="100%" Height="350px" />
-    </MudStack>
-
-    <MudStack>
-        <MudText Typo="Typo.h6">Resultados por pregunta</MudText>
-        <MudChart ChartType="ChartType.Bar" ChartSeries="@Series" XAxisLabels="@XAxisLabels" Width="100%" Height="350px" />
-    </MudStack>
+    @foreach (var item in InsightsService.Questions)
+    {
+        <MudText Typo="Typo.h6" Align="Align.Center" Class="mt-3">@item.Title</MudText>
+        <MudStack Row="true" Spacing="9" Justify="Justify.Center">
+            @*@(List<SurveyInsightModel.Chart>? Data = )*@
+            <MudList Clickable="false" Dense="true">
+                @foreach (var item in InsightsService.ReturnInsight(SurveyId??"", item.PkQuestion))
+                {
+                    <MudListItem>
+                        <MudText Typo="Typo.caption" Class="mr-9">@item.Answer </MudText>
+                        <MudText Typo="Typo.caption" Color="Color.Secondary" Style="float: right">@item.Total</MudText>
+                    </MudListItem>
+                }
+            </MudList>
+            @*<MudChart ChartType="ChartType.Pie" InputData="@(InsightsService.ReturnInsight(SurveyId, item.PkQuestion).Select(i => (double)i.Total).ToArray())" InputLabels="@(InsightsService.ReturnInsight(SurveyId, item.PkQuestion).Select(n => n.Answer).ToArray())" Width="150px" Height="150px" />*@
+        </MudStack>
+    }
 </MudStack>
 
 
@@ -28,11 +32,32 @@
     [Parameter]
     public string? SurveyId { get; set; }
 
-    public List<ChartSeries> Series = new List<ChartSeries>()
+    protected override async Task OnParametersSetAsync()
     {
-        new ChartSeries() { Name = "United States", Data = new double[] { 40, 20, 25, 27, 46, 60, 48, 80, 15 } },
-        new ChartSeries() { Name = "Germany", Data = new double[] { 19, 24, 35, 13, 28, 15, 13, 16, 31 } },
-        new ChartSeries() { Name = "Sweden", Data = new double[] { 8, 6, 11, 13, 4, 16, 10, 16, 18 } },
-    };
-    public string[] XAxisLabels = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep" };
+        InsightsService.IsBusy = true;
+        await InsightsService.GetQuestions(SurveyId);
+        InsightsService.IsBusy = false;
+    }
+
+    public List<model> data { get; set; } = new();
+
+    public SurveyInsights()
+    {
+        data = new()
+        {
+            new model { id = 77, name = "Uranium" },
+            new model { id = 5, name = "Caesium" },
+            new model { id = 25, name = "Plutonium" },
+            new model { id = 20, name = "Thorium" },
+            new model { id = 33, name = "bbye gy ued" }
+        };
+    }
+
+
+    public class model
+    {
+        public double id { get; set; }
+        public string name { get; set; } = null!;
+    }
+
 }

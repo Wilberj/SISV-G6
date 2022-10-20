@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+//using Newtonsoft.Json;
 //using Microsoft.EntityFrameworkCore;
 //using NuGet.Protocol;
 using QualityManagementApp.Shared;
+using System.Text.Json.Serialization;
+using static MudBlazor.Colors;
 using static QualityManagementApp.Shared.Model;
 
 namespace QualityManagementApp.Server.Controllers
@@ -30,6 +33,22 @@ namespace QualityManagementApp.Server.Controllers
         {
             Survey survey = new();
             return Ok(survey.Get<Survey>("PkSurvey = '" + surveyId + "'").FirstOrDefault());
+        }
+
+        [HttpGet("{surveyId}")]
+        public ActionResult GetSurveyAndQuestions(string surveyId)
+        {
+            SurveyToInterviewed survey = new();
+
+            List<Object> param = new()
+            {
+                surveyId
+            };
+            //string[] values = new string[] { "" };
+
+            SurveyToInterviewed surveyy = ADO.Entity.GetProcedure<SurveyToInterviewed>("GetSurveyToInterviewed", survey, param);
+            //return Ok(chart.GetProcedure<Chart>("SelectQuestionInsights", param, values));
+            return Ok(surveyy);
         }
 
         [HttpGet]

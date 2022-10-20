@@ -39,7 +39,7 @@ namespace QualityManagementApp.Client.Services.Catalog
             _navigation.NavigateTo("employees");
         }
 
-        public async Task GetEmployee(string employeeId)
+        public async Task GetEmployee(int? employeeId)
         {
             IsBusy = true;
             var employee = await _http.GetFromJsonAsync<Employee>($"api/employee/GetEmployee/{employeeId}");

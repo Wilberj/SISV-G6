@@ -22,6 +22,13 @@ namespace QualityManagementApp.Server.Controllers.Catalog
             return Ok(ihsd);
         }
 
+        [HttpGet("{positionId}", Name = "GetPosition")]
+        public ActionResult GetPosition(int positionId)
+        {
+            Position position = new();
+            return Ok(position.Get<Position>("PkPosition = '" + positionId + "'").FirstOrDefault());
+        }
+
         [HttpPost]
         public ActionResult PostPosition(Position position)
         {

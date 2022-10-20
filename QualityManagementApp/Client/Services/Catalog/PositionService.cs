@@ -47,7 +47,7 @@ namespace QualityManagementApp.Client.Services.Catalog
             _navigation.NavigateTo("positions");
         }
 
-        public async Task GetPosition(string positionId)
+        public async Task GetPosition(int? positionId)
         {
             IsBusy = true;
             var position = await _http.GetFromJsonAsync<Position>($"api/position/GetPosition/{positionId}");

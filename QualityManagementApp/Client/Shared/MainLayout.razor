@@ -40,20 +40,21 @@ else
                     <MudNavMenu Rounded="true" Margin="Margin.Normal" Color="Color.Primary" Class="pa-2">
                         <MudText Typo="Typo.subtitle1" Class="px-4"><b>Procesos estratégicos</b></MudText>
 
-                        <MudNavLink OnClick="@(() => NavigateTo(""))" Icon="@Icons.Material.Rounded.Assignment">Planificaciones</MudNavLink>
-                        <MudNavLink OnClick="@(() => NavigateTo("surveys"))" Icon="@Icons.Material.Rounded.Ballot">Medición de satisfacción</MudNavLink>
+                        <MudNavLink Match="NavLinkMatch.All" Href="/" Icon="@Icons.Material.Rounded.Assignment">Planificaciones</MudNavLink>
+                        <MudNavLink Match="NavLinkMatch.All" Href="/surveys" Icon="@Icons.Material.Rounded.Ballot">Conformidad</MudNavLink>
 
                     @if (LoginData.UserLogin.TypeUser == (int)ILoginService.UserTypeEnum.Tecnico_Calidad)
                     {
-                        <MudText Typo="Typo.subtitle1" Class="px-4"><b>Otros</b></MudText>
+                        <MudText Typo="Typo.subtitle1" Class="px-4 mt-6"><b>Otros</b></MudText>
 
-                        <MudNavGroup Icon="@Icons.Material.Rounded.Dashboard" Title="Catálogos" Expanded="false">
-                            <MudNavLink OnClick="@(() => NavigateTo("cities"))" Icon="@Icons.Material.Rounded.Label">Ciudades</MudNavLink>
-                            <MudNavLink OnClick="@(() => NavigateTo("departments"))" Icon="@Icons.Material.Rounded.Label">Departamentos</MudNavLink>
-                            <MudNavLink OnClick="@(() => NavigateTo("positions"))" Icon="@Icons.Material.Rounded.Label">Cargos</MudNavLink>
-                            <MudNavLink OnClick="@(() => NavigateTo("employees"))" Icon="@Icons.Material.Rounded.Label">Empleados</MudNavLink>
-                            <MudNavLink OnClick="@(() => NavigateTo("presetActivities"))" Icon="@Icons.Material.Rounded.Label">Actividades Predefinidas</MudNavLink>
+                        <MudNavGroup Icon="@Icons.Material.Rounded.Dashboard" Title="Administración" Expanded="ExpandedNavGroup" ExpandedChanged="@((e) => ExpandedNavGroupToggle(e))">
+                            <MudNavLink Match="NavLinkMatch.All" Href="/employees" Icon="@Icons.Material.Rounded.People">Empleados</MudNavLink>
+                            <MudNavLink Match="NavLinkMatch.All" Href="/positions" Icon="@Icons.Material.Rounded.Cases">Cargos</MudNavLink>
+                            <MudNavLink Match="NavLinkMatch.All" Href="/presetActivities" Icon="@Icons.Material.Rounded.LocalActivity">Actividades</MudNavLink>
+                            <MudNavLink Match="NavLinkMatch.All" Href="/cities" Icon="@Icons.Material.Rounded.LocationCity">Ciudades</MudNavLink>
                         </MudNavGroup>
+
+                        <MudNavLink Match="NavLinkMatch.All" Href="/" Icon="@Icons.Material.Rounded.Security">Seguridad</MudNavLink>
                     }
                 </MudNavMenu>
             </MudDrawerContainer>
@@ -67,8 +68,11 @@ else
     /// <value>Estado de la propiedad @bind-Open de "MudDrawer"</value>
     bool _drawerOpen = true;
 
+    /// <value>Estado de la propiedad Expanded de "MudNavGroup"</value>
+    bool ExpandedNavGroup { get; set; }
+
     /// <summary>
-    /// Cambiar valor del campo "_drawerOpen"
+    /// Cambiar valor de la variable local "_drawerOpen"
     /// </summary>
     void DrawerToggle()
     {
@@ -76,12 +80,11 @@ else
     }
 
     /// <summary>
-    /// Navegar a una página determinada
+    /// Cambiar valor de la propiedad "ExpandedNavGroup"
     /// </summary>
-    void NavigateTo(string uri)
+    void ExpandedNavGroupToggle(bool expandedNavGroup)
     {
-        //DrawerToggle();
-        NavigationManager.NavigateTo("/" + uri);
+        ExpandedNavGroup = expandedNavGroup;
     }
 
     /// <summary>

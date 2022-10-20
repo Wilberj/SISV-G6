@@ -1,76 +1,68 @@
 ﻿@page "/employees"
-@using QualityManagementApp.Client.Services.Contracts.Catalog
-@using QualityManagementApp.Shared
 @inject IEmployeeService EmployeeService
-@inject NavigationManager navigation
 
 <PageTitle>Empleados</PageTitle>
 
-<div class="mat-layout-grid-inner">
-    <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%"></div>
-    <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%">
-        <MatH4><MatIcon Style="font-size:32px; margin-top:-5%" Icon="ballot"></MatIcon> Empleados</MatH4>
-    </div>
-    <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%"></div>
-</div>
+<MudStack Class="my-5" Row="true" Spacing="0" Justify="Justify.Center" AlignItems="AlignItems.Center">
+    <MudIcon Color="Color.Secondary" Icon="@Icons.Material.Rounded.People" Size="Size.Large" />
+    <MudText Color="Color.Secondary" Typo="Typo.h4">Empleados</MudText>
+</MudStack>
 
-<div class="mat-layout-grid-inner" style="margin-bottom:5%">
-    <div class="mat-layout-grid-cell">
-        <MatButton Icon="add_circle" OnClick="@(() => navigation.NavigateTo("employee_details"))" Label="Nuevo Empleado"></MatButton>
-    </div>
-    <div class="mat-layout-grid-cell">
-    </div>
-    <div class="mat-layout-grid-cell"></div>
-</div>
+<MudButton Color="@Color.Primary" Variant="Variant.Text" StartIcon="@Icons.Material.Rounded.Cases" Size="Size.Large" OnClick="@(() => DialogService.Show<PositionDialog>("PositionDialog", new DialogOptions { CloseOnEscapeKey = false, CloseButton = false, DisableBackdropClick = true, MaxWidth=MaxWidth.ExtraLarge }))">Cargos</MudButton>
+
 
 @if (EmployeeService.Employees == null)
 {
-    <div class="mat-layout-grid-inner">
-        <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%"></div>
-        <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%">
-            <MatProgressCircle Indeterminate="true" Size="MatProgressCircleSize.Large" />
-        </div>
-        <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%"></div>
-    </div>
+    <MudStack Class="my-8" Spacing="1">
+        <MudSkeleton Class="my-8" SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave" Width="180px" Height="25px" />
+
+        <MudSkeleton Class="mb-2" SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave" Width="100%" Height="45px" />
+        <MudSkeleton Class="mb-2" SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave" Width="100%" Height="45px" />
+        <MudSkeleton Class="mb-2" SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave" Width="100%" Height="45px" />
+        <MudSkeleton Class="mb-2" SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave" Width="100%" Height="45px" />
+        <MudSkeleton Class="mb-2" SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave" Width="100%" Height="45px" />
+        <MudSkeleton Class="mb-2" SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave" Width="100%" Height="45px" />
+        <MudSkeleton Class="mb-2" SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave" Width="100%" Height="45px" />
+        <MudSkeleton Class="mb-2" SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave" Width="100%" Height="45px" />
+    </MudStack>
 }
 else if (EmployeeService.Employees.Length == 0)
 {
-    <div class="mat-layout-grid-inner">
-        <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%"></div>
-        <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%">
-            <MatH6>Parece que no tienes ningun empleado añadido.</MatH6>
-        </div>
-        <div class="mat-layout-grid-cell" style="margin-top:-5%; margin-bottom:-5%"></div>
-    </div>
+    <MudText Class="mt-13" Color="Color.Dark" Align="Align.Center" Typo="Typo.h6">Parece que no tienes ningun Empleado añadido.</MudText>
 }
 else
 {
+    <MudTable Elevation="0" RowClass="cursor-pointer" SortLabel="Ordenar por" Class="mt-6 mb-16" Items="@EmployeeService.Employees" Virtualize="true" T="Model.Employee" Hover="true" SelectedItemChanged="@((item) => NavigationManager.NavigateTo("employee_details/" + item.PkEmployee))">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Lista de Empleados</MudText>
+            <MudSpacer />
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh><MudTableSortLabel InitialDirection="SortDirection.Descending" SortBy="new Func<Model.Employee, object>(z => z.IdentificationCard)">Identificación</MudTableSortLabel></MudTh>
+            <MudTh>Nombre Completo</MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Model.Employee, object>(z => z.FkCity?? 0)">Ciudad</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Model.Employee, object>(z => z.HomeAddress)">Dirección Exacta</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Model.Employee, object>(z => z.Telephone)">Celular</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Model.Employee, object>(z => z.FkPosition?? 0)">Cargo</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel InitialDirection="SortDirection.Descending" SortBy="new Func<Model.Employee, object>(z => z.CreationDate?? DateTime.Now)">Fecha de creación</MudTableSortLabel></MudTh>
+        </HeaderContent>
+        <RowTemplate>
 
-    @*<MatTable SelectionChanged="@((row) => navigation.NavigateTo("employee_details/" + ((Model.Employee)row).PkEmployee))" Items="@EmployeeService.Employees" AllowSelection="true" FilterByColumnName="Title" DebounceMilliseconds="150">
-        <MatTableHeader>
-            <th style="width:20%">Identificación</th>
-            <th style="width:40%">Nombre Completo</th>
-            <th style="width:40%">Ciudad</th>
-            <th style="width:40%">Direccion exacta</th>
-            <th style="width:40%">Celular</th>
-            <th style="width:40%">Cargo</th>
-            <th style="width:40%">Fecha de Creacion</th>
-        </MatTableHeader>
-        <MatTableRow>
-            <td>@context.IdentificationCard</td>
-            <td>@context.FirstName @context.SecondName @context.FirstSurname @context.SecondSurname</td>
-            <td>@(EmployeeService.Cities.Where(c => c.PkCity == context.FkCity).Select(s => s.Name).FirstOrDefault())</td>
-            <td>@context.HomeAddress</td>
-            <td>@context.Telephone</td>
-            <td>@(EmployeeService.Positions.Where(c => c.PkPosition == context.FkPosition).Select(s => s.Title).FirstOrDefault())</td>
-            <td>@String.Format("{0:dd/MMMM/yyyy}", context.CreationDate)</td>
-        </MatTableRow>
-    </MatTable>*@
+            <MudTd DataLabel="Identificación">@context.IdentificationCard</MudTd>
+            <MudTd DataLabel="Nombre Completo">@context.FirstName @context.SecondName @context.FirstSurname @context.SecondSurname</MudTd>
+            <MudTd DataLabel="Ciudad">@(EmployeeService.Cities.Where(c => c.PkCity == context.FkCity).Select(s => s.Name).FirstOrDefault())</MudTd>
+            <MudTd DataLabel="Dirección Exacta">@context.HomeAddress</MudTd>
+            <MudTd DataLabel="Celular">@context.Telephone</MudTd>
+                <MudTd DataLabel="Cargo">@(EmployeeService.Positions.Where(c => c.PkPosition == context.FkPosition).Select(s => s.Title).FirstOrDefault())</MudTd>
+                <MudTd DataLabel="Fecha de creación">@String.Format("{0:dd/MMMM/yyyy}", context.CreationDate)</MudTd>
+        </RowTemplate>
+            <PagerContent>
+                <MudTablePager HidePageNumber="true" HorizontalAlignment="HorizontalAlignment.Left" />
+            </PagerContent>
+        </MudTable>
 }
 
-@*<MatSnackbar @bind-IsOpen="@EmployeeService.Snackbar.SnackbarIsOpen" Leading="true">
-    <MatSnackbarContent>@EmployeeService.Snackbar.Message</MatSnackbarContent>
-</MatSnackbar>*@
+<MudFab Class="z-33" Style="position: sticky; right: 3.5%; bottom: 10%; float: right" Label="Nuevo Empleado" Color="Color.Secondary" Size="Size.Large" StartIcon="@Icons.Material.Filled.Add" OnClick="@(() => NavigationManager.NavigateTo("employee_details"))" />
 
 @code {
     protected override async Task OnInitializedAsync()
@@ -80,4 +72,5 @@ else
         await EmployeeService.GetCity();
     }
 }
+
 

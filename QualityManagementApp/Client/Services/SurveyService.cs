@@ -1,13 +1,6 @@
 ﻿using System.Net.Http.Json;
 using Microsoft.AspNetCore.Components;
 using static QualityManagementApp.Shared.Model;
-using Microsoft.AspNetCore.Components.Web;
-using QualityManagementApp.Shared;
-using System.Globalization;
-using System.Linq;
-using MudBlazor.Interfaces;
-using MudBlazor.Extensions;
-using MudBlazor;
 
 namespace QualityManagementApp.Client.Services
 {
@@ -24,6 +17,7 @@ namespace QualityManagementApp.Client.Services
 
         public bool IsBusy { get; set; } = false;
         public Survey Survey { get; set; } = new();
+        public SurveyToInterviewed SurveyToInterviewed { get; set; } = new();
         public Survey[]? Surveys { get; set; } = null!;
         public SurveyCategory[] SurveyCategories { get; set; } = Array.Empty<SurveyCategory>();
         public TypeQA[] TypesQA { get; set; } = Array.Empty<TypeQA>();
@@ -145,13 +139,21 @@ namespace QualityManagementApp.Client.Services
             }
         }
 
-        public async Task GetSurvey(string surveyId)
+        public async Task GetSurvey(string surveyId, bool? isTest)
         {
             IsBusy = true;
-            var survey = await _http.GetFromJsonAsync<Survey>($"api/survey/GetSurvey/{surveyId}");
-            var questions = await _http.GetFromJsonAsync<List<Question>>($"api/survey/GetQuestions/{surveyId}");
-            Survey = survey ?? null!;
-            Questions = questions ?? null!;
+            if (isTest == true)
+            {
+                var survey = await _http.GetFromJsonAsync<SurveyToInterviewed>($"api/survey/GetSurveyAndQuestions/{surveyId}");
+                SurveyToInterviewed = survey!;
+            }
+            else
+            {
+                var survey = await _http.GetFromJsonAsync<Survey>($"api/survey/GetSurvey/{surveyId}");
+                var questions = await _http.GetFromJsonAsync<List<Question>>($"api/survey/GetQuestions/{surveyId}");
+                Survey = survey ?? null!;
+                Questions = questions ?? null!;
+            }
             IsBusy = false;
         }
 
