@@ -1,43 +1,55 @@
 ﻿@page "/presetActivities_details"
-@page "/presetActivities_details/{PresetActivityId}"
-@using QualityManagementApp.Shared
-@using QualityManagementApp.Client.Services.Contracts.Catalog
-@implements IDisposable 
+@page "/presetActivities_details/{PresetActivityId:int}"
 @inject IPresetActivityService PresetActivityService
 
-<PageTitle>@(PresetActivityId == null ? "Nueva Actividad Predefinida" : "Detalles de la Actividad Predefinida")</PageTitle>
+<BusyOverlay @bind-visible="@PresetActivityService.IsBusy" />
 
-    <BusyOverlay @bind-visible="@PresetActivityService.IsBusy" />
+<PageTitle>@(PresetActivityId == null ? "Nueva Actividad Predefinida" : "Detalles de la Actividad Predefinida")</PageTitle>
 
     <EditForm Context="presetActivity" Model="@PresetActivityService.PresetActivity" OnValidSubmit="@PresetActivityService.AddPresetActivity">
         <DataAnnotationsValidator />
         <MudStack Spacing="12" Class="mx-3 mb-6">
             <MudStack Spacing="6">
-                <MudText Align="Align.Center" Class="my-5" Color="Color.Secondary" Typo="Typo.h4">@(PresetActivityId == null ? "Nueva Actividad" : "Detalles de la Actividad")</MudText>
+                <MudText Align="Align.Center" Class="my-5" Color="Color.Secondary" Typo="Typo.h4">@(PresetActivityId == null ? "Nueva Actividad preestablecida" : "Detalles de la Actividad preestablecida")</MudText>
 
+            @if (ReadOnly == true)
+            {
+                <MudPaper Elevation="1" Class="mb-6">
+                    <MudToolBar>
+                        <MudText Typo="Typo.h6" Color="Color.Primary" Class="mr-6">Opciones</MudText>
+                        <MudTooltip Text="Eliminar">
+                            <MudIconButton Icon="@Icons.Material.Rounded.Delete" Color="Color.Primary" OnClick="@(async () => await PresetActivityService.DeletePresetActivity())" />
+                        </MudTooltip>
+                        <MudTooltip Text="Modificar">
+                            <MudIconButton Icon="@Icons.Material.Rounded.EditNote" Color="Color.Primary" OnClick="@(() => ReadOnly = false)" />
+                        </MudTooltip>
+                    </MudToolBar>
+                </MudPaper>
+            }
 
-                <MudTextField ReadOnly="@ReadOnly" Variant="Variant.Outlined" Label="Titulo de la Actividad" HelperText="Ingrese un titulo" @bind-Value="@PresetActivityService.PresetActivity.Title" />
-                <MudTextField ReadOnly="@ReadOnly" Variant="Variant.Outlined" Label="Descripción" HelperText="Ingrese una Descripción" @bind-Value="@PresetActivityService.PresetActivity.Description" Lines="6" />
-                <MudTextField ReadOnly="@ReadOnly" Variant="Variant.Outlined" Label="Calidad Esperada" HelperText="Calidad Esperada" @bind-Value="@PresetActivityService.PresetActivity.QualityExpected" />
+            <MudTextField ReadOnly="@ReadOnly" Variant="Variant.Outlined" Label="Titulo de la Actividad" Required="true" For="@(() => PresetActivityService.PresetActivity.Title)" HelperText="Ingrese un titulo" @bind-Value="@PresetActivityService.PresetActivity.Title" />
+            <MudTextField ReadOnly="@ReadOnly" Variant="Variant.Outlined" Label="Descripción" HelperText="Ingrese una Descripción" @bind-Value="@PresetActivityService.PresetActivity.Description" Lines="6" />
 
-            </MudStack>
+            <MudText Typo="Typo.subtitle1">Calidad Esperada: @PresetActivityService.PresetActivity.QualityExpected</MudText>
+            <MudSlider Class="mt-n3 mb-13" Disabled="@ReadOnly" Size="Size.Large" ValueLabel="true" TickMarks="true" Min="1" Max="5" Variant="Variant.Filled" Step="1" @bind-Value="@PresetActivityService.PresetActivity.QualityExpected" />
         </MudStack>
+    </MudStack>
 
-
-    @if (ReadOnly == false)
+    @if (ReadOnly == false && PresetActivityId != null)
     {
-        <MudFab Class="z-33" Style="position: sticky; right: 3.5%; bottom: 10%; float: right" Disabled="@(PresetActivityService.PresetActivity.Title == null? true : false)" StartIcon="@Icons.Material.Filled.Add" Size="Size.Large" Color="Color.Secondary" Label="Agregar Actividad" ButtonType="ButtonType.Submit" />
+        <MudFab Class="z-30" Style="position: sticky; right: 3.5%; bottom: 10%; float: right" Disabled="@(PresetActivityService.PresetActivity.Title == null? true : false)" StartIcon="@Icons.Material.Rounded.EditNote" Size="Size.Large" Color="Color.Secondary" Label="Modificar actividad" OnClick="@(async () => ReadOnly = await PresetActivityService.UpdatePresetActivity())" />
+    }
+    else if (ReadOnly == false)
+    {
+        <MudFab Class="z-30" Style="position: sticky; right: 3.5%; bottom: 10%; float: right" StartIcon="@Icons.Material.Rounded.Add" Size="Size.Large" Color="Color.Secondary" Label="Agregar actividad" ButtonType="ButtonType.Submit" />
     }
 </EditForm>
+
 @code {
     [Parameter]
-    public string? PresetActivityId { get; set; }
+    public int? PresetActivityId { get; set; }
 
     bool ReadOnly { get; set; }
-
-    CancellationTokenSource cts = new();
-    //State state = new("Copiar para compartir", Icons.Material.Filled.ContentCopy);
-    //record State(string Text, string Icon, bool IsDisabled = false);
 
     protected override async Task OnParametersSetAsync()
     {
@@ -46,6 +58,7 @@
         {
             ReadOnly = false;
             PresetActivityService.PresetActivity = new();
+            PresetActivityService.PresetActivity.QualityExpected = 1;
         }
         else
         {
@@ -53,16 +66,5 @@
             await PresetActivityService.GetPresetActivity(PresetActivityId);
         }
         PresetActivityService.IsBusy = false;
-    }
-
-    protected override async Task OnInitializedAsync()
-    {
-        await PresetActivityService.GetPresetActivities();
-    }
-
-    public void Dispose()
-    {
-        cts.Cancel();
-        cts.Dispose();
     }
 }

@@ -5,95 +5,117 @@ build_property.UsingMicrosoftNETSdkWeb =
 build_property.ProjectTypeGuids = 
 build_property.InvariantGlobalization = false
 build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = browser
-build_property.EnableSingleFileAnalyzer = 
-build_property.EnableTrimAnalyzer = true
-build_property.IncludeAllContentForSelfExtract = 
 build_property.RootNamespace = QualityManagementApp.Client
 build_property.RootNamespace = QualityManagementApp.Client
-build_property.ProjectDir = C:\Users\aleja\Source\Repos\Wilberj\SISV-G6\QualityManagementApp\Client\
+build_property.ProjectDir = C:\Users\rgers\Source\Repos\alejandrozamoraaz\QualityManagementApp\QualityManagementApp\Client\
 build_property.RazorLangVersion = 6.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = C:\Users\aleja\Source\Repos\Wilberj\SISV-G6\QualityManagementApp\Client
+build_property.MSBuildProjectDirectory = C:\Users\rgers\Source\Repos\alejandrozamoraaz\QualityManagementApp\QualityManagementApp\Client
 build_property._RazorSourceGeneratorDebug = 
 
-[C:/Users/aleja/Source/Repos/Wilberj/SISV-G6/QualityManagementApp/Client/App.razor]
+[C:/Users/rgers/Source/Repos/alejandrozamoraaz/QualityManagementApp/QualityManagementApp/Client/App.razor]
 build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/aleja/Source/Repos/Wilberj/SISV-G6/QualityManagementApp/Client/Pages/Catalog/City/CityDetails.razor]
+[C:/Users/rgers/Source/Repos/alejandrozamoraaz/QualityManagementApp/QualityManagementApp/Client/Pages/Catalog/City/CityDetails.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2F0YWxvZ1xDaXR5XENpdHlEZXRhaWxzLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/aleja/Source/Repos/Wilberj/SISV-G6/QualityManagementApp/Client/Pages/Catalog/City/Index.razor]
+[C:/Users/rgers/Source/Repos/alejandrozamoraaz/QualityManagementApp/QualityManagementApp/Client/Pages/Catalog/City/DepartmentDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2F0YWxvZ1xDaXR5XERlcGFydG1lbnREaWFsb2cucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rgers/Source/Repos/alejandrozamoraaz/QualityManagementApp/QualityManagementApp/Client/Pages/Catalog/City/Index.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2F0YWxvZ1xDaXR5XEluZGV4LnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/aleja/Source/Repos/Wilberj/SISV-G6/QualityManagementApp/Client/Pages/Catalog/Department/DepartmentDetails.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2F0YWxvZ1xEZXBhcnRtZW50XERlcGFydG1lbnREZXRhaWxzLnJhem9y
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/aleja/Source/Repos/Wilberj/SISV-G6/QualityManagementApp/Client/Pages/Catalog/Department/Index.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2F0YWxvZ1xEZXBhcnRtZW50XEluZGV4LnJhem9y
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/aleja/Source/Repos/Wilberj/SISV-G6/QualityManagementApp/Client/Pages/Catalog/Employee/EmployeeDetails.razor]
+[C:/Users/rgers/Source/Repos/alejandrozamoraaz/QualityManagementApp/QualityManagementApp/Client/Pages/Catalog/Employee/EmployeeDetails.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2F0YWxvZ1xFbXBsb3llZVxFbXBsb3llZURldGFpbHMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/aleja/Source/Repos/Wilberj/SISV-G6/QualityManagementApp/Client/Pages/Catalog/Employee/Index.razor]
+[C:/Users/rgers/Source/Repos/alejandrozamoraaz/QualityManagementApp/QualityManagementApp/Client/Pages/Catalog/Employee/Index.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2F0YWxvZ1xFbXBsb3llZVxJbmRleC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/aleja/Source/Repos/Wilberj/SISV-G6/QualityManagementApp/Client/Pages/Catalog/Positions/Index.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2F0YWxvZ1xQb3NpdGlvbnNcSW5kZXgucmF6b3I=
+[C:/Users/rgers/Source/Repos/alejandrozamoraaz/QualityManagementApp/QualityManagementApp/Client/Pages/Catalog/Employee/PositionDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2F0YWxvZ1xFbXBsb3llZVxQb3NpdGlvbkRpYWxvZy5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/aleja/Source/Repos/Wilberj/SISV-G6/QualityManagementApp/Client/Pages/Catalog/Positions/PositionDetails.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2F0YWxvZ1xQb3NpdGlvbnNcUG9zaXRpb25EZXRhaWxzLnJhem9y
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/aleja/Source/Repos/Wilberj/SISV-G6/QualityManagementApp/Client/Pages/Catalog/PresetActivity/Index.razor]
+[C:/Users/rgers/Source/Repos/alejandrozamoraaz/QualityManagementApp/QualityManagementApp/Client/Pages/Catalog/PresetActivity/Index.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2F0YWxvZ1xQcmVzZXRBY3Rpdml0eVxJbmRleC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/aleja/Source/Repos/Wilberj/SISV-G6/QualityManagementApp/Client/Pages/Catalog/PresetActivity/PresetActivityDetails.razor]
+[C:/Users/rgers/Source/Repos/alejandrozamoraaz/QualityManagementApp/QualityManagementApp/Client/Pages/Catalog/PresetActivity/PresetActivityDetails.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2F0YWxvZ1xQcmVzZXRBY3Rpdml0eVxQcmVzZXRBY3Rpdml0eURldGFpbHMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/aleja/Source/Repos/Wilberj/SISV-G6/QualityManagementApp/Client/Pages/Components/BusyOverlay.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tcG9uZW50c1xCdXN5T3ZlcmxheS5yYXpvcg==
+[C:/Users/rgers/Source/Repos/alejandrozamoraaz/QualityManagementApp/QualityManagementApp/Client/Pages/Component/BusyOverlay.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tcG9uZW50XEJ1c3lPdmVybGF5LnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/aleja/Source/Repos/Wilberj/SISV-G6/QualityManagementApp/Client/Pages/Login.razor]
+[C:/Users/rgers/Source/Repos/alejandrozamoraaz/QualityManagementApp/QualityManagementApp/Client/Pages/Component/BusySkeleton.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tcG9uZW50XEJ1c3lTa2VsZXRvbi5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rgers/Source/Repos/alejandrozamoraaz/QualityManagementApp/QualityManagementApp/Client/Pages/Login.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTG9naW4ucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/aleja/Source/Repos/Wilberj/SISV-G6/QualityManagementApp/Client/Pages/Surveys/Index.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU3VydmV5c1xJbmRleC5yYXpvcg==
+[C:/Users/rgers/Source/Repos/alejandrozamoraaz/QualityManagementApp/QualityManagementApp/Client/Pages/Planning/ActivityDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGxhbm5pbmdcQWN0aXZpdHlEaWFsb2cucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/aleja/Source/Repos/Wilberj/SISV-G6/QualityManagementApp/Client/Pages/Surveys/Survey.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU3VydmV5c1xTdXJ2ZXkucmF6b3I=
+[C:/Users/rgers/Source/Repos/alejandrozamoraaz/QualityManagementApp/QualityManagementApp/Client/Pages/Planning/Index.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGxhbm5pbmdcSW5kZXgucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/aleja/Source/Repos/Wilberj/SISV-G6/QualityManagementApp/Client/Pages/Surveys/SurveyDetails.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU3VydmV5c1xTdXJ2ZXlEZXRhaWxzLnJhem9y
+[C:/Users/rgers/Source/Repos/alejandrozamoraaz/QualityManagementApp/QualityManagementApp/Client/Pages/Planning/PlanningDetails.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGxhbm5pbmdcUGxhbm5pbmdEZXRhaWxzLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/aleja/Source/Repos/Wilberj/SISV-G6/QualityManagementApp/Client/Pages/Surveys/SurveyInsights.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU3VydmV5c1xTdXJ2ZXlJbnNpZ2h0cy5yYXpvcg==
+[C:/Users/rgers/Source/Repos/alejandrozamoraaz/QualityManagementApp/QualityManagementApp/Client/Pages/Security.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2VjdXJpdHkucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/aleja/Source/Repos/Wilberj/SISV-G6/QualityManagementApp/Client/Shared/EmptyLayout.razor]
+[C:/Users/rgers/Source/Repos/alejandrozamoraaz/QualityManagementApp/QualityManagementApp/Client/Pages/Survey/AllObservationsDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU3VydmV5XEFsbE9ic2VydmF0aW9uc0RpYWxvZy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rgers/Source/Repos/alejandrozamoraaz/QualityManagementApp/QualityManagementApp/Client/Pages/Survey/Index.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU3VydmV5XEluZGV4LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rgers/Source/Repos/alejandrozamoraaz/QualityManagementApp/QualityManagementApp/Client/Pages/Survey/Interviewed/InterviewedDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU3VydmV5XEludGVydmlld2VkXEludGVydmlld2VkRGlhbG9nLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rgers/Source/Repos/alejandrozamoraaz/QualityManagementApp/QualityManagementApp/Client/Pages/Survey/Interviewed/Survey.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU3VydmV5XEludGVydmlld2VkXFN1cnZleS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rgers/Source/Repos/alejandrozamoraaz/QualityManagementApp/QualityManagementApp/Client/Pages/Survey/Interviewed/SurveyAddedResponse.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU3VydmV5XEludGVydmlld2VkXFN1cnZleUFkZGVkUmVzcG9uc2UucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rgers/Source/Repos/alejandrozamoraaz/QualityManagementApp/QualityManagementApp/Client/Pages/Survey/SurveyDetails.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU3VydmV5XFN1cnZleURldGFpbHMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rgers/Source/Repos/alejandrozamoraaz/QualityManagementApp/QualityManagementApp/Client/Pages/Survey/SurveyInsights.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU3VydmV5XFN1cnZleUluc2lnaHRzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rgers/Source/Repos/alejandrozamoraaz/QualityManagementApp/QualityManagementApp/Client/Shared/EmptyLayout.razor]
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXEVtcHR5TGF5b3V0LnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/aleja/Source/Repos/Wilberj/SISV-G6/QualityManagementApp/Client/Shared/MainLayout.razor]
+[C:/Users/rgers/Source/Repos/alejandrozamoraaz/QualityManagementApp/QualityManagementApp/Client/Shared/MainLayout.razor]
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE1haW5MYXlvdXQucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/aleja/Source/Repos/Wilberj/SISV-G6/QualityManagementApp/Client/_Imports.razor]
+[C:/Users/rgers/Source/Repos/alejandrozamoraaz/QualityManagementApp/QualityManagementApp/Client/_Imports.razor]
 build_metadata.AdditionalFiles.TargetPath = X0ltcG9ydHMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 

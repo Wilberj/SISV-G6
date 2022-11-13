@@ -1,0 +1,30 @@
+﻿@inject ISurveyService SurveyService
+
+<BusyOverlay @bind-visible="@SurveyService.IsBusy" />
+
+<MudDialog>
+    <DialogContent>
+       <MudText Typo="Typo.subtitle1">@SurveyService.SurveyToInterviewed.Description</MudText>
+        <MudTextField Variant="Variant.Outlined" Label="Nombre y apellido" HelperText="Escriba su Nombre y apellido" Class="mt-8" @bind-Value="@SurveyService.Interviewed.Name" For="@(() => SurveyService.Interviewed.Name)" />
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Primary" OnClick="Submit">Continuar</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
+
+    protected override void OnInitialized()
+    {
+        SurveyService.Interviewed = new();
+    }
+
+    void Submit()
+    {
+        if (!string.IsNullOrEmpty(SurveyService.Interviewed.Name))
+        {
+            MudDialog.Close(DialogResult.Ok(false));
+        }
+    }
+}

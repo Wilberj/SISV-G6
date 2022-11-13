@@ -1,66 +1,76 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using QualityManagementApp.Shared;
-using static QualityManagementApp.Shared.Model;
+﻿namespace QualityManagementApp.Server.Controllers.Catalog;
 
-namespace QualityManagementApp.Server.Controllers.Catalog
+[Route("api/[controller]/[action]")]
+[ApiController]
+public class EmployeeController : ControllerBase
 {
-    [Route("api/[controller]/[action]")]
-    [ApiController]
-    public class EmployeeController : ControllerBase
+    readonly List<string> notMapped = new() { "City", "Position" };
+
+    [HttpGet("{employeeId}")]
+    public ActionResult GetEmployee(int employeeId)
     {
-        public EmployeeController()
+        Employee employee = new();
+        return Ok(employee.Get<Employee>("PkEmployee = " + employeeId, notMapped).FirstOrDefault());
+    }
+
+    [HttpPost]
+    public ActionResult PostEmployee(Employee employee)
+    {
+        try
         {
-            Auth.StartConnection();
+            var id = employee.Save();
+            return GetEmployee((int)id);
+        }
+        catch (Exception)
+        {
+
+            throw;
+        }
+    }
+
+    [HttpGet]
+    public ActionResult GetEmployees()
+    {
+        Employee employee = new();
+        City city = new();
+        Position position = new();
+
+        var employees = employee.Get<Employee>(null, notMapped);
+        foreach (var item in employees)
+        {
+            item.City = city.Get<City>($"PkCity = {item.FkCity}", new() { "Department" }).FirstOrDefault();
+            item.Position = position.Get<Position>($"PkPosition = {item.FkPosition}").FirstOrDefault();
         }
 
-        [HttpGet("{employeeId}", Name = "GetEmployee")]
-        public ActionResult GetEmployee(string employeeId)
+        return Ok(employees);
+    }
+
+    [HttpPost]
+    public ActionResult DeleteEmployee(Employee employee)
+    {
+        try
         {
-            Employee employee = new();
-            return Ok(employee.Get<Employee>("PkEmployee = '" + employeeId + "'").FirstOrDefault());
+            return Ok(employee.Delete());
         }
-
-        [HttpPost]
-        public ActionResult PostEmployee(Employee employee)
+        catch (Exception)
         {
-            try
-            {
-                employee.Save();
-                return Ok(new CreatedAtRouteResult("GetEmployee", new { employeeId = employee.PkEmployee }, employee));
-            }
-            catch (Exception)
-            {
 
-                throw;
-            }
+            throw;
         }
-        [HttpGet]
-        public ActionResult GetEmployees()
+    }
+
+    [HttpPost]
+    public ActionResult UpdateEmployee(Employee employee)
+    {
+        try
         {
-            Employee employee = new();
-            return Ok(employee.Get<Employee>());
+            employee.Update("PkEmployee");
+            return GetEmployee((int)employee.PkEmployee!);
         }
-
-        //[HttpGet]
-        //public ActionResult GetCities()
-        //{
-        //    City city = new();
-        //    return Ok(city.Get<City>());
-        //}
-
-        [HttpGet]
-        public ActionResult GetPositions()
+        catch (Exception)
         {
-            Position position = new();
-            return Ok(position.Get<Position>());
-        }
 
-        [HttpGet]
-        public ActionResult GetCity()
-        {
-            City city = new();
-            return Ok(city.Get<City>());
+            throw;
         }
     }
 }

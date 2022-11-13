@@ -2,7 +2,7 @@
 <Router AppAssembly="@typeof(App).Assembly">
     <Found Context="routeData">
         <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
-        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+        <FocusOnNavigate RouteData="@routeData" Selector="MudText" />
     </Found>
     <NotFound>
         <PageTitle>No encontrada</PageTitle>
@@ -12,7 +12,7 @@
     </NotFound>
 </Router>
 <MudDialogProvider />
-@*<MudSnackbarProvider />*@
+<MudSnackbarProvider />
 
 @code
 {

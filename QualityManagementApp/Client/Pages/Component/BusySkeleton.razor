@@ -1,0 +1,26 @@
+﻿@if (IsList == false)
+{
+    <MudStack Class="my-3" Spacing="1">
+        <MudSkeleton Class="my-8" SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave" Width="180px" Height="25px" />
+
+        <MudSkeleton Class="mb-2" SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave" Width="100%" Height="50px" />
+        <MudSkeleton Class="mb-2" SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave" Width="100%" Height="45px" />
+        <MudSkeleton Class="mb-2" SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave" Width="100%" Height="45px" />
+        <MudSkeleton Class="mb-2" SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave" Width="100%" Height="45px" />
+    </MudStack>
+}
+else
+{
+    <MudStack Class="my-3" Spacing="3">
+        <MudSkeleton SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave" Width="100%" Height="20px" />
+        <MudSkeleton SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave" Width="100%" Height="20px" />
+        <MudSkeleton SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave" Width="100%" Height="20px" />
+        <MudSkeleton SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave" Width="100%" Height="20px" />
+        <MudSkeleton SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave" Width="100%" Height="20px" />
+    </MudStack>
+}
+
+@code {
+    [Parameter]
+    public bool IsList { get; set; } = false;
+}

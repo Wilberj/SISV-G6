@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\aleja\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp\\Server\\QualityManagementApp.Server.csproj": {}
+    "C:\\Users\\rgers\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp\\Server\\QualityManagementApp.Server.csproj": {}
   },
   "projects": {
-    "C:\\Users\\aleja\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp.ADO\\QualityManagementApp.ADO.csproj": {
+    "C:\\Users\\rgers\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp.ADO\\QualityManagementApp.ADO.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\aleja\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp.ADO\\QualityManagementApp.ADO.csproj",
+        "projectUniqueName": "C:\\Users\\rgers\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp.ADO\\QualityManagementApp.ADO.csproj",
         "projectName": "QualityManagementApp.ADO",
-        "projectPath": "C:\\Users\\aleja\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp.ADO\\QualityManagementApp.ADO.csproj",
-        "packagesPath": "C:\\Users\\aleja\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\aleja\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp.ADO\\obj\\",
+        "projectPath": "C:\\Users\\rgers\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp.ADO\\QualityManagementApp.ADO.csproj",
+        "packagesPath": "C:\\Users\\rgers\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\rgers\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp.ADO\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\aleja\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\rgers\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -47,7 +47,7 @@
           "dependencies": {
             "System.Data.SqlClient": {
               "target": "Package",
-              "version": "[4.8.3, )"
+              "version": "[4.8.4, )"
             }
           },
           "imports": [
@@ -66,24 +66,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.402\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.100\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\aleja\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp\\Client\\QualityManagementApp.Client.csproj": {
+    "C:\\Users\\rgers\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp\\Client\\QualityManagementApp.Client.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\aleja\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp\\Client\\QualityManagementApp.Client.csproj",
+        "projectUniqueName": "C:\\Users\\rgers\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp\\Client\\QualityManagementApp.Client.csproj",
         "projectName": "QualityManagementApp.Client",
-        "projectPath": "C:\\Users\\aleja\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp\\Client\\QualityManagementApp.Client.csproj",
-        "packagesPath": "C:\\Users\\aleja\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\aleja\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp\\Client\\obj\\",
+        "projectPath": "C:\\Users\\rgers\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp\\Client\\QualityManagementApp.Client.csproj",
+        "packagesPath": "C:\\Users\\rgers\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\rgers\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp\\Client\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\aleja\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\rgers\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -99,8 +99,8 @@
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-              "C:\\Users\\aleja\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp\\Shared\\QualityManagementApp.Shared.csproj": {
-                "projectPath": "C:\\Users\\aleja\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp\\Shared\\QualityManagementApp.Shared.csproj"
+              "C:\\Users\\rgers\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp\\Shared\\QualityManagementApp.Shared.csproj": {
+                "projectPath": "C:\\Users\\rgers\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp\\Shared\\QualityManagementApp.Shared.csproj"
               }
             }
           }
@@ -117,16 +117,16 @@
           "dependencies": {
             "Microsoft.AspNetCore.Components.WebAssembly": {
               "target": "Package",
-              "version": "[6.0.9, )"
+              "version": "[6.0.10, )"
             },
             "Microsoft.AspNetCore.Components.WebAssembly.DevServer": {
               "suppressParent": "All",
               "target": "Package",
-              "version": "[6.0.9, )"
+              "version": "[6.0.10, )"
             },
             "MudBlazor": {
               "target": "Package",
-              "version": "[6.0.16, )"
+              "version": "[6.0.17, )"
             }
           },
           "imports": [
@@ -140,12 +140,18 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.NETCore.App.Runtime.Mono.browser-wasm",
+              "version": "[6.0.11, 6.0.11]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.402\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.100\\RuntimeIdentifierGraph.json"
         }
       },
       "runtimes": {
@@ -154,20 +160,20 @@
         }
       }
     },
-    "C:\\Users\\aleja\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp\\Server\\QualityManagementApp.Server.csproj": {
+    "C:\\Users\\rgers\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp\\Server\\QualityManagementApp.Server.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\aleja\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp\\Server\\QualityManagementApp.Server.csproj",
+        "projectUniqueName": "C:\\Users\\rgers\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp\\Server\\QualityManagementApp.Server.csproj",
         "projectName": "QualityManagementApp.Server",
-        "projectPath": "C:\\Users\\aleja\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp\\Server\\QualityManagementApp.Server.csproj",
-        "packagesPath": "C:\\Users\\aleja\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\aleja\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp\\Server\\obj\\",
+        "projectPath": "C:\\Users\\rgers\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp\\Server\\QualityManagementApp.Server.csproj",
+        "packagesPath": "C:\\Users\\rgers\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\rgers\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp\\Server\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\aleja\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\rgers\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -183,11 +189,11 @@
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-              "C:\\Users\\aleja\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp\\Client\\QualityManagementApp.Client.csproj": {
-                "projectPath": "C:\\Users\\aleja\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp\\Client\\QualityManagementApp.Client.csproj"
+              "C:\\Users\\rgers\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp\\Client\\QualityManagementApp.Client.csproj": {
+                "projectPath": "C:\\Users\\rgers\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp\\Client\\QualityManagementApp.Client.csproj"
               },
-              "C:\\Users\\aleja\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp\\Shared\\QualityManagementApp.Shared.csproj": {
-                "projectPath": "C:\\Users\\aleja\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp\\Shared\\QualityManagementApp.Shared.csproj"
+              "C:\\Users\\rgers\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp\\Shared\\QualityManagementApp.Shared.csproj": {
+                "projectPath": "C:\\Users\\rgers\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp\\Shared\\QualityManagementApp.Shared.csproj"
               }
             }
           }
@@ -204,7 +210,7 @@
           "dependencies": {
             "Microsoft.AspNetCore.Components.WebAssembly.Server": {
               "target": "Package",
-              "version": "[6.0.9, )"
+              "version": "[6.0.10, )"
             }
           },
           "imports": [
@@ -226,24 +232,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.402\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.100\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\aleja\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp\\Shared\\QualityManagementApp.Shared.csproj": {
+    "C:\\Users\\rgers\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp\\Shared\\QualityManagementApp.Shared.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\aleja\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp\\Shared\\QualityManagementApp.Shared.csproj",
+        "projectUniqueName": "C:\\Users\\rgers\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp\\Shared\\QualityManagementApp.Shared.csproj",
         "projectName": "QualityManagementApp.Shared",
-        "projectPath": "C:\\Users\\aleja\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp\\Shared\\QualityManagementApp.Shared.csproj",
-        "packagesPath": "C:\\Users\\aleja\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\aleja\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp\\Shared\\obj\\",
+        "projectPath": "C:\\Users\\rgers\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp\\Shared\\QualityManagementApp.Shared.csproj",
+        "packagesPath": "C:\\Users\\rgers\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\rgers\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp\\Shared\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\aleja\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\rgers\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -259,8 +265,8 @@
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-              "C:\\Users\\aleja\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp.ADO\\QualityManagementApp.ADO.csproj": {
-                "projectPath": "C:\\Users\\aleja\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp.ADO\\QualityManagementApp.ADO.csproj"
+              "C:\\Users\\rgers\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp.ADO\\QualityManagementApp.ADO.csproj": {
+                "projectPath": "C:\\Users\\rgers\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp.ADO\\QualityManagementApp.ADO.csproj"
               }
             }
           }
@@ -290,7 +296,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.402\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.100\\RuntimeIdentifierGraph.json"
         }
       }
     }

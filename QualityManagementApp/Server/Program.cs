@@ -1,16 +1,12 @@
 global using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.ResponseCompression;
-using System.Text.Json.Serialization;
+global using QualityManagementApp.Shared;
+global using static QualityManagementApp.Shared.Model;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews().AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles); ;
 builder.Services.AddRazorPages();
-
-builder.Services.AddControllersWithViews()
-                .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
 var app = builder.Build();
 
@@ -32,7 +28,6 @@ app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
 
 app.UseRouting();
-
 
 app.MapRazorPages();
 app.MapControllers();

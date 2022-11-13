@@ -1,10 +1,8 @@
 ﻿@page "/employee_details"
-@page "/employee_details/{employeeId:int}"
-@using QualityManagementApp.Shared
-@using QualityManagementApp.Client.Services.Contracts.Catalog
+@page "/employee_details/{EmployeeId:int}"
 @inject IEmployeeService EmployeeService
+@inject ICityService CityService
 @inject IPositionService PositionService
-
 
 <PageTitle>@(EmployeeId == null ? "Nuevo Empleado" : "Detalles del Empleado")</PageTitle>
 
@@ -16,39 +14,58 @@
             <MudStack Spacing="6">
                 <MudText Align="Align.Center" Class="my-5" Color="Color.Secondary" Typo="Typo.h4">@(EmployeeId == null ? "Nuevo Empleado" : "Detalles del Empleado")</MudText>
 
-                <MudTextField ReadOnly="@ReadOnly" Variant="Variant.Outlined" Label="Identificación" HelperText="Ingrese el numero de identificación" @bind-Value="@EmployeeService.Employee.IdentificationCard" />
+            @if (ReadOnly == true)
+            {
+                <MudPaper Elevation="1" Class="mb-6">
+                    <MudToolBar>
+                        <MudText Typo="Typo.h6" Color="Color.Primary" Class="mr-6">Opciones</MudText>
+                        <MudTooltip Text="Eliminar">
+                            <MudIconButton Icon="@Icons.Material.Rounded.Delete" Color="Color.Primary" OnClick="@(async () => await EmployeeService.DeleteEmployee())" />
+                        </MudTooltip>
+                        <MudTooltip Text="Modificar">
+                            <MudIconButton Icon="@Icons.Material.Rounded.EditNote" Color="Color.Primary" OnClick="@(() => ReadOnly = false)" />
+                        </MudTooltip>
+                    </MudToolBar>
+                </MudPaper>
+            }
 
-                <MudTextField ReadOnly="@ReadOnly" Variant="Variant.Outlined" Label="Primer Nombre" HelperText="Ingrese el Primer Nombre" @bind-Value="@EmployeeService.Employee.FirstName" />
+            <MudTextField ReadOnly="@ReadOnly" Variant="Variant.Outlined" Label="Cédula" HelperText="Ingrese el número de cédula" Required="true" MaxLength="16" Mask="@IdentificationCardMask" @bind-Value="@EmployeeService.Employee.IdentificationCard" For="@(() => EmployeeService.Employee.IdentificationCard)" Clearable />
 
-                <MudTextField ReadOnly="@ReadOnly" Variant="Variant.Outlined" Label="Segundo nombre" HelperText="Ingrese el Segundo Nombre" @bind-Value="@EmployeeService.Employee.SecondName" />
+            <MudTextField ReadOnly="@ReadOnly" Variant="Variant.Outlined" Label="Primer Nombre" HelperText="Ingrese el Primer Nombre" Required="true" @bind-Value="@EmployeeService.Employee.FirstName" For="@(() => EmployeeService.Employee.FirstName)" />
 
-                <MudTextField ReadOnly="@ReadOnly" Variant="Variant.Outlined" Label="Identificación" HelperText="Ingrese el Primer Apellido" @bind-Value="@EmployeeService.Employee.FirstSurname" />
+            <MudTextField ReadOnly="@ReadOnly" Variant="Variant.Outlined" Label="Segundo nombre" HelperText="Ingrese el Segundo Nombre" @bind-Value="@EmployeeService.Employee.SecondName" />
 
-                <MudTextField ReadOnly="@ReadOnly" Variant="Variant.Outlined" Label="Identificación" HelperText="Ingrese el Segundo Apellido" @bind-Value="@EmployeeService.Employee.SecondSurname" />
+            <MudTextField ReadOnly="@ReadOnly" Variant="Variant.Outlined" Label="Primer Apellido" HelperText="Ingrese el Primer Apellido" Required="true" @bind-Value="@EmployeeService.Employee.FirstSurname" For="@(() => EmployeeService.Employee.FirstSurname)" />
 
-                <MudSelect ReadOnly="@ReadOnly" For="@(() => EmployeeService.Employee.FkCity)" Variant="Variant.Outlined" Required="true" AdornmentIcon="@Icons.Material.Filled.Category" AdornmentColor="Color.Secondary" T="int?" Label="Ciudad" HelperText="Seleccione una ciudad" @bind-Value="@EmployeeService.Employee.FkCity">
-                @foreach (var category in EmployeeService.Cities)
+            <MudTextField ReadOnly="@ReadOnly" Variant="Variant.Outlined" Label="Segundo Apellido" HelperText="Ingrese el Segundo Apellido" @bind-Value="@EmployeeService.Employee.SecondSurname" />
+
+            <MudSelect ReadOnly="@ReadOnly" For="@(() => EmployeeService.Employee.FkCity)" Variant="Variant.Outlined" Required="true" AdornmentIcon="@Icons.Material.Rounded.LocationCity" AdornmentColor="Color.Secondary" T="int?" Label="Ciudad" HelperText="Seleccione una ciudad" @bind-Value="@EmployeeService.Employee.FkCity">
+                @foreach (var city in CityService.Cities!)
                 {
-                    <MudSelectItem T="int?" Value="@category.PkCity">@category.Name</MudSelectItem>
-                }
-                </MudSelect>
-
-                <MudTextField ReadOnly="@ReadOnly" Variant="Variant.Outlined" Label="Dirección" HelperText="Ingrese la dirección" @bind-Value="@EmployeeService.Employee.HomeAddress" />
-
-                <MudTextField ReadOnly="@ReadOnly" Variant="Variant.Outlined" Label="Celular" HelperText="Ingrese el numero de celular" @bind-Value="@EmployeeService.Employee.Telephone" />
-
-            <MudSelect ReadOnly="@ReadOnly" For="@(() => EmployeeService.Employee.FkPosition)" Variant="Variant.Outlined" Required="true" AdornmentIcon="@Icons.Material.Filled.Category" AdornmentColor="Color.Secondary" T="int?" Label="Cargo" HelperText="Seleccione un cargo" @bind-Value="@EmployeeService.Employee.FkPosition">
-                @foreach (var category in EmployeeService.Positions)
-                {
-                    <MudSelectItem T="int?" Value="@category.PkPosition">@category.Title</MudSelectItem>
+                    <MudSelectItem T="int?" Value="@city.PkCity">@city.Name</MudSelectItem>
                 }
             </MudSelect>
-            </MudStack>
-        </MudStack>
 
-    @if (ReadOnly == false)
+            <MudTextField ReadOnly="@ReadOnly" Variant="Variant.Outlined" Label="Dirección" Lines="2" HelperText="Ingrese la dirección" @bind-Value="@EmployeeService.Employee.HomeAddress" />
+
+            <MudTextField ReadOnly="@ReadOnly" Variant="Variant.Outlined" Label="Celular" HelperText="Ingrese solo los números de celular" MaxLength="9" Mask="@(new PatternMask("0000-0000"))" @bind-Value="@EmployeeService.Employee.Telephone" />
+
+            <MudSelect ReadOnly="@ReadOnly" For="@(() => EmployeeService.Employee.FkPosition)" Variant="Variant.Outlined" Required="true" AdornmentIcon="@Icons.Material.Rounded.Cases" AdornmentColor="Color.Secondary" T="int?" Label="Cargo" HelperText="Seleccione un cargo" @bind-Value="@EmployeeService.Employee.FkPosition">
+                @foreach (var position in PositionService.Positions!)
+                {
+                    <MudSelectItem T="int?" Value="@position.PkPosition">@position.Title</MudSelectItem>
+                }
+            </MudSelect>
+        </MudStack>
+    </MudStack>
+
+    @if (ReadOnly == false && EmployeeId != null)
     {
-        <MudFab Class="z-33" Style="position: sticky; right: 3.5%; bottom: 10%; float: right" Disabled="@(EmployeeService.Employee.FirstName == null? true : false)" StartIcon="@Icons.Material.Filled.Add" Size="Size.Large" Color="Color.Secondary" Label="Agregar Empleado" ButtonType="ButtonType.Submit" />
+        <MudFab Class="z-30" Style="position: sticky; right: 3.5%; bottom: 10%; float: right" Disabled="@(EmployeeService.Employee.IdentificationCard == null? true : false)" StartIcon="@Icons.Material.Rounded.EditNote" Size="Size.Large" Color="Color.Secondary" Label="Modificar Empleado" OnClick="@(async () => ReadOnly = await EmployeeService.UpdateEmployee())" />
+    }
+    else if (ReadOnly == false)
+    {
+        <MudFab Class="z-30" Style="position: sticky; right: 3.5%; bottom: 10%; float: right" Disabled="@(EmployeeService.Employee.IdentificationCard == null? true : false)" StartIcon="@Icons.Material.Rounded.Add" Size="Size.Large" Color="Color.Secondary" Label="Agregar Empleado" ButtonType="ButtonType.Submit" />
     }
 </EditForm>
 @code {
@@ -56,8 +73,6 @@
     public int? EmployeeId { get; set; }
 
     bool ReadOnly { get; set; }
-
-    //Model.Department SelectedDepartment { get; set; } = new();
 
     protected override async Task OnParametersSetAsync()
     {
@@ -70,19 +85,25 @@
         else
         {
             ReadOnly = true;
-            //var department = DepartmentService.Departments!;
             await EmployeeService.GetEmployee(EmployeeId);
-            //Task.Run(() => CityService.GetCity(CityId).WaitAsync(TimeSpan.MaxValue)).Wait().Start();
-            //var _departments = DepartmentService.Departments.Where(x => x.PkDepartment == CityId).FirstOrDefault();
-            //SelectedDepartment = _departments!;
         }
         EmployeeService.IsBusy = false;
     }
 
     protected override async Task OnInitializedAsync()
     {
-        await EmployeeService.GetEmployees();
-        await EmployeeService.GetPositions();
-        await EmployeeService.GetCity();
+        PositionService.Positions = new();
+        CityService.Cities = new();
+
+        await PositionService.GetPositions();
+        await CityService.GetCities();
     }
+
+    public PatternMask IdentificationCardMask = new PatternMask("000-000000-0000a") { 
+        MaskChars = new[] { new MaskChar('0', @"[0-9]"), new MaskChar('a', @"[a-z]") },
+        Placeholder = '_',
+        CleanDelimiters = false,
+        Transformation = AllUpperCase
+    };
+    private static char AllUpperCase(char c) => c.ToString().ToUpperInvariant()[0];
 }

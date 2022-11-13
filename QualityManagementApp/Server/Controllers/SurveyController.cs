@@ -1,143 +1,178 @@
-﻿using Microsoft.AspNetCore.Mvc;
-//using Newtonsoft.Json;
-//using Microsoft.EntityFrameworkCore;
-//using NuGet.Protocol;
-using QualityManagementApp.Shared;
-using System.Text.Json.Serialization;
-using static MudBlazor.Colors;
-using static QualityManagementApp.Shared.Model;
+﻿namespace QualityManagementApp.Server.Controllers;
 
-namespace QualityManagementApp.Server.Controllers
+[Route("api/[controller]/[action]")]
+[ApiController]
+public class SurveyController : ControllerBase
 {
-    [Route("api/[controller]/[action]")]
-    [ApiController]
-    public class SurveyController : ControllerBase
+    readonly List<string> notMapped = new() { "SurveyCategory", "Questions" };
+    public SurveyController()
     {
-        public SurveyController()
+        if (Auth.VerifyConnection() == false)
         {
-            if (Auth.VerifyConnection() == false)
+            Auth.StartConnection();
+        }
+    }
+
+    [HttpGet]
+    public ActionResult GetSurveyCategories()
+    {
+        SurveyCategory category = new();
+        return Ok(category.Get<SurveyCategory>());
+    }
+
+    [HttpGet("{surveyId}")]
+    public ActionResult GetSurvey(string surveyId)
+    {
+        Survey survey = new();
+        Question question = new();
+
+        survey = survey.Get<Survey>("PkSurvey = '" + surveyId + "'", notMapped).FirstOrDefault()!;
+        survey.Questions = question.Get<Question>("FkSurvey = '" + surveyId + "'");
+        return Ok(survey);
+    }
+
+    [HttpGet("{surveyId}")]
+    public ActionResult GetSurveyToInterviewed(string surveyId)
+    {
+        SurveyToInterviewed _survey = new();
+        QuestionToInterviewed _question = new();
+        AnswerToInterviewed _answer = new();
+
+        List<object> _param = new()
+        {
+            surveyId
+        };
+
+        _survey = _survey.GetProcedure<SurveyToInterviewed>("GetSurveyToInterviewed", _param).FirstOrDefault()!;
+        _survey.Questions = _question.GetProcedure<QuestionToInterviewed>("GetQuestionsToInterviewedToUser", _param);
+
+        foreach (var question in _survey.Questions)
+        {
+            List<object> param = new() { question.Type, question.Id };
+
+            var respuestas = _answer.GetProcedure<AnswerToInterviewed>("GetAnswerToInterviewed", param);
+
+            _survey.Questions.Where(q => q.Id == question.Id).First().Answers = new();
+            foreach (var item in respuestas)
             {
-                Auth.StartConnection();
+                _survey.Questions.Where(q => q.Id == question.Id).First().Answers!.Add(item);
             }
         }
 
-        [HttpGet]
-        public ActionResult GetSurveyCategories()
-        {
-            SurveyCategory category = new();
-            return Ok(category.Get<SurveyCategory>());
-        }
+        return Ok(_survey);
+    }
 
-        [HttpGet("{surveyId}", Name = "GetSurvey")]
-        public ActionResult GetSurvey(string surveyId)
-        {
-            Survey survey = new();
-            return Ok(survey.Get<Survey>("PkSurvey = '" + surveyId + "'").FirstOrDefault());
-        }
+    [HttpGet("{surveyId}")]
+    public ActionResult GetSurveyToUser(string surveyId)
+    {
+        SurveyToUser _survey = new();
+        QuestionToUser _question = new();
+        ChartToUser _chart = new();
 
-        [HttpGet("{surveyId}")]
-        public ActionResult GetSurveyAndQuestions(string surveyId)
+        List<object> _param = new()
         {
-            SurveyToInterviewed survey = new();
+            surveyId
+        };
 
-            List<Object> param = new()
+        _survey = _survey.GetProcedure<SurveyToUser>("GetSurveyToUser", _param).FirstOrDefault()!;
+        _survey.Questions = _question.GetProcedure<QuestionToUser>("GetQuestionsToInterviewedToUser", _param);
+
+        foreach (var question in _survey.Questions)
+        {
+            List<object> param = new() { surveyId, question.Id };
+
+            var respuestas = _chart.GetProcedure<ChartToUser>("GetQuestionInsightsToUser", param);
+
+            _survey.Questions.Where(q => q.Id == question.Id).First().Charts = new();
+            foreach (var item in respuestas)
             {
-                surveyId
-            };
-            //string[] values = new string[] { "" };
-
-            SurveyToInterviewed surveyy = ADO.Entity.GetProcedure<SurveyToInterviewed>("GetSurveyToInterviewed", survey, param);
-            //return Ok(chart.GetProcedure<Chart>("SelectQuestionInsights", param, values));
-            return Ok(surveyy);
-        }
-
-        [HttpGet]
-        public ActionResult GetSurveys()
-        {
-            Survey survey = new();
-            return Ok(survey.Get<Survey>());
-        }
-
-        [HttpPost]
-        public ActionResult PostSurvey(Survey survey)
-        {
-            try
-            {
-                survey.Save();
-                return Ok(new CreatedAtRouteResult("GetSurvey", new { surveyId = survey.PkSurvey }, survey));
-            }
-            catch (Exception)
-            {
-
-                throw;
+                _survey.Questions.Where(q => q.Id == question.Id).First().Charts!.Add(item);
             }
         }
 
-        [HttpGet]
-        public ActionResult GetTypesQA()
+        return Ok(_survey);
+    }
+
+    [HttpGet("{surveyId}")]
+    public ActionResult GetAllObservations(string surveyId)
+    {
+        Observation observation = new();
+        return Ok(observation.GetProcedure<Observation>("GetAllObservationsToUser", new() { surveyId }));
+    }
+
+    [HttpGet]
+    public ActionResult GetSurveys()
+    {
+        Survey surveyInstance = new ();
+        SurveyCategory categoryInstance = new();
+
+        var surveys = surveyInstance.Get<Survey>(null, notMapped);
+
+        foreach (var survey in surveys)
         {
-            TypeQA type = new();
-            return Ok(type.Get<TypeQA>());
+            survey.SurveyCategory = categoryInstance.Get<SurveyCategory>($"PkSurveyCategory = {survey.FkSurveyCategory}").FirstOrDefault();
         }
+        return Ok(surveys);
+    }
 
-        [HttpGet("{surveyId}")]
-        public ActionResult GetQuestions(string surveyId)
+    [HttpPost]
+    public ActionResult PostSurvey(Survey survey)
+    {
+        try
         {
-            Question question = new();
-            return Ok(question.Get<Question>("FkSurvey = '" + surveyId + "'"));
+            survey.Save(notMapped);
+            foreach (var question in survey.Questions!)
+            {
+                question.Save();
+            }
+            return GetSurvey(survey.PkSurvey);
         }
-
-        [HttpPost]
-        public ActionResult PostQuestion(List<Model.Question> questions)
+        catch (Exception)
         {
-            try
-            {
-                foreach (var question in questions)
-                {
-                    question.Save();
-                }
-                return Ok();
-            }
-            catch (Exception)
-            {
 
-                throw;
-            }
+            throw;
         }
+    }
 
-        [HttpGet("{typeQAId}")]
-        public ActionResult GetAnswersByTypeQA(int typeQAId)
+    [HttpGet]
+    public ActionResult GetTypesQA()
+    {
+        TypeQA type = new();
+        return Ok(type.Get<TypeQA>());
+    }
+
+    [HttpGet("{typeQAId}")]
+    public ActionResult GetAnswersByTypeQA(int typeQAId)
+    {
+        Answer answer = new();
+        return Ok(answer.Get<Answer>("FkTypeQA = '" + typeQAId + "'"));
+    }
+
+    [HttpPost]
+    public ActionResult<string> PostInterviewed(Interviewed interviewed)
+    {
+        try
         {
-            Answer answer = new();
-            return Ok(answer.Get<Answer>("FkTypeQA = '" + typeQAId + "'"));
+            return Ok(interviewed.Save().ToString());
         }
-
-        [HttpPost]
-        public ActionResult<string> PostInterviewed(Interviewed interviewed)
+        catch (Exception)
         {
-            try
-            {
-                return Ok(interviewed.Save().ToString());
-            }
-            catch (Exception)
-            {
 
-                throw;
-            }
+            throw;
         }
+    }
 
-        [HttpPost]
-        public ActionResult PostSelectedAnswer(SelectedAnswer selectedAnswer)
+    [HttpPost]
+    public ActionResult PostSelectedAnswers(SelectedAnswer selectedAnswer)
+    {
+        try
         {
-            try
-            {
-                return Ok(selectedAnswer.Save());
-            }
-            catch (Exception)
-            {
+            return Ok(selectedAnswer.Save());
+        }
+        catch (Exception)
+        {
 
-                throw;
-            }
+            throw;
         }
     }
 }
