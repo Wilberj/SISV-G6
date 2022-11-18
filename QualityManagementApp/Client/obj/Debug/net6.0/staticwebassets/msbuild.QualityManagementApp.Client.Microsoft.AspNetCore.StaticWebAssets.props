@@ -153,7 +153,11 @@
       <AssetKind>All</AssetKind>
       <AssetMode>All</AssetMode>
       <AssetRole>Alternative</AssetRole>
+<<<<<<< HEAD
       <RelatedAsset>C:\Users\aleja\Desktop\QualityManagementApp\QualityManagementApp\Client\bin\Debug\net6.0\wwwroot\_framework\blazor.webassembly.js</RelatedAsset>
+=======
+      <RelatedAsset>C:\Users\rgers\source\repos\Wilberj\SISV-G6\QualityManagementApp\Client\bin\Debug\net6.0\wwwroot\_framework\blazor.webassembly.js</RelatedAsset>
+>>>>>>> 5807a2a21166083ac70b127a36d63638896ca55f
       <AssetTraitName>Content-Encoding</AssetTraitName>
       <AssetTraitValue>gzip</AssetTraitValue>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

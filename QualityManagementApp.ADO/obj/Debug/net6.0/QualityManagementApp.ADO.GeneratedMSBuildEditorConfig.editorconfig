@@ -8,4 +8,12 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = QualityManagementApp.ADO
+<<<<<<< HEAD
+<<<<<<<< HEAD:QualityManagementApp.ADO/obj/Debug/net6.0/QualityManagementApp.ADO.GeneratedMSBuildEditorConfig.editorconfig
 build_property.ProjectDir = C:\Users\aleja\source\repos\Wilberj\SISV-G6\QualityManagementApp.ADO\
+========
+build_property.ProjectDir = C:\Users\rgers\Source\Repos\alejandrozamoraaz\QualityManagementApp\QualityManagementApp.ADO\
+>>>>>>>> 5807a2a21166083ac70b127a36d63638896ca55f:QualityManagementApp.ADO/obj/Release/net6.0/QualityManagementApp.ADO.GeneratedMSBuildEditorConfig.editorconfig
+=======
+build_property.ProjectDir = C:\Users\rgers\source\repos\Wilberj\SISV-G6\QualityManagementApp.ADO\
+>>>>>>> 5807a2a21166083ac70b127a36d63638896ca55f

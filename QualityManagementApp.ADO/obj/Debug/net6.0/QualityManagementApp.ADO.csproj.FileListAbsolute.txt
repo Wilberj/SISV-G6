@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 C:\Users\aleja\Desktop\QualityManagementApp\QualityManagementApp.ADO\bin\Debug\net6.0\QualityManagementApp.ADO.deps.json
 C:\Users\aleja\Desktop\QualityManagementApp\QualityManagementApp.ADO\bin\Debug\net6.0\QualityManagementApp.ADO.dll
 C:\Users\aleja\Desktop\QualityManagementApp\QualityManagementApp.ADO\bin\Debug\net6.0\QualityManagementApp.ADO.pdb
@@ -10,3 +11,29 @@ C:\Users\aleja\Desktop\QualityManagementApp\QualityManagementApp.ADO\obj\Debug\n
 C:\Users\aleja\Desktop\QualityManagementApp\QualityManagementApp.ADO\obj\Debug\net6.0\refint\QualityManagementApp.ADO.dll
 C:\Users\aleja\Desktop\QualityManagementApp\QualityManagementApp.ADO\obj\Debug\net6.0\QualityManagementApp.ADO.pdb
 C:\Users\aleja\Desktop\QualityManagementApp\QualityManagementApp.ADO\obj\Debug\net6.0\ref\QualityManagementApp.ADO.dll
+=======
+C:\Users\rgers\source\repos\alejandrozamoraaz\QualityManagementApp\QualityManagementApp.ADO\bin\Debug\net6.0\QualityManagementApp.ADO.deps.json
+C:\Users\rgers\source\repos\alejandrozamoraaz\QualityManagementApp\QualityManagementApp.ADO\bin\Debug\net6.0\QualityManagementApp.ADO.dll
+C:\Users\rgers\source\repos\alejandrozamoraaz\QualityManagementApp\QualityManagementApp.ADO\bin\Debug\net6.0\QualityManagementApp.ADO.pdb
+C:\Users\rgers\source\repos\alejandrozamoraaz\QualityManagementApp\QualityManagementApp.ADO\obj\Debug\net6.0\QualityManagementApp.ADO.csproj.AssemblyReference.cache
+C:\Users\rgers\source\repos\alejandrozamoraaz\QualityManagementApp\QualityManagementApp.ADO\obj\Debug\net6.0\QualityManagementApp.ADO.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\rgers\source\repos\alejandrozamoraaz\QualityManagementApp\QualityManagementApp.ADO\obj\Debug\net6.0\QualityManagementApp.ADO.AssemblyInfoInputs.cache
+C:\Users\rgers\source\repos\alejandrozamoraaz\QualityManagementApp\QualityManagementApp.ADO\obj\Debug\net6.0\QualityManagementApp.ADO.AssemblyInfo.cs
+C:\Users\rgers\source\repos\alejandrozamoraaz\QualityManagementApp\QualityManagementApp.ADO\obj\Debug\net6.0\QualityManagementApp.ADO.csproj.CoreCompileInputs.cache
+C:\Users\rgers\source\repos\alejandrozamoraaz\QualityManagementApp\QualityManagementApp.ADO\obj\Debug\net6.0\QualityManagementApp.ADO.dll
+C:\Users\rgers\source\repos\alejandrozamoraaz\QualityManagementApp\QualityManagementApp.ADO\obj\Debug\net6.0\refint\QualityManagementApp.ADO.dll
+C:\Users\rgers\source\repos\alejandrozamoraaz\QualityManagementApp\QualityManagementApp.ADO\obj\Debug\net6.0\QualityManagementApp.ADO.pdb
+C:\Users\rgers\source\repos\alejandrozamoraaz\QualityManagementApp\QualityManagementApp.ADO\obj\Debug\net6.0\ref\QualityManagementApp.ADO.dll
+C:\Users\rgers\source\repos\Wilberj\SISV-G6\QualityManagementApp.ADO\bin\Debug\net6.0\QualityManagementApp.ADO.deps.json
+C:\Users\rgers\source\repos\Wilberj\SISV-G6\QualityManagementApp.ADO\bin\Debug\net6.0\QualityManagementApp.ADO.dll
+C:\Users\rgers\source\repos\Wilberj\SISV-G6\QualityManagementApp.ADO\bin\Debug\net6.0\QualityManagementApp.ADO.pdb
+C:\Users\rgers\source\repos\Wilberj\SISV-G6\QualityManagementApp.ADO\obj\Debug\net6.0\QualityManagementApp.ADO.csproj.AssemblyReference.cache
+C:\Users\rgers\source\repos\Wilberj\SISV-G6\QualityManagementApp.ADO\obj\Debug\net6.0\QualityManagementApp.ADO.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\rgers\source\repos\Wilberj\SISV-G6\QualityManagementApp.ADO\obj\Debug\net6.0\QualityManagementApp.ADO.AssemblyInfoInputs.cache
+C:\Users\rgers\source\repos\Wilberj\SISV-G6\QualityManagementApp.ADO\obj\Debug\net6.0\QualityManagementApp.ADO.AssemblyInfo.cs
+C:\Users\rgers\source\repos\Wilberj\SISV-G6\QualityManagementApp.ADO\obj\Debug\net6.0\QualityManagementApp.ADO.csproj.CoreCompileInputs.cache
+C:\Users\rgers\source\repos\Wilberj\SISV-G6\QualityManagementApp.ADO\obj\Debug\net6.0\QualityManagementApp.ADO.dll
+C:\Users\rgers\source\repos\Wilberj\SISV-G6\QualityManagementApp.ADO\obj\Debug\net6.0\refint\QualityManagementApp.ADO.dll
+C:\Users\rgers\source\repos\Wilberj\SISV-G6\QualityManagementApp.ADO\obj\Debug\net6.0\QualityManagementApp.ADO.pdb
+C:\Users\rgers\source\repos\Wilberj\SISV-G6\QualityManagementApp.ADO\obj\Debug\net6.0\ref\QualityManagementApp.ADO.dll
+>>>>>>> 5807a2a21166083ac70b127a36d63638896ca55f

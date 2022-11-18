@@ -1,5 +1,6 @@
 {
   "version": 2,
+<<<<<<< HEAD
   "dgSpecHash": "/lrLcWQ/R17tjq38jEmikzpOou2YATSAy6wgKl5wQtiH5/RFWROt14kT0zo8+mMdBCOC4Fnhl3tLAJRR4lkwkA==",
   "success": true,
   "projectFilePath": "C:\\Users\\aleja\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp\\Shared\\QualityManagementApp.Shared.csproj",
@@ -13,6 +14,21 @@
     "C:\\Users\\aleja\\.nuget\\packages\\system.data.sqlclient\\4.8.5\\system.data.sqlclient.4.8.5.nupkg.sha512",
     "C:\\Users\\aleja\\.nuget\\packages\\system.security.accesscontrol\\4.7.0\\system.security.accesscontrol.4.7.0.nupkg.sha512",
     "C:\\Users\\aleja\\.nuget\\packages\\system.security.principal.windows\\4.7.0\\system.security.principal.windows.4.7.0.nupkg.sha512"
+=======
+  "dgSpecHash": "K+cn+jyJVmlFd4z8eWNZb+RSF1L0azQTsm83eE+MXyDs/YkhjScxyi0rDCtzLRjY256sK1L6wIxtnUt/nwue1w==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\rgers\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp\\Shared\\QualityManagementApp.Shared.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\rgers\\.nuget\\packages\\microsoft.netcore.platforms\\3.1.0\\microsoft.netcore.platforms.3.1.0.nupkg.sha512",
+    "C:\\Users\\rgers\\.nuget\\packages\\microsoft.win32.registry\\4.7.0\\microsoft.win32.registry.4.7.0.nupkg.sha512",
+    "C:\\Users\\rgers\\.nuget\\packages\\runtime.native.system.data.sqlclient.sni\\4.7.0\\runtime.native.system.data.sqlclient.sni.4.7.0.nupkg.sha512",
+    "C:\\Users\\rgers\\.nuget\\packages\\runtime.win-arm64.runtime.native.system.data.sqlclient.sni\\4.4.0\\runtime.win-arm64.runtime.native.system.data.sqlclient.sni.4.4.0.nupkg.sha512",
+    "C:\\Users\\rgers\\.nuget\\packages\\runtime.win-x64.runtime.native.system.data.sqlclient.sni\\4.4.0\\runtime.win-x64.runtime.native.system.data.sqlclient.sni.4.4.0.nupkg.sha512",
+    "C:\\Users\\rgers\\.nuget\\packages\\runtime.win-x86.runtime.native.system.data.sqlclient.sni\\4.4.0\\runtime.win-x86.runtime.native.system.data.sqlclient.sni.4.4.0.nupkg.sha512",
+    "C:\\Users\\rgers\\.nuget\\packages\\system.data.sqlclient\\4.8.4\\system.data.sqlclient.4.8.4.nupkg.sha512",
+    "C:\\Users\\rgers\\.nuget\\packages\\system.security.accesscontrol\\4.7.0\\system.security.accesscontrol.4.7.0.nupkg.sha512",
+    "C:\\Users\\rgers\\.nuget\\packages\\system.security.principal.windows\\4.7.0\\system.security.principal.windows.4.7.0.nupkg.sha512"
+>>>>>>> 5807a2a21166083ac70b127a36d63638896ca55f
   ],
   "logs": []
 }

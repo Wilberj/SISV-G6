@@ -9,6 +9,8 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = QualityManagementApp.Server
 build_property.RootNamespace = QualityManagementApp.Server
+<<<<<<< HEAD
+<<<<<<<< HEAD:QualityManagementApp/Server/obj/Debug/net6.0/QualityManagementApp.Server.GeneratedMSBuildEditorConfig.editorconfig
 build_property.ProjectDir = C:\Users\aleja\source\repos\Wilberj\SISV-G6\QualityManagementApp\Server\
 build_property.RazorLangVersion = 6.0
 build_property.SupportLocalizedComponentNames = 
@@ -17,5 +19,25 @@ build_property.MSBuildProjectDirectory = C:\Users\aleja\source\repos\Wilberj\SIS
 build_property._RazorSourceGeneratorDebug = 
 
 [C:/Users/aleja/source/repos/Wilberj/SISV-G6/QualityManagementApp/Server/Pages/Error.cshtml]
+========
+build_property.ProjectDir = C:\Users\rgers\Source\Repos\alejandrozamoraaz\QualityManagementApp\QualityManagementApp\Server\
+build_property.RazorLangVersion = 6.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = C:\Users\rgers\Source\Repos\alejandrozamoraaz\QualityManagementApp\QualityManagementApp\Server
+build_property._RazorSourceGeneratorDebug = 
+
+[C:/Users/rgers/Source/Repos/alejandrozamoraaz/QualityManagementApp/QualityManagementApp/Server/Pages/Error.cshtml]
+>>>>>>>> 5807a2a21166083ac70b127a36d63638896ca55f:QualityManagementApp/Server/obj/Release/net6.0/QualityManagementApp.Server.GeneratedMSBuildEditorConfig.editorconfig
+=======
+build_property.ProjectDir = C:\Users\rgers\source\repos\Wilberj\SISV-G6\QualityManagementApp\Server\
+build_property.RazorLangVersion = 6.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = C:\Users\rgers\source\repos\Wilberj\SISV-G6\QualityManagementApp\Server
+build_property._RazorSourceGeneratorDebug = 
+
+[C:/Users/rgers/source/repos/Wilberj/SISV-G6/QualityManagementApp/Server/Pages/Error.cshtml]
+>>>>>>> 5807a2a21166083ac70b127a36d63638896ca55f
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRXJyb3IuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 

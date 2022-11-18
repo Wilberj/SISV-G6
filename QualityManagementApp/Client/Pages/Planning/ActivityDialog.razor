@@ -1,0 +1,66 @@
+﻿@inject IPlanningService PlanningService
+
+<BusyOverlay @bind-visible="@PlanningService.IsBusy" />
+<MudDialog>
+    <DialogContent>
+        <MudContainer Style="max-height: 400px; overflow-y: scroll">
+            <EditForm Model="@PlanningService.Activity" OnValidSubmit="@PlanningService.AddActivity">
+                <DataAnnotationsValidator />
+
+                <MudStack Spacing="6">
+                    <MudTextField ReadOnly="@ReadOnly" Variant="Variant.Outlined" Label="Titulo" HelperText="Escriba un titulo" MaxLength="50" Required="true" @bind-Value="@PlanningService.Activity.Title" For="@(() => PlanningService.Activity.Title)" />
+                    <MudTextField ReadOnly="@ReadOnly" Variant="Variant.Outlined" Label="Descripción" HelperText="Escriba una descripción" @bind-Value="@PlanningService.Activity.Description" />
+
+                    <MudStack Row="true" Justify="Justify.SpaceAround">
+                        <MudDatePicker ReadOnly="@ReadOnly" Label="Fecha de inicio" Editable="true" Required="true" @bind-Date="@PlanningService.Activity.StartDate" Mask="@(new DateMask("dd/MM/yyyy"))" DateFormat="dd/MM/yyyy" Placeholder="dd/mm/yyyy" For="@(() => PlanningService.Activity.StartDate)" />
+                        <MudDatePicker ReadOnly="@ReadOnly" Label="Fecha de fin" Editable="true" Required="true" @bind-Date="@PlanningService.Activity.FinishDate" Mask="@(new DateMask("dd/MM/yyyy"))" DateFormat="dd/MM/yyyy" Placeholder="dd/mm/yyyy" For="@(() => PlanningService.Activity.FinishDate)" />
+                    </MudStack>
+
+                    <MudText Typo="Typo.subtitle1">Calidad esperada: @PlanningService.Activity.QualityExpected</MudText>
+                    <MudSlider Class="mt-n3" Disabled="@ReadOnly" Size="Size.Large" ValueLabel="true" TickMarks="true" T="int?" Min="1" Max="5" Variant="Variant.Filled" Step="1" @bind-Value="@PlanningService.Activity.QualityExpected" />
+
+                    <MudTextField ReadOnly="@ReadOnly" Variant="Variant.Outlined" Label="Observación" HelperText="Escriba una observación" @bind-Value="@PlanningService.Activity.Observation" />
+                </MudStack>
+
+                <MudText Align="Align.Center" Typo="Typo.h6" Class="mt-6">Empleados en esta actividad</MudText>
+                @if (PlanningService.Activity.Details!.Count == 0)
+                {
+                    <MudText Class="mt-13" Color="Color.Dark" Align="Align.Center" Typo="Typo.h6">No tienes empleados añadidos en esta actividad.</MudText>
+                }
+                else
+                {
+                    <MudList Clickable="false">
+                        <MudListSubheader>
+                            <MudText Typo="Typo.h6" Color="Color.Dark">Lista de empleados</MudText>
+                        </MudListSubheader>
+                        @foreach (var detail in PlanningService.Activity.Details)
+                        {
+                            <MudListItem Class="mb-n6" Style="@($"color:#18a3b5")" Text="@($"{detail.Employee!.FirstName} {detail.Employee!.SecondName} {detail.Employee!.FirstSurname} {detail.Employee!.SecondSurname} - {detail.Employee!.IdentificationCard}")" />
+                        }
+                    </MudList>
+                }
+
+                <MudButton Disabled="@ReadOnly" Class="mt-6" ButtonType="ButtonType.Submit" FullWidth="true" StartIcon="@Icons.Material.Rounded.AddCircle" Size="Size.Large" Color="Color.Primary" Variant="Variant.Text">Añadir actividad</MudButton>
+            </EditForm>
+        </MudContainer>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Primary" OnClick="@(() => MudDialog.Close())">Cerrar</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
+    [Parameter]
+    public int ActivityId { get; set; }
+
+    bool ReadOnly { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        PlanningService.IsBusy = true;
+        PlanningService.Activity.Details = new();
+        await PlanningService.GetActivity(ActivityId);
+        PlanningService.IsBusy = false;
+    }
+}

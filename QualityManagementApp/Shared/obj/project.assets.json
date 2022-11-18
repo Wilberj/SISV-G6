@@ -73,7 +73,11 @@
           }
         }
       },
+<<<<<<< HEAD
       "System.Data.SqlClient/4.8.5": {
+=======
+      "System.Data.SqlClient/4.8.4": {
+>>>>>>> 5807a2a21166083ac70b127a36d63638896ca55f
         "type": "package",
         "dependencies": {
           "Microsoft.Win32.Registry": "4.7.0",
@@ -151,7 +155,11 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v6.0",
         "dependencies": {
+<<<<<<< HEAD
           "System.Data.SqlClient": "4.8.5"
+=======
+          "System.Data.SqlClient": "4.8.4"
+>>>>>>> 5807a2a21166083ac70b127a36d63638896ca55f
         },
         "compile": {
           "bin/placeholder/QualityManagementApp.ADO.dll": {}
@@ -290,10 +298,17 @@
         "version.txt"
       ]
     },
+<<<<<<< HEAD
     "System.Data.SqlClient/4.8.5": {
       "sha512": "fRqxut4lrndPHrXD+ht1XRmCL3obuKldm4XjCRYS9p5f7FSR7shBxAwTkDrpFMsHC9BhNgjjmUtiIjvehn5zkg==",
       "type": "package",
       "path": "system.data.sqlclient/4.8.5",
+=======
+    "System.Data.SqlClient/4.8.4": {
+      "sha512": "45YflfcVXAu+Tnf0WnZzQIp9iGm+XvSvh8OosYHqax/nW3gV28NBSRvHFZ/IsuwV4JIypYCKBEOVzW+RB5+zgQ==",
+      "type": "package",
+      "path": "system.data.sqlclient/4.8.4",
+>>>>>>> 5807a2a21166083ac70b127a36d63638896ca55f
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -370,7 +385,11 @@
         "runtimes/win/lib/netstandard2.0/System.Data.SqlClient.xml",
         "runtimes/win/lib/uap10.0.16299/System.Data.SqlClient.dll",
         "runtimes/win/lib/uap10.0.16299/System.Data.SqlClient.xml",
+<<<<<<< HEAD
         "system.data.sqlclient.4.8.5.nupkg.sha512",
+=======
+        "system.data.sqlclient.4.8.4.nupkg.sha512",
+>>>>>>> 5807a2a21166083ac70b127a36d63638896ca55f
         "system.data.sqlclient.nuspec",
         "useSharedDesignerContext.txt",
         "version.txt"
@@ -488,23 +507,29 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\aleja\\.nuget\\packages\\": {},
+    "C:\\Users\\rgers\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\aleja\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp\\Shared\\QualityManagementApp.Shared.csproj",
+      "projectUniqueName": "C:\\Users\\rgers\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp\\Shared\\QualityManagementApp.Shared.csproj",
       "projectName": "QualityManagementApp.Shared",
+<<<<<<< HEAD
       "projectPath": "C:\\Users\\aleja\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp\\Shared\\QualityManagementApp.Shared.csproj",
       "packagesPath": "C:\\Users\\aleja\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\aleja\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp\\Shared\\obj\\",
+=======
+      "projectPath": "C:\\Users\\rgers\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp\\Shared\\QualityManagementApp.Shared.csproj",
+      "packagesPath": "C:\\Users\\rgers\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\rgers\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp\\Shared\\obj\\",
+>>>>>>> 5807a2a21166083ac70b127a36d63638896ca55f
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\aleja\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\rgers\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -520,8 +545,8 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "projectReferences": {
-            "C:\\Users\\aleja\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp.ADO\\QualityManagementApp.ADO.csproj": {
-              "projectPath": "C:\\Users\\aleja\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp.ADO\\QualityManagementApp.ADO.csproj"
+            "C:\\Users\\rgers\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp.ADO\\QualityManagementApp.ADO.csproj": {
+              "projectPath": "C:\\Users\\rgers\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp.ADO\\QualityManagementApp.ADO.csproj"
             }
           }
         }

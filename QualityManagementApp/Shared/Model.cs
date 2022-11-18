@@ -72,7 +72,10 @@ public class Model
     public class Activity : Entity
     {
         public int? PkActivity { get; set; }
+<<<<<<< HEAD
         public int? ActivityId { get; set; }
+=======
+>>>>>>> 5807a2a21166083ac70b127a36d63638896ca55f
 
         [Required(ErrorMessage = "El título es Requerido")]
         public string Title { get; set; } = null!;
@@ -91,10 +94,15 @@ public class Model
         public DateTime? CreationDate { get; set; }
         public DateTime? LastModificationDate { get; set; }
         public string? Observation { get; set; }
+<<<<<<< HEAD
         public int? PredecessorId { get; set; }
         public int? FkPlanning { get; set; }
         public int? FkStatus { get; set; }
         public Status? Status { get; set; }
+=======
+        public int? FkPlanning { get; set; }
+        public int? FkStatus { get; set; }
+>>>>>>> 5807a2a21166083ac70b127a36d63638896ca55f
         public List<ActivityDetail>? Details { get; set; }
     }
 
