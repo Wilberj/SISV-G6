@@ -1,53 +1,78 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using QualityManagementApp.Shared;
-using static QualityManagementApp.Shared.Model;
+﻿namespace QualityManagementApp.Server.Controllers.Catalog;
 
-namespace QualityManagementApp.Server.Controllers.Catalog
+[Route("api/[controller]/[action]")]
+[ApiController]
+public class CityController : ControllerBase
 {
-    [Route("api/[controller]/[action]")]
-    [ApiController]
-    public class CityController : ControllerBase
+    readonly List<string> notMapped = new() { "Department" };
+    public CityController()
     {
-        public CityController()
-        {
-            Auth.StartConnection();
-        }
+        Auth.StartConnection();
+    }
 
-        [HttpGet]
-        public ActionResult GetCities()
-        {
-            City city = new();
-            var ihsd = city.Get<City>();
-            return Ok(ihsd);
-        }
+    [HttpGet]
+    public ActionResult GetCities()
+    {
+        City city = new();
+        Department department = new();
 
-        [HttpGet("{cityId}", Name = "GetCity")]
-        public ActionResult GetCity(int cityId)
-        {
-            City city = new();
-            return Ok(city.Get<City>("PkCity = '" + cityId + "'").FirstOrDefault());
-        }
 
-        [HttpPost]
-        public ActionResult PostCity(City city)
+        var cities = city.Get<City>(null, notMapped);
+        foreach (var item in cities)
         {
-            try
-            {
-                city.Save();
-                return Ok(new CreatedAtRouteResult("GetCity", new { cityId = city.PkCity }, city));
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
+            item.Department = department.Get<Department>($"PkDepartment = {item.FkDepartment}").FirstOrDefault();
         }
-        [HttpGet]
-        public ActionResult GetDepartments()
+        return Ok(cities);
+    }
+
+    [HttpGet("{cityId}")]
+    public ActionResult GetCity(int? cityId)
+    {
+        City city = new();
+        return Ok(city.Get<City>("PkCity = '" + cityId + "'", notMapped).FirstOrDefault());
+    }
+
+    [HttpPost]
+    public ActionResult PostCity(City city)
+    {
+        try
         {
-            Department department = new();
-            return Ok(department.Get<Department>());
+            var id = city.Save();
+            return GetCity((int)id);
+        }
+        catch (Exception)
+        {
+
+            throw;
+        }
+    }
+
+    [HttpPost]
+    public ActionResult DeleteCity(City city)
+    {
+        try
+        {
+            return Ok(city.Delete());
+        }
+        catch (Exception)
+        {
+
+            throw;
+        }
+    }
+
+    [HttpPost]
+    public ActionResult UpdateCity(City city)
+    {
+        try
+        {
+            city.Update("PkCity");
+            return GetCity(city.PkCity);
+        }
+        catch (Exception)
+        {
+
+            throw;
         }
     }
 }

@@ -1,64 +1,100 @@
-﻿using Microsoft.AspNetCore.Components;
-using QualityManagementApp.Shared;
-using static QualityManagementApp.Shared.Model;
-using System.Net.Http.Json;
-using QualityManagementApp.Client.Services.Contracts.Catalog;
+﻿using Position = QualityManagementApp.Shared.Model.Position;
+namespace QualityManagementApp.Client.Services.Catalog;
 
-namespace QualityManagementApp.Client.Services.Catalog
+public class PositionService : IPositionService
 {
-    public class PositionService : IPositionService
+    private readonly HttpClient _http;
+    private readonly ISnackbar _snackbar;
+    private readonly ISecurityService _security;
+
+    public PositionService(HttpClient http, ISnackbar snackbar, ISecurityService security)
     {
-        private readonly HttpClient _http;
-        private readonly NavigationManager _navigation;
+        _http = http;
+        _snackbar = snackbar;
+        _security = security;
+    }
 
-        public PositionService(HttpClient http, NavigationManager navigation)
+    public bool IsBusy { get; set; } = false;
+    public Position Position { get; set; } = new();
+    public List<Position>? Positions { get; set; } = null;
+
+    public async Task AddPosition()
+    {
+        IsBusy = true;
+
+        Position.Description ??= "";
+        var response = await _http.PostAsJsonAsync("api/position/PostPosition", Position);
+
+        if (response.StatusCode == System.Net.HttpStatusCode.OK)
         {
-            _http = http;
-            _navigation = navigation;
-        }
-
-        public bool IsBusy { get; set; } = false;
-        //public Snackbar Snackbar { get; set; } = new();
-        public Position Position { get; set; } = new();
-        public Position[]? Positions { get; set; } = null;
-
-        //public void AddPosition()
-        //{
-        //    IsBusy = true;
-        //    Question.CreationDate = DateTime.Now;
-        //    Question.FkSurvey = Survey.PkSurvey;
-        //    Questions.Add(Question);
-        //    AnswersByTypeQA = null;
-        //    Question = new();
-        //    IsBusy = false;
-        //}
-
-
-        public async Task AddPosition()
-        {
-            IsBusy = true;
-
-            var response = await _http.PostAsJsonAsync("api/position/PostPosition", Position);
-
-            //Snackbar.SnackbarIsOpen = true;
-            //Snackbar.Message = $"El cargo fue agregado con exito";
-
             IsBusy = false;
-            _navigation.NavigateTo("positions");
+            await GetPositions();
+
+            var position = await response.Content.ReadFromJsonAsync<Position>();
+            await _security.AddLog($"Ha añadido el cargo {position!.Title}");
+
+            _snackbar.Add("El cargo " + position.Title + " fue Añadido.", Severity.Success, config => { config.HideIcon = true; });
+
+            Position = new();
         }
 
-        public async Task GetPosition(int? positionId)
+        IsBusy = false;
+    }
+
+    public async Task GetPosition(int? positionId)
+    {
+        IsBusy = true;
+        var position = await _http.GetFromJsonAsync<Position>($"api/position/GetPosition/{positionId}");
+        Position = position ?? null!;
+        IsBusy = false;
+    }
+
+    public async Task GetPositions()
+    {
+        IsBusy = true;
+        Positions = await _http.GetFromJsonAsync<List<Position>>("api/position/GetPositions");
+        IsBusy = false;
+    }
+
+    public async Task DeletePosition()
+    {
+        IsBusy = true;
+
+        var response = await _http.PostAsJsonAsync("api/position/DeletePosition", Position);
+
+        if (response.StatusCode == System.Net.HttpStatusCode.OK)
         {
-            IsBusy = true;
-            var position = await _http.GetFromJsonAsync<Position>($"api/position/GetPosition/{positionId}");
-            Position = position ?? null!;
             IsBusy = false;
-        }
+            await _security.AddLog($"Ha eliminado el cargo {Position.Title}");
 
-        public async Task GetPositions()
-        {
-            var jjh = await _http.GetFromJsonAsync<Position[]>("api/position/GetPositions");
-            Positions = jjh;
+            _snackbar.Add("El cargo " + Position.Title + " fue Eliminado.", Severity.Error, config => { config.HideIcon = true; });
+
+            Position = new();
+            await GetPositions();
         }
+        IsBusy = false;
+    }
+
+    public async Task<bool> UpdatePosition()
+    {
+        IsBusy = true;
+
+        Position.Description ??= "";
+        var response = await _http.PostAsJsonAsync("api/position/UpdatePosition", Position);
+
+        if (response.StatusCode == System.Net.HttpStatusCode.OK)
+        {
+            IsBusy = false;
+            var position = await response.Content.ReadFromJsonAsync<Position>();
+            Position = position!;
+
+            await _security.AddLog($"Ha modificado el cargo {position!.Title}");
+            _snackbar.Add("El cargo " + position.Title + " fue Actualizado.", Severity.Info, config => { config.HideIcon = true; });
+
+            await GetPositions();
+        }
+        IsBusy = false;
+
+        return true;
     }
 }

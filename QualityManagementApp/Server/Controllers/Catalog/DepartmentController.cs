@@ -1,47 +1,69 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using QualityManagementApp.Shared;
-using static QualityManagementApp.Shared.Model;
+﻿namespace QualityManagementApp.Server.Controllers.Catalog;
 
-namespace QualityManagementApp.Server.Controllers.Catalog
+[Route("api/[controller]/[action]")]
+[ApiController]
+public class DepartmentController : ControllerBase
 {
-    [Route("api/[controller]/[action]")]
-    [ApiController]
-    public class DepartmentController : ControllerBase
+    public DepartmentController()
     {
-        public DepartmentController()
+        Auth.StartConnection();
+    }
+
+    [HttpGet]
+    public ActionResult GetDepartments()
+    {
+        Department department = new();
+        return Ok(department.Get<Department>());
+    }
+
+    [HttpGet("{departmentId}")]
+    public ActionResult GetDepartment(int departmentId)
+    {
+        Department department = new();
+        return Ok(department.Get<Department>("PkDepartment = '" + departmentId + "'").FirstOrDefault());
+    }
+
+    [HttpPost]
+    public ActionResult PostDepartment(Department department)
+    {
+        try
         {
-            Auth.StartConnection();
+            var id =department.Save();
+            return GetDepartment((int)id);
         }
-
-        [HttpGet]
-        public ActionResult GetDepartments()
+        catch (Exception)
         {
-            Department department = new();
-            var ihsd = department.Get<Department>();
-            return Ok(ihsd);
+
+            throw;
         }
+    }
 
-        [HttpGet("{departmentId}", Name = "GetDepartment")]
-        public ActionResult GetDepartment(int departmentId)
+    [HttpPost]
+    public ActionResult DeleteDepartment(Department department)
+    {
+        try
         {
-            Department department = new();
-            return Ok(department.Get<Department>("PkDepartment = '" + departmentId + "'").FirstOrDefault());
+            return Ok(department.Delete());
         }
-
-        [HttpPost]
-        public ActionResult PostDepartment(Department department)
+        catch (Exception)
         {
-            try
-            {
-                department.Save();
-                return Ok(new CreatedAtRouteResult("GetDepartment", new { departmentId = department.PkDepartment }, department));
-            }
-            catch (Exception)
-            {
 
-                throw;
-            }
+            throw;
+        }
+    }
+
+    [HttpPost]
+    public ActionResult UpdateDepartment(Department department)
+    {
+        try
+        {
+            department.Update("PkDepartment");
+            return GetDepartment((int)department.PkDepartment!);
+        }
+        catch (Exception)
+        {
+
+            throw;
         }
     }
 }

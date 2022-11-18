@@ -1,0 +1,207 @@
+﻿@page "/survey_details"
+@page "/survey_details/{surveyId}"
+@inject ClipboardService ClipboardService
+@inject ISurveyService SurveyService
+
+<PageTitle>@(SurveyId == null ? "Nueva encuesta" : "Detalles de la encuesta")</PageTitle>
+
+    <BusyOverlay @bind-visible="@SurveyService.IsBusy" />
+
+    <EditForm Context="survey" Model="@SurveyService.Survey" OnValidSubmit="@SurveyService.AddSurvey">
+        <DataAnnotationsValidator />
+        <MudStack Spacing="12" Class="mx-3 mb-6">
+            <MudStack Spacing="6">
+                <MudText Align="Align.Center" Class="my-5" Color="Color.Secondary" Typo="Typo.h4">@(SurveyId == null ? "Nueva encuesta" : "Detalles de la encuesta")</MudText>
+
+                @if (ReadOnly == true)
+            {
+                <MudPaper Elevation="1" Class="mb-6">
+                    <MudToolBar>
+                        <MudText Typo="Typo.h6" Color="Color.Primary" Class="mr-6">Opciones</MudText>
+                        <MudTooltip Text="Estadísticas">
+                            <MudIconButton Icon="@Icons.Material.Rounded.Insights" Color="Color.Primary" OnClick="@(() => NavigationManager.NavigateTo("survey_insights/" + SurveyService.Survey.PkSurvey))" />
+                        </MudTooltip>
+                        <MudTooltip Text="Compartir">
+                            <MudButton Variant="Variant.Text" Class="pa-3 ml-3" Disabled="@state.IsDisabled" StartIcon="@state.Icon" Color="Color.Primary" OnClick="@(async () => await CopyToClipboard())">@state.Text</MudButton>
+                        </MudTooltip>
+                    </MudToolBar>
+                </MudPaper>
+            }
+
+            <MudStack Row="true" Justify="Justify.SpaceBetween">
+                <MudText Color="Color.Secondary" Typo="Typo.h6">Código de la encuesta: <MudText Color="Color.Dark" Inline="true" Typo="Typo.h6">@SurveyService.Survey.PkSurvey</MudText></MudText>
+                <MudCheckBox Class="d-inline mt-n3" ReadOnly="@ReadOnly" DisableRipple="@ReadOnly" Size="Size.Large" Label="@(SurveyService.Survey.Status == true? "Encuesta activa" : "Encuesta Desactivada")" @bind-Checked="@SurveyService.Survey.Status" Color="Color.Secondary" CheckedIcon="@Icons.Material.Rounded.CheckBox" UncheckedIcon="@Icons.Material.Rounded.CheckBoxOutlineBlank" />
+            </MudStack>
+
+            <MudSelect ReadOnly="@ReadOnly" For="@(() => SurveyService.Survey.FkSurveyCategory)" Variant="Variant.Outlined" Required="true" AdornmentIcon="@Icons.Material.Rounded.Category" AdornmentColor="Color.Secondary" T="int?" Label="Categoría a encuestar" HelperText="Seleccione una categoría" @bind-Value="@SurveyService.Survey.FkSurveyCategory">
+                @foreach (var category in @SurveyService.SurveyCategories)
+                {
+                    <MudSelectItem T="int?" Value="@category.PkSurveyCategory">@category.Title</MudSelectItem>
+                }
+            </MudSelect>
+
+            <MudTextField ReadOnly="@ReadOnly" T="string" OnDebounceIntervalElapsed="@SurveyService.GenerateCode" DebounceInterval="500" Variant="Variant.Outlined" Label="Título" HelperText="Ingrese el título de la encuesta" @bind-Value="@SurveyService.Survey.Title" For="@(() => SurveyService.Survey.Title)" />
+
+            <MudTextField ReadOnly="@ReadOnly" Variant="Variant.Outlined" Label="Descripción" HelperText="Ingrese una descripción" @bind-Value="@SurveyService.Survey.Description" Lines="6" />
+        </MudStack>
+
+        @if (ReadOnly == false)
+        {
+            <MudPaper Outlined="true" Width="100%" Class="rounded-lg px-16 py-6">
+                <MudText Class="mb-6" Typo="Typo.h6" Align="Align.Center">Añadir nuevas preguntas</MudText>
+                <MudGrid Spacing="6" Justify="Justify.Center">
+                    <MudItem>
+                        <EditForm Context="question" Model="@SurveyService.Question" OnValidSubmit="@SurveyService.AddQuestion">
+                            <DataAnnotationsValidator />
+
+                            <MudStack Spacing="6">
+                                <MudSelect For="@(() => SurveyService.Question.FkTypeQA)" Variant="Variant.Outlined" Required="true" AdornmentIcon="@Icons.Material.Rounded.Category" AdornmentColor="Color.Secondary" T="int?" Label="Tipo de pregunta" HelperText="Seleccione el tipo de pregunta" ValueChanged="@(async (int? t) => await QuestionTypeChangedAsync(t))">
+                                    @foreach (var type in @SurveyService.TypesQA)
+                                    {
+                                        <MudSelectItem T="int?" Value="@type.PkTypeQA">@type?.Title</MudSelectItem>
+                                    }
+                                </MudSelect>
+
+                                <MudTextField Variant="Variant.Outlined" Label="Pregunta o Instrucción" HelperText="Escriba su pregunta o Instrucción" @bind-Value="@SurveyService.Question.Title" For="@(() => SurveyService.Question.Title)" />
+
+                                <MudButton ButtonType="ButtonType.Submit" FullWidth="true" StartIcon="@Icons.Material.Rounded.AddCircle" Size="Size.Medium" Color="Color.Primary" Variant="Variant.Text">Añadir pregunta</MudButton>
+                            </MudStack>
+                        </EditForm>
+                    </MudItem>
+                    <MudItem>
+
+                        @if (SurveyService.AnswersByTypeQA == null || QuestionTypeChanged == true)
+                        {
+                            <MudList Clickable="false">
+                                <MudListSubheader>
+                                    <MudText Typo="Typo.body2" Align="Align.Center">Aqui apareceran las posibles respuestas...</MudText>
+                                </MudListSubheader>
+
+                                @if (QuestionTypeChanged == true)
+                                {
+                                    <BusySkeleton IsList="true" />
+                                }
+                            </MudList>
+                        }
+                        else
+                        {
+                            <MudList Dense="true" Clickable="false">
+                                <MudListSubheader>
+                                    @*@if (IsHidden == false)
+                            {*@
+                                    <MudText Typo="Typo.body2" Align="Align.Center">Posibles respuestas a la pregunta</MudText>
+                                    @*}*@
+                                </MudListSubheader>
+                                @foreach (var answer in SurveyService.AnswersByTypeQA)
+                                {
+                                    @*@if (answer.FkTypeQA == (int)ISurveyService.TypeAnswer.Abiertas)
+                        {
+                        @(IsHidden = true)
+                        ;
+                        <MudText Typo="Typo.body2" Align="Align.Center">Respuestas abiertas...</MudText>
+                        }
+                        else
+                        {*@
+                                    <MudListItem Text="@answer.AnswerName" />
+                                    @*}*@
+                                }
+                            </MudList>
+                        }
+                    </MudItem>
+                </MudGrid>
+            </MudPaper>
+        }
+
+        @if (SurveyService.Survey.Questions == null)
+        {
+            <MudList Clickable="false">
+                <MudListSubheader>
+                    <MudText Typo="Typo.body2" Align="Align.Center">Aqui apareceran tus preguntas...</MudText>
+                </MudListSubheader>
+
+                <BusySkeleton IsList="true" />
+            </MudList>
+        }
+        else if (SurveyService.Survey.Questions.Count == 0)
+        {
+            <MudText Class="mt-13" Color="Color.Dark" Align="Align.Center" Typo="Typo.h6">No tienes preguntas añadidas.</MudText>
+        }
+        else
+        {
+            <MudList Clickable="false">
+                <MudListSubheader>
+                    <MudText Typo="Typo.h6" Color="Color.Dark">Lista de preguntas</MudText>
+                </MudListSubheader>
+                @foreach (var question in SurveyService.Survey.Questions)
+                {
+                    <MudListItem Class="mb-n6" Style="@($"color:#18a3b5")" Text="@question.Title" />
+                    <MudListItem Class="mt-n6" Text="@("Categoría: " + SurveyService.TypesQA.Where(tqa => tqa.PkTypeQA == question.FkTypeQA).Select(t => t.Title).FirstOrDefault())" />
+                }
+            </MudList>
+        }
+    </MudStack>
+
+    @if (ReadOnly == false)
+    {
+        <MudFab Class="z-33" Style="position: sticky; right: 3.5%; bottom: 10%; float: right" Disabled="@(survey.Validate() == false? true : false)" StartIcon="@Icons.Material.Rounded.Add" Size="Size.Large" Color="Color.Secondary" Label="Agregar encuesta" ButtonType="ButtonType.Submit" />
+    }
+</EditForm>
+
+@code {
+    [Parameter]
+    public string? SurveyId { get; set; }
+
+    bool ReadOnly { get; set; }
+    bool QuestionTypeChanged { get; set; }
+
+    CancellationTokenSource cts = new();
+    State state = new("Copiar para compartir", Icons.Material.Rounded.ContentCopy);
+    record State(string Text, string Icon, bool IsDisabled = false);
+
+    protected override async Task OnParametersSetAsync()
+    {
+        SurveyService.IsBusy = true;
+
+        if (SurveyId == null)
+        {
+            ReadOnly = false;
+            SurveyService.Survey = new();
+            SurveyService.Survey.Questions = new();
+            SurveyService.Survey.Status = false;
+        }
+        else
+        {
+            ReadOnly = true;
+            await SurveyService.GetSurvey(SurveyId, false);
+        }
+        SurveyService.IsBusy = false;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await SurveyService.GetSurveyCategories();
+        await SurveyService.GetTypesQA();
+    }
+
+    public void Dispose()
+    {
+        cts.Cancel();
+        cts.Dispose();
+    }
+
+    async Task CopyToClipboard()
+    {
+        var temp = state;
+        state = new("Copiado", Icons.Material.Rounded.FileCopy, IsDisabled: true);
+        await ClipboardService.WriteTextAsync(NavigationManager.BaseUri + "survey/" + SurveyService.Survey.PkSurvey);
+        await Task.Delay(TimeSpan.FromSeconds(2), cts.Token);
+        state = temp;
+    }
+
+    async Task QuestionTypeChangedAsync(int? typeQAId)
+    {
+        QuestionTypeChanged = true;
+        await SurveyService.GetAnswersByTypeQA(typeQAId);
+        QuestionTypeChanged = false;
+    }
+}

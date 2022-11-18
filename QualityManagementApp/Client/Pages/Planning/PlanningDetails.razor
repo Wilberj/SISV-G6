@@ -1,0 +1,469 @@
+﻿@page "/planning_details"
+@page "/planning_details/{PlanningId:int}"
+@inject IPlanningService PlanningService
+@inject IEmployeeService EmployeeService
+@inject IPresetActivityService PresetActivityService
+
+<PageTitle>@(PlanningId == null ? "Nueva planificación" : "Detalles de la planificación")</PageTitle>
+
+    <BusyOverlay @bind-visible="@PlanningService.IsBusy" />
+
+    <EditForm Context="planning" Model="@PlanningService.Planning" OnValidSubmit="@PlanningService.AddPlanning">
+        <DataAnnotationsValidator />
+        <MudStack Spacing="12" Class="mx-3 mb-9">
+            <MudStack Spacing="6">
+                <MudText Align="Align.Center" Class="my-5" Color="Color.Secondary" Typo="Typo.h4">@(PlanningId == null ? "Nueva Planificación" : "Detalles de la Planificación")</MudText>
+
+                <MudStack Row="true" Justify="Justify.SpaceBetween">
+                    @if (ReadOnly == true)
+                {
+                    <MudText Class="d-inline" Color="Color.Secondary" Typo="Typo.h6">@PlanningService.Planning.Status!.Title</MudText>
+
+                    <MudText Class="d-inline mt-1" Typo="Typo.subtitle1">Promedio Calidad obtenida: @PlanningService.Planning.QualityObtained</MudText>
+                    <MudText Class="d-inline mt-1" Typo="Typo.subtitle1">Porcentaje completado: @PlanningService.Planning.PercentageCompleted % / 100%</MudText>
+
+                    <MudCheckBox Disabled="@(PlanningService.Planning.FkStatus == (int)IPlanningService.Status.Completada? true : false)" Class="d-inline mt-n3" Size="Size.Large" Label="@(PlanningService.Planning.IsVerified == true? "Encuesta Verificada" : "Encuesta no Verificada")" T="bool?" Checked="@PlanningService.Planning.IsVerified" CheckedChanged="@(async (check) => await PlanningService.UpdatePlanningStatus(check))" Color="Color.Secondary" CheckedIcon="@Icons.Material.Rounded.CheckBox" UncheckedIcon="@Icons.Material.Rounded.CheckBoxOutlineBlank" />
+                }
+                else
+                {
+                    <MudCheckBox Class="d-inline mt-n3" Size="Size.Large" Label="@(PlanningService.Planning.IsVerified == true? "Encuesta Verificada" : "Encuesta no Verificada")" @bind-Checked="@PlanningService.Planning.IsVerified" Color="Color.Secondary" CheckedIcon="@Icons.Material.Rounded.CheckBox" UncheckedIcon="@Icons.Material.Rounded.CheckBoxOutlineBlank" />
+                }
+            </MudStack>
+
+            <MudTextField ReadOnly="@ReadOnly" Variant="Variant.Outlined" Label="Título" HelperText="Ingrese un Título" MaxLength="50" Required="true" @bind-Value="@PlanningService.Planning.Title" For="@(() => PlanningService.Planning.Title)" />
+
+            <MudTextField ReadOnly="@ReadOnly" Variant="Variant.Outlined" Label="Descripción" HelperText="Ingrese una descripción" @bind-Value="@PlanningService.Planning.Description" Lines="6" />
+
+            <MudSelect ReadOnly="@ReadOnly" For="@(() => PlanningService.Planning.Month)" Variant="Variant.Outlined" Required="true" AdornmentIcon="@Icons.Material.Rounded.CalendarMonth" AdornmentColor="Color.Secondary" T="int?" Label="Mes" HelperText="Seleccione un mes" @bind-Value="@PlanningService.Planning.Month">
+                <MudSelectItem T="int?" Value="01">Enero</MudSelectItem>
+                <MudSelectItem T="int?" Value="02">Febrero</MudSelectItem>
+                <MudSelectItem T="int?" Value="03">Marzo</MudSelectItem>
+                <MudSelectItem T="int?" Value="04">Abril</MudSelectItem>
+                <MudSelectItem T="int?" Value="05">Mayo</MudSelectItem>
+                <MudSelectItem T="int?" Value="06">Junio</MudSelectItem>
+                <MudSelectItem T="int?" Value="07">Julio</MudSelectItem>
+                <MudSelectItem T="int?" Value="08">Agosto</MudSelectItem>
+                <MudSelectItem T="int?" Value="09">Septiembre</MudSelectItem>
+                <MudSelectItem T="int?" Value="10">Octubre</MudSelectItem>
+                <MudSelectItem T="int?" Value="11">Noviembre</MudSelectItem>
+                <MudSelectItem T="int?" Value="12">Diciembre</MudSelectItem>
+            </MudSelect>
+
+            <MudTextField ReadOnly="@ReadOnly" Variant="Variant.Outlined" InputType="InputType.Number" MaxLength="4" Label="Año" HelperText="Ingrese un año" Required="true" @bind-Value="@PlanningService.Planning.Year" For="@(() => PlanningService.Planning.Year)" />
+
+            <MudText Typo="Typo.subtitle1">Calidad esperada: @PlanningService.Planning.QualityExpected</MudText>
+            <MudSlider Class="mt-n3" Disabled="@ReadOnly" Size="Size.Large" ValueLabel="true" TickMarks="true" T="int?" Min="1" Max="5" Variant="Variant.Filled" Step="1" @bind-Value="@PlanningService.Planning.QualityExpected" />
+
+            <MudTextField ReadOnly="@ReadOnly" Variant="Variant.Outlined" Label="Observación" HelperText="Escriba una observación" @bind-Value="@PlanningService.Planning.Observation" Lines="6" />
+        </MudStack>
+
+        @if (ReadOnly == true)
+        {
+            <MudText Typo="Typo.h6" Color="Color.Dark">Línea de tiempo</MudText>
+            <MudTimeline TimelineOrientation="TimelineOrientation.Horizontal" TimelinePosition="TimelinePosition.Top">
+                @foreach (var activity in PlanningService.Planning.Activities!)
+                {
+                    <MudTimelineItem Color="Color.Secondary" Size="Size.Small">
+                        <MudText Color="Color.Secondary" Typo="Typo.body1">@String.Format("{0:dd/MMMM/yyyy}", activity.StartDate)</MudText>
+                        <MudText Color="Color.Primary" Typo="Typo.body2" GutterBottom="true">@activity.Title</MudText>
+                    </MudTimelineItem>
+                }
+            </MudTimeline>
+        }
+
+        @if (ReadOnly == false)
+        {
+            <MudButton StartIcon="@Icons.Material.Rounded.AddCircle" Size="Size.Medium" Color="Color.Primary" Variant="Variant.Filled" OnClick="@(() => visibleAddActivity = true)">Añadir actividades</MudButton>
+        }
+
+        @if (PlanningService.Planning.Activities == null || PlanningService.IsBusy == true)
+        {
+            <MudList Clickable="false">
+                <MudListSubheader>
+                    <MudText Typo="Typo.body2" Align="Align.Center">Aqui apareceran tus Actividades...</MudText>
+                </MudListSubheader>
+
+                <BusySkeleton IsList="true" />
+            </MudList>
+        }
+        else if (PlanningService.Planning.Activities.Count == 0)
+        {
+            <MudText Class="mt-13" Color="Color.Dark" Align="Align.Center" Typo="Typo.h6">No tienes Actividades añadidas.</MudText>
+        }
+        else
+        {
+            <MudList Clickable="ReadOnly!" Class="mb-20" SelectedItemChanged="@((item) => ShowActivity((int)item.Value))">
+                <MudListSubheader>
+                    <MudText Typo="Typo.h6" Color="Color.Dark">Lista de actividades</MudText>
+                </MudListSubheader>
+                @foreach (var activity in PlanningService.Planning.Activities)
+                {
+                    <MudListItem Value="activity.PkActivity">
+                        <MudText Style="@($"color:#18a3b5")">@(activity.ActivityId + " - " + "Actividad " + activity.Title)</MudText>
+                            <MudText>@($"Del {String.Format("{0:dd/MMMM/yyyy}", activity.StartDate)} al {String.Format("{0:dd/MMMM/yyyy}", activity.FinishDate)}")</MudText>
+                            <MudText>@(activity.PredecessorId != null ? "Predecesora de la actividad " + activity.PredecessorId : "Sin predecesor")</MudText>
+                        </MudListItem>
+                }
+            </MudList>
+        }
+    </MudStack>
+
+    @if (ReadOnly == false)
+    {
+        <MudFab Class="z-33" Style="position: sticky; right: 3.5%; bottom: 10%; float: right" Disabled="@(planning.Validate() == false? true : false)" StartIcon="@Icons.Material.Rounded.Add" Size="Size.Large" Color="Color.Secondary" Label="Agregar Planificación" ButtonType="ButtonType.Submit" />
+    }
+</EditForm>
+
+@*AddActivityInterface*@
+
+<MudDialog @bind-IsVisible="@visibleAddActivity" @Options="@(new DialogOptions { CloseButton = false, DisableBackdropClick = true, CloseOnEscapeKey = false })">
+    <TitleContent>
+        <MudText Typo="Typo.h6"> Añadir nueva actividad </MudText>
+    </TitleContent>
+    <DialogContent>
+        <BusyOverlay @bind-visible="@PlanningService.IsBusy" />
+        <MudContainer Style="max-height: 400px; overflow-y: scroll">
+            <EditForm Model="@PlanningService.Activity" OnValidSubmit="@AddActivity">
+                <DataAnnotationsValidator />
+
+                <MudPaper Elevation="1" Class="mb-6">
+                    <MudToolBar>
+                        <MudText Typo="Typo.h6" Color="Color.Primary" Class="mr-6">Opciones</MudText>
+                        <MudTooltip Text="Actividades Predefinidas">
+                            <MudIconButton Icon="@Icons.Material.Rounded.LocalActivity" Color="Color.Primary" OnClick="@(() => visiblePreset = true)" />
+                        </MudTooltip>
+                        <MudButton Variant="Variant.Text" Class="pa-3 ml-3" StartIcon="@Icons.Material.Rounded.Start" Color="Color.Primary" OnClick="@(() => visiblePredecessor = true)">Actividad predecesora</MudButton>
+                    </MudToolBar>
+                </MudPaper>
+
+                <MudStack Spacing="6">
+                    <MudText Class="mt-1" Typo="Typo.subtitle1">@(PlanningService.Activity.PredecessorId != null ? "Predecesora de la actividad " + PlanningService.Activity.PredecessorId : "Sin predecesor")</MudText>
+
+                        <MudTextField Variant="Variant.Outlined" Label="Titulo" HelperText="Escriba un titulo" MaxLength="50" Required="true" @bind-Value="@PlanningService.Activity.Title" For="@(() => PlanningService.Activity.Title)" />
+                        <MudTextField Variant="Variant.Outlined" Label="Descripción" HelperText="Escriba una descripción" @bind-Value="@PlanningService.Activity.Description" />
+
+                        <MudStack Row="true" Justify="Justify.SpaceAround">
+                            <MudDatePicker Label="Fecha de inicio" Editable="true" Required="true" @bind-Date="@PlanningService.Activity.StartDate" Mask="@(new DateMask("dd/MM/yyyy"))" DateFormat="dd/MM/yyyy" Placeholder="dd/mm/yyyy" For="@(() => PlanningService.Activity.StartDate)" />
+                            <MudDatePicker Label="Fecha de fin" Editable="true" Required="true" @bind-Date="@PlanningService.Activity.FinishDate" Mask="@(new DateMask("dd/MM/yyyy"))" DateFormat="dd/MM/yyyy" Placeholder="dd/mm/yyyy" For="@(() => PlanningService.Activity.FinishDate)" />
+                        </MudStack>
+
+                        <MudText Typo="Typo.subtitle1">Calidad esperada: @PlanningService.Activity.QualityExpected</MudText>
+                        <MudSlider Class="mt-n3" Size="Size.Large" ValueLabel="true" TickMarks="true" T="int?" Min="1" Max="5" Variant="Variant.Filled" Step="1" @bind-Value="@PlanningService.Activity.QualityExpected" />
+
+                        <MudTextField Variant="Variant.Outlined" Label="Observación" HelperText="Escriba una observación" @bind-Value="@PlanningService.Activity.Observation" />
+                    </MudStack>
+
+                    <MudText Align="Align.Center" Typo="Typo.h6" Class="mt-6">Empleados en esta actividad</MudText>
+                    <MudStack Row="true">
+                        <MudSelect @ref="@employeeSelect" Variant="Variant.Outlined" AdornmentIcon="@Icons.Material.Rounded.People" AdornmentColor="Color.Secondary" T="Model.Employee" Label="Empleado" HelperText="Seleccione un empleado">
+                            @foreach (var employee in EmployeeService.Employees!)
+                        {
+                            <MudSelectItem T="Model.Employee" Value="@employee">@employee.FirstName @employee.FirstSurname - @employee.IdentificationCard</MudSelectItem>
+                        }
+                    </MudSelect>
+
+                    <MudButton StartIcon="@Icons.Material.Rounded.AddCircle" Size="Size.Medium" Color="Color.Primary" Variant="Variant.Text" OnClick="AddEmployeeSelected">Añadir empleado</MudButton>
+                </MudStack>
+                @if (PlanningService.Activity.Details!.Count == 0)
+                {
+                    <MudText Class="mt-13" Color="Color.Dark" Align="Align.Center" Typo="Typo.h6">No tienes empleados añadidos en esta actividad.</MudText>
+                }
+                else
+                {
+                    <MudList Clickable="false">
+                        <MudListSubheader>
+                            <MudText Typo="Typo.h6" Color="Color.Dark">Lista de empleados</MudText>
+                        </MudListSubheader>
+                        @foreach (var employee in PlanningService.Activity.Details)
+                        {
+                            <MudListItem Class="mb-n6" Style="@($"color:#18a3b5")" Text="@($"{employee.Employee!.FirstName} {employee.Employee!.FirstSurname} - {employee.Employee!.IdentificationCard}")" />
+                        }
+                    </MudList>
+                }
+
+                <MudButton Class="mt-6" ButtonType="ButtonType.Submit" FullWidth="true" StartIcon="@Icons.Material.Rounded.AddCircle" Size="Size.Large" Color="Color.Primary" Variant="Variant.Text">Añadir actividad</MudButton>
+            </EditForm>
+        </MudContainer>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Primary" OnClick="@(() => visibleAddActivity = false)">Cerrar</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@*PredecessorActivity interface*@
+
+<MudDialog @bind-IsVisible="@visiblePredecessor">
+    <TitleContent>
+        <MudText Typo="Typo.h6"> Seleccione una actividad predecesora </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudContainer Style="max-height: 300px; overflow-y: scroll">
+            @if (PlanningService.Planning.Activities!.Count == 0)
+            {
+                <MudText Class="mt-13" Color="Color.Dark" Align="Align.Center" Typo="Typo.h6">Parece que no tienes ninguna Actividad para seleccionar.</MudText>
+            }
+            else
+            {
+                <MudList Clickable="true" Dense="true" SelectedItemChanged="@((item) => SelectedPredecessor((int)item.Value))">
+                    <MudListSubheader>
+                        <MudText Typo="Typo.h6" Color="Color.Dark">Lista de actividades</MudText>
+                    </MudListSubheader>
+                    @foreach (var activity in PlanningService.Planning.Activities)
+                    {
+                        <MudListItem Value="activity.ActivityId">
+                            <MudText Style="@($"color:#18a3b5")">@(activity.ActivityId + " - " + "Actividad " + activity.Title)</MudText>
+                                <MudText>@($"Del {String.Format("{0:dd/MMMM/yyyy}", activity.StartDate)} al {String.Format("{0:dd/MMMM/yyyy}", activity.FinishDate)}")</MudText>
+                                <MudText>@(activity.PredecessorId != null ? "Predecesora de la actividad " + activity.PredecessorId : "Sin predecesor")</MudText>
+                            </MudListItem>
+                    }
+                </MudList>
+            }
+        </MudContainer>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => PlanningService.Activity.PredecessorId = null)" Class="px-10">No seleccionar predecesor</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => visiblePredecessor = false)" Class="px-10">cerrar</MudButton>
+    </DialogActions>
+</MudDialog>
+
+
+@*PresetActivity Interface*@
+
+<MudDialog @bind-IsVisible="@visiblePreset">
+    <TitleContent>
+        <MudText Typo="Typo.h6"> Seleccione una actividad predefinida </MudText>
+    </TitleContent>
+    <DialogContent>
+        <BusyOverlay @bind-visible="@PlanningService.IsBusy" />
+        <MudContainer Style="max-height: 300px; overflow-y: scroll">
+            @if (PresetActivityService.PresetActivities == null || PresetActivityService.IsBusy == true)
+            {
+                <BusySkeleton />
+            }
+            else if (PresetActivityService.PresetActivities.Count == 0)
+            {
+                <MudText Class="mt-13" Color="Color.Dark" Align="Align.Center" Typo="Typo.h6">Parece que no tienes ninguna Actividad predefinida añadida.</MudText>
+            }
+            else
+            {
+                <MudTable Elevation="0" RowClass="cursor-pointer" SortLabel="Ordenar por" Items="@PresetActivityService.PresetActivities" Virtualize="true" T="Model.PresetActivity" Hover="true" SelectedItemChanged="@((item) => SelectedPresetActivity(item))">
+                    <HeaderContent>
+                        <MudTh><MudTableSortLabel SortBy="new Func<Model.PresetActivity, object>(z => z.Title)">Actividad Predefinida</MudTableSortLabel></MudTh>
+                        <MudTh><MudTableSortLabel SortBy="new Func<Model.PresetActivity, object>(z => z.Description!)">Descripción</MudTableSortLabel></MudTh>
+                        <MudTh><MudTableSortLabel SortBy="new Func<Model.PresetActivity, object>(z => z.QualityExpected!)">Calidad Esperada</MudTableSortLabel></MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Actividad">@context.Title</MudTd>
+                        <MudTd DataLabel="Descripción">@context.Description</MudTd>
+                        <MudTd DataLabel="Calidad Esperada">@context.QualityExpected</MudTd>
+                    </RowTemplate>
+                    <PagerContent>
+                        <MudTablePager HidePageNumber="true" HorizontalAlignment="HorizontalAlignment.Left" />
+                    </PagerContent>
+                </MudTable>
+            }
+        </MudContainer>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => visiblePreset = false)" Class="px-10">Cerrar</MudButton>
+    </DialogActions>
+</MudDialog>
+
+
+@*Activity interface*@
+
+<MudDialog @bind-IsVisible="@visibleActivity">
+    <DialogContent>
+        <MudContainer Style="max-height: 400px; overflow-y: scroll">
+            <BusyOverlay @bind-visible="@PlanningService.IsBusy" />
+
+            <EditForm Model="@PlanningService.Activity" OnValidSubmit="UpdateActivity">
+                <DataAnnotationsValidator />
+
+                <MudStack Row="true" Justify="Justify.SpaceBetween">
+                    <MudText Class="d-inline" Typo="Typo.subtitle1">Calidad esperada: @PlanningService.Activity.QualityExpected</MudText>
+                    <MudText Class="d-inline" Typo="Typo.subtitle1">@(PlanningService.Activity.PredecessorId != null ? "Predecesora de la actividad " + PlanningService.Activity.PredecessorId : "Sin predecesor")</MudText>
+                    </MudStack>
+
+                    <MudStack Spacing="6">
+                        <MudSelect Class="d-inline" ReadOnly="@ReadOnlyActivity" Variant="Variant.Text" AdornmentIcon="@Icons.Material.Rounded.Circle" AdornmentColor="Color.Secondary" T="int?" Label="Estado" HelperText="Seleccione un estado" @bind-Value="@PlanningService.Activity.FkStatus" SelectedValuesChanged="@(async () => await UpdateActivityStatus())">
+                            @foreach (var status in PlanningService.Statuses)
+                        {
+                            <MudSelectItem T="int?" Value="status.PkStatus">@status.Title</MudSelectItem>
+                        }
+                    </MudSelect>
+
+                    @if (ActivityCompleted == true)
+                    {
+                        <MudPaper Outlined="true" Class="pa-6">
+                            <MudText Typo="Typo.subtitle1">Calidad obtenida: @PlanningService.Activity.QualityObtained</MudText>
+                            <MudSlider Class="mt-n3" Disabled="@ReadOnlyActivity" Size="Size.Large" ValueLabel="true" TickMarks="true" T="int?" Min="1" Max="5" Variant="Variant.Filled" Step="1" @bind-Value="@PlanningService.Activity.QualityObtained" />
+
+                            <MudButton Class="mt-6" ButtonType="ButtonType.Submit" FullWidth="true" StartIcon="@Icons.Material.Rounded.AddCircle" Size="Size.Large" Color="Color.Primary" Variant="Variant.Text">Enviar actividad</MudButton>
+                        </MudPaper>
+                    }
+
+                    <MudTextField ReadOnly="true" Variant="Variant.Outlined" Label="Titulo" HelperText="Escriba un titulo" MaxLength="50" Required="true" @bind-Value="@PlanningService.Activity.Title" For="@(() => PlanningService.Activity.Title)" />
+                    <MudTextField ReadOnly="true" Variant="Variant.Outlined" Label="Descripción" HelperText="Escriba una descripción" @bind-Value="@PlanningService.Activity.Description" />
+
+                    <MudStack Row="true" Justify="Justify.SpaceAround">
+                        <MudDatePicker ReadOnly="true" Label="Fecha de inicio" Editable="true" Required="true" @bind-Date="@PlanningService.Activity.StartDate" Mask="@(new DateMask("dd/MM/yyyy"))" DateFormat="dd/MM/yyyy" Placeholder="dd/mm/yyyy" For="@(() => PlanningService.Activity.StartDate)" />
+                        <MudDatePicker ReadOnly="true" Label="Fecha de fin" Editable="true" Required="true" @bind-Date="@PlanningService.Activity.FinishDate" Mask="@(new DateMask("dd/MM/yyyy"))" DateFormat="dd/MM/yyyy" Placeholder="dd/mm/yyyy" For="@(() => PlanningService.Activity.FinishDate)" />
+                    </MudStack>
+
+                    <MudTextField ReadOnly="true" Variant="Variant.Outlined" Label="Observación" HelperText="Escriba una observación" @bind-Value="@PlanningService.Activity.Observation" />    
+                </MudStack>
+
+                @if (PlanningService.Activity.Details!.Count == 0)
+                {
+                    <MudText Class="mt-13" Color="Color.Dark" Align="Align.Center" Typo="Typo.h6">No tienes empleados añadidos en esta actividad.</MudText>
+                }
+                else
+                {
+                    <MudList Clickable="false">
+                        <MudListSubheader>
+                            <MudText Typo="Typo.h6" Color="Color.Dark">Lista de empleados</MudText>
+                        </MudListSubheader>
+                        @foreach (var detail in PlanningService.Activity.Details)
+                        {
+                            <MudListItem Class="mb-n6" Style="@($"color:#18a3b5")" Text="@($"{detail.Employee!.FirstName} {detail.Employee!.SecondName} {detail.Employee!.FirstSurname} {detail.Employee!.SecondSurname} - {detail.Employee!.IdentificationCard}")" />
+                        }
+                    </MudList>
+                }
+            </EditForm>
+        </MudContainer>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Primary" OnClick="@(() => visibleActivity = false)">Cerrar</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [Parameter]
+    public int? PlanningId { get; set; }
+
+    bool ReadOnly { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        PlanningService.IsBusy = true;
+
+        if (PlanningId == null)
+        {
+            ReadOnly = false;
+            PlanningService.Planning = new();
+            PlanningService.Planning.Activities = new();
+            PlanningService.Planning.IsVerified = false;
+            PlanningService.Planning.QualityExpected = 1;
+            PlanningService.Planning.PercentageCompleted = 0;
+            PlanningService.Planning.QualityObtained = 0;
+
+            PlanningService.Activity.Details = new();
+            PlanningService.Activity.QualityExpected = 1;
+
+            await EmployeeService.GetEmployees();
+            await PresetActivityService.GetPresetActivities();
+        }
+        else
+        {
+            ReadOnly = true;
+            PlanningService.Planning.Status = new();
+            PlanningService.Planning.Activities = new();
+            await PlanningService.GetPlanning((int)PlanningId);
+        }
+        PlanningService.IsBusy = false;
+    }
+
+    #region AddActivity
+
+
+    bool visibleAddActivity;
+
+    MudSelect<Model.Employee>? employeeSelect;
+
+    void AddEmployeeSelected()
+    {
+        if (employeeSelect!.SelectedValues.Count() != 0)
+        {
+            var detail = new ActivityDetail
+                {
+                    FkEmployee = employeeSelect.SelectedValues.First().PkEmployee,
+                    Employee = employeeSelect.SelectedValues.First()
+                };
+            PlanningService.Activity.Details!.Add(detail);
+        }
+    }
+
+    void AddActivity()
+    {
+        PlanningService.AddActivity();
+        visibleAddActivity = false;
+    }
+    #endregion
+
+    #region Predecessor
+    bool visiblePredecessor;
+
+    void SelectedPredecessor(int id)
+    {
+        PlanningService.Activity.PredecessorId = id;
+        visiblePredecessor = false;
+    }
+    #endregion
+
+    #region PresetActivity
+    bool visiblePreset;
+
+    void SelectedPresetActivity(Model.PresetActivity preset)
+    {
+        PlanningService.Activity = new Model.Activity
+            {
+                Title = preset.Title,
+                Description = preset.Description,
+                QualityExpected = preset.QualityExpected,
+                Details = new()
+            };
+        visiblePreset = false;
+    }
+    #endregion
+
+    #region Activity
+
+    bool visibleActivity;
+
+    bool ReadOnlyActivity { get; set; }
+    bool ActivityCompleted { get; set; } = false;
+
+    async Task ShowActivity(int activityId){
+        PlanningService.IsBusy = true;
+        visibleActivity = true;    
+        PlanningService.Activity.Details = new();
+
+        await PlanningService.GetStatuses();
+        await PlanningService.GetActivity(activityId);
+        ReadOnlyActivity = PlanningService.Activity.FkStatus == (int)IPlanningService.Status.Completada || PlanningService.Planning.IsVerified == false ? true : false;
+        ActivityCompleted = false;
+
+        PlanningService.IsBusy = false;
+    }
+
+    async Task UpdateActivityStatus()
+    {
+        if (PlanningService.Activity.FkStatus == (int)IPlanningService.Status.Completada)
+        {
+            ActivityCompleted = true;
+            PlanningService.Activity.QualityObtained = 1;
+        }
+        else
+        {
+            await PlanningService.UpdateActivityStatus();          
+        }
+    }
+
+    async Task UpdateActivity()
+    {
+        await PlanningService.UpdateActivity();
+        visibleActivity = false;
+    }
+    #endregion
+}

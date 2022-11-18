@@ -1,20 +1,17 @@
-﻿using System.Threading.Tasks;
-using Microsoft.JSInterop;
+﻿using Microsoft.JSInterop;
+namespace QualityManagementApp.Client.Services;
 
-namespace QualityManagementApp.Client.Services
+public sealed class ClipboardService
 {
-    public sealed class ClipboardService
+    private readonly IJSRuntime _jsRuntime;
+
+    public ClipboardService(IJSRuntime jsRuntime)
     {
-        private readonly IJSRuntime _jsRuntime;
+        _jsRuntime = jsRuntime;
+    }
 
-        public ClipboardService(IJSRuntime jsRuntime)
-        {
-            _jsRuntime = jsRuntime;
-        }
-
-        public ValueTask WriteTextAsync(string text)
-        {
-            return _jsRuntime.InvokeVoidAsync("navigator.clipboard.writeText", text);
-        }
+    public ValueTask WriteTextAsync(string text)
+    {
+        return _jsRuntime.InvokeVoidAsync("navigator.clipboard.writeText", text);
     }
 }

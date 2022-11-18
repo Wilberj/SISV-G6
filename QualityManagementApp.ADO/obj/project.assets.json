@@ -73,7 +73,7 @@
           }
         }
       },
-      "System.Data.SqlClient/4.8.3": {
+      "System.Data.SqlClient/4.8.5": {
         "type": "package",
         "dependencies": {
           "Microsoft.Win32.Registry": "4.7.0",
@@ -277,10 +277,10 @@
         "version.txt"
       ]
     },
-    "System.Data.SqlClient/4.8.3": {
-      "sha512": "yERfVLXAY0QbylAgaGLByYN0hFxX28aeEQ0hUgJO+Ntn1AfmWl5HHUoYJA0Yl9HhIUUJHVaS/Sw/RLZr5aaC+A==",
+    "System.Data.SqlClient/4.8.5": {
+      "sha512": "fRqxut4lrndPHrXD+ht1XRmCL3obuKldm4XjCRYS9p5f7FSR7shBxAwTkDrpFMsHC9BhNgjjmUtiIjvehn5zkg==",
       "type": "package",
-      "path": "system.data.sqlclient/4.8.3",
+      "path": "system.data.sqlclient/4.8.5",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -357,7 +357,7 @@
         "runtimes/win/lib/netstandard2.0/System.Data.SqlClient.xml",
         "runtimes/win/lib/uap10.0.16299/System.Data.SqlClient.dll",
         "runtimes/win/lib/uap10.0.16299/System.Data.SqlClient.xml",
-        "system.data.sqlclient.4.8.3.nupkg.sha512",
+        "system.data.sqlclient.4.8.5.nupkg.sha512",
         "system.data.sqlclient.nuspec",
         "useSharedDesignerContext.txt",
         "version.txt"
@@ -466,7 +466,7 @@
   },
   "projectFileDependencyGroups": {
     "net6.0": [
-      "System.Data.SqlClient >= 4.8.3"
+      "System.Data.SqlClient >= 4.8.5"
     ]
   },
   "packageFolders": {
@@ -480,7 +480,7 @@
       "projectName": "QualityManagementApp.ADO",
       "projectPath": "C:\\Users\\aleja\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp.ADO\\QualityManagementApp.ADO.csproj",
       "packagesPath": "C:\\Users\\aleja\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\aleja\\Source\\Repos\\Wilberj\\SISV-G6\\QualityManagementApp.ADO\\obj\\",
+      "outputPath": "C:\\Users\\aleja\\source\\repos\\Wilberj\\SISV-G6\\QualityManagementApp.ADO\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -516,7 +516,7 @@
         "dependencies": {
           "System.Data.SqlClient": {
             "target": "Package",
-            "version": "[4.8.3, )"
+            "version": "[4.8.5, )"
           }
         },
         "imports": [
@@ -535,7 +535,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.402\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.100\\RuntimeIdentifierGraph.json"
       }
     }
   }

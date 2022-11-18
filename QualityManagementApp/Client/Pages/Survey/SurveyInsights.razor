@@ -1,0 +1,64 @@
+﻿@page "/survey_insights/{surveyId}"
+@inject ISurveyService SurveyService
+@inject IDialogService DialogService
+
+<PageTitle>Estadisticas</PageTitle>
+<BusyOverlay @bind-visible="@SurveyService.IsBusy" />
+
+<MudStack Spacing="9" Class="my-9">
+    <MudStack Class="mb-5" Row="true" Spacing="0" Justify="Justify.Center" AlignItems="AlignItems.Center">
+        <MudIcon Color="Color.Secondary" Icon="@Icons.Material.Rounded.Insights" Size="Size.Large" />
+        <MudText Color="Color.Secondary" Typo="Typo.h4">Estadísticas de la encuesta</MudText>
+    </MudStack>
+
+    <MudPaper Elevation="1" Class="mb-6">
+        <MudToolBar>
+            <MudText Typo="Typo.h6" Color="Color.Primary" Class="mr-6">Opciones</MudText>
+            <MudTooltip Text="Todos los comentarios">
+                <MudIconButton Icon="@Icons.Material.Rounded.Comment" Color="Color.Primary" OnClick="@(() => DialogService.Show<AllObservationsDialog>("Todos los comentarios", new DialogOptions { CloseButton = false }))" />
+            </MudTooltip>
+        </MudToolBar>
+    </MudPaper>
+
+    <MudPaper Elevation="0" Class="pa-13 rounded-lg" Width="100%" Style="background-color:#182b48">
+        <MudStack>
+            <MudText Typo="Typo.h4" Style="color:white">@SurveyService.SurveyToUser.Title</MudText>
+            <MudText Typo="Typo.h6" Style="color:white">@SurveyService.SurveyToUser.Description</MudText>
+            <MudText Typo="Typo.h6" Style="color:white"><MudText Typo="Typo.h1" Color="@Color.Secondary">@SurveyService.SurveyToUser.TotalAnswered</MudText> Encuestado/s</MudText>
+        </MudStack>
+    </MudPaper>
+    @if (SurveyService.SurveyToUser.TotalAnswered > 0)
+    {
+        @foreach (var item in SurveyService.SurveyToUser.Questions!)
+        {
+            <MudText Typo="Typo.h6" Align="Align.Center" Class="mt-3">@item.Question</MudText>
+            <MudStack Row="true" Spacing="9" Justify="Justify.Center">
+                <MudList Clickable="false" Dense="true">
+                    @foreach (var item in item.Charts!)
+                    {
+                        <MudListItem>
+                            <MudText Typo="Typo.caption" Class="mr-9">@item.Answer </MudText>
+                            <MudText Typo="Typo.caption" Color="Color.Secondary" Style="float: right">@item.Total</MudText>
+                        </MudListItem>
+                    }
+                </MudList>
+                <MudChart ChartType="ChartType.Pie" InputData="@(item.Charts!.Select(i => (double)i.Total).ToArray())" InputLabels="@(item.Charts!.Select(i => i.Answer).ToArray())" Width="150px" Height="150px" />
+            </MudStack>
+        }
+    }
+    else
+    {
+        <MudText Color="Color.Dark" Align="Align.Center" Typo="Typo.h6">Parece que aún no dispones de estadísticas para esta encuesta.</MudText>
+    }
+</MudStack>
+
+@code {
+    [Parameter]
+    public string SurveyId { get; set; } = null!;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        SurveyService.SurveyToUser.Questions = new();
+        await SurveyService.GetSurveyInsights(SurveyId);
+    }
+}

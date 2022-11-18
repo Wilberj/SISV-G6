@@ -1,47 +1,64 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using QualityManagementApp.Shared;
-using static QualityManagementApp.Shared.Model;
+﻿namespace QualityManagementApp.Server.Controllers.Catalog;
 
-namespace QualityManagementApp.Server.Controllers.Catalog
+[Route("api/[controller]/[action]")]
+[ApiController]
+public class PresetActivityController : ControllerBase
 {
-    [Route("api/[controller]/[action]")]
-    [ApiController]
-    public class PresetActivityController : ControllerBase
+    [HttpGet]
+    public ActionResult GetPresetActivities()
     {
-        public PresetActivityController()
+        PresetActivity presetActivity = new();
+        return Ok(presetActivity.Get<PresetActivity>());
+    }
+
+    [HttpGet("{presetActivityId}")]
+    public ActionResult GetPresetActivity(int presetActivityId)
+    {
+        PresetActivity presetActivity = new();
+        return Ok(presetActivity.Get<PresetActivity>("PkPresetActivity = " + presetActivityId).FirstOrDefault());
+    }
+
+    [HttpPost]
+    public ActionResult PostPresetActivity(PresetActivity presetActivity)
+    {
+        try
         {
-            Auth.StartConnection();
+            var id = presetActivity.Save();
+            return GetPresetActivity((int)id);
         }
-
-        [HttpGet]
-        public ActionResult GetPresetActivities()
+        catch (Exception)
         {
-            PresetActivity presetActivity = new();
-            var ihsd = presetActivity.Get<PresetActivity>();
-            return Ok(ihsd);
+
+            throw;
         }
+    }
 
-        [HttpGet("{presetActivityId}", Name = "GetPresetActivity")]
-        public ActionResult GetPresetActivity(string presetActivityId)
+    [HttpPost]
+    public ActionResult DeletePresetActivity(PresetActivity preset)
+    {
+        try
         {
-            PresetActivity presetActivity = new();
-            return Ok(presetActivity.Get<PresetActivity>("PkPresetActivity = '" + presetActivityId + "'").FirstOrDefault());
+            return Ok(preset.Delete());
         }
-
-        [HttpPost]
-        public ActionResult PostPresetActivity(PresetActivity presetActivity)
+        catch (Exception)
         {
-            try
-            {
-                presetActivity.Save();
-                return Ok(new CreatedAtRouteResult("GetPresetActivity", new { presetActivityId = presetActivity.PkPresetActivity }, presetActivity));
-            }
-            catch (Exception)
-            {
 
-                throw;
-            }
+            throw;
+        }
+    }
+
+    [HttpPost]
+    public ActionResult UpdatePresetActivity(PresetActivity preset)
+    {
+        try
+        {
+            preset.Update("PkPresetActivity");
+            return GetPresetActivity((int)preset.PkPresetActivity!);
+        }
+        catch (Exception)
+        {
+
+            throw;
         }
     }
 }

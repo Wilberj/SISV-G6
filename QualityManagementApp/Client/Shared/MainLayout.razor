@@ -1,5 +1,5 @@
 ﻿@inherits LayoutComponentBase
-@inject ILoginService LoginService
+@inject ISecurityService SecurityService
 
 @if (LoginData.UserLogin == null)
 {
@@ -10,51 +10,46 @@ else
     <MudLayout>
         <MudAppBar Style="opacity: 0.9" Elevation="0">
             <MudTooltip Text="Menú" Class="mr-5">
-                <MudIconButton Color="Color.Dark" Icon="@Icons.Material.Filled.Menu" OnClick="@(() => DrawerToggle())" />
+                <MudIconButton Color="Color.Dark" Icon="@Icons.Material.Rounded.Menu" OnClick="@(() => DrawerToggle())" />
             </MudTooltip>
             @*<MudText Class="ml-5" Color="Color.Dark" Typo="Typo.body1">Procesos estratégicos</MudText>*@
             <MudSpacer />
             <MudTooltip Text="Cerrar sesión">
-                <MudIconButton Color="Color.Dark" Icon="@Icons.Material.Filled.Input" OnClick="@(() => LoginService.Logout())" />
+                <MudIconButton Color="Color.Dark" Icon="@Icons.Material.Rounded.Input" OnClick="@(() => SecurityService.Logout())" />
             </MudTooltip>
         </MudAppBar>
         <MudDrawer Elevation="1" Variant="DrawerVariant.Responsive" @bind-Open="@_drawerOpen">
             <MudDrawerHeader>
                 <MudStack Row="true" Spacing="0" AlignItems="AlignItems.Center">
-                    <MudImage Src="images/logo.png" Alt="Logo" Width="40" Height="40" />
+                    <MudImage Src="icon-192.png" Alt="Logo" Width="40" Height="40" />
                     <MudText Typo="Typo.subtitle2">Gestión de la calidad</MudText>
                 </MudStack>
             </MudDrawerHeader>
             <MudDrawerContainer>
-                <MudStack Spacing="0">
-                    <MudText Align="Align.Center" Typo="Typo.h6">@LoginData.UserLogin.Username</MudText>
-                    <MudText Align="Align.Center" Typo="Typo.caption">@(LoginData.UserLogin.TypeUser == (int)ILoginService.UserTypeEnum.Tecnico_Calidad ? "Técnico de Calidad" : "Director")</MudText>
-                    </MudStack>
-                    <MudStack Class="mx-3" Justify="Justify.Center" Spacing="0">
-                        <MudText Typo="Typo.caption" Class="mt-3">@("Ult modifi: " + String.Format("{0:dd/MMMM/yyyy}", LoginData.UserLogin.LastModificationDate))</MudText>
+                <MudStack Spacing="0" AlignItems="AlignItems.Center">
+                    <MudText Typo="Typo.h6">@LoginData.UserLogin.Username</MudText>
+                    <MudText Typo="Typo.caption">@(LoginData.UserLogin.TypeUser == (int)ISecurityService.UserTypeEnum.Tecnico_Calidad ? "Técnico de Calidad" : "Director")</MudText>
+
+                        <MudText Typo="Typo.caption">@("Ult modifi: " + String.Format("{0:dd/MMMM/yyyy}", LoginData.UserLogin.LastModificationDate))</MudText>
                         <MudText Typo="Typo.caption">@("Desde: " + String.Format("{0:dd/MMMM/yyyy}", LoginData.UserLogin.CreationDate))</MudText>
-
-                        <MudDivider DividerType="DividerType.FullWidth" Class="my-3" />
                     </MudStack>
-
-                    <MudNavMenu Rounded="true" Margin="Margin.Normal" Color="Color.Primary" Class="pa-2">
+                    <MudNavMenu Rounded="true" Margin="Margin.Normal" Color="Color.Primary" Class="pa-2 my-6">
                         <MudText Typo="Typo.subtitle1" Class="px-4"><b>Procesos estratégicos</b></MudText>
 
-                        <MudNavLink Match="NavLinkMatch.All" Href="/" Icon="@Icons.Material.Rounded.Assignment">Planificaciones</MudNavLink>
+                        <MudNavLink Match="NavLinkMatch.All" Href="/plannings" Icon="@Icons.Material.Rounded.Assignment">Planificación</MudNavLink>
                         <MudNavLink Match="NavLinkMatch.All" Href="/surveys" Icon="@Icons.Material.Rounded.Ballot">Conformidad</MudNavLink>
 
-                    @if (LoginData.UserLogin.TypeUser == (int)ILoginService.UserTypeEnum.Tecnico_Calidad)
-                    {
                         <MudText Typo="Typo.subtitle1" Class="px-4 mt-6"><b>Otros</b></MudText>
+                        <MudNavLink Match="NavLinkMatch.All" Href="/security" Icon="@Icons.Material.Rounded.Security">Seguridad</MudNavLink>
 
+                    @if (LoginData.UserLogin.TypeUser == (int)ISecurityService.UserTypeEnum.Tecnico_Calidad)
+                    {
                         <MudNavGroup Icon="@Icons.Material.Rounded.Dashboard" Title="Administración" Expanded="ExpandedNavGroup" ExpandedChanged="@((e) => ExpandedNavGroupToggle(e))">
                             <MudNavLink Match="NavLinkMatch.All" Href="/employees" Icon="@Icons.Material.Rounded.People">Empleados</MudNavLink>
-                            <MudNavLink Match="NavLinkMatch.All" Href="/positions" Icon="@Icons.Material.Rounded.Cases">Cargos</MudNavLink>
                             <MudNavLink Match="NavLinkMatch.All" Href="/presetActivities" Icon="@Icons.Material.Rounded.LocalActivity">Actividades</MudNavLink>
                             <MudNavLink Match="NavLinkMatch.All" Href="/cities" Icon="@Icons.Material.Rounded.LocationCity">Ciudades</MudNavLink>
+                            <MudNavLink Match="NavLinkMatch.All" Href="/surveyCategory" Icon="@Icons.Material.Rounded.Category">Categoria de encuestas</MudNavLink>
                         </MudNavGroup>
-
-                        <MudNavLink Match="NavLinkMatch.All" Href="/" Icon="@Icons.Material.Rounded.Security">Seguridad</MudNavLink>
                     }
                 </MudNavMenu>
             </MudDrawerContainer>

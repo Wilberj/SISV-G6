@@ -1,7 +1,5 @@
 ﻿@page "/cities"
 @inject ICityService CityService
-@inject IDepartmentService DepartmentService
-@inject IDialogService DialogService
 
 <PageTitle>Ciudades</PageTitle>
 
@@ -12,22 +10,11 @@
 
 <MudButton Color="@Color.Primary" Variant="Variant.Text" StartIcon="@Icons.Material.Rounded.MyLocation" Size="Size.Large" OnClick="@(() => DialogService.Show<DepartmentDialog>("Departamentos", new DialogOptions { CloseOnEscapeKey = false, CloseButton = false, DisableBackdropClick = true, MaxWidth=MaxWidth.ExtraLarge }))">Departamentos</MudButton>
 
-@if (CityService.Cities == null)
+@if (CityService.Cities == null || CityService.IsBusy == true)
 {
-    <MudStack Class="my-8" Spacing="1">
-        <MudSkeleton Class="my-8" SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave" Width="180px" Height="25px" />
-
-        <MudSkeleton Class="mb-2" SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave" Width="100%" Height="45px" />
-        <MudSkeleton Class="mb-2" SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave" Width="100%" Height="45px" />
-        <MudSkeleton Class="mb-2" SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave" Width="100%" Height="45px" />
-        <MudSkeleton Class="mb-2" SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave" Width="100%" Height="45px" />
-        <MudSkeleton Class="mb-2" SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave" Width="100%" Height="45px" />
-        <MudSkeleton Class="mb-2" SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave" Width="100%" Height="45px" />
-        <MudSkeleton Class="mb-2" SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave" Width="100%" Height="45px" />
-        <MudSkeleton Class="mb-2" SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave" Width="100%" Height="45px" />
-    </MudStack>
+    <BusySkeleton />
 }
-else if (CityService.Cities.Length == 0)
+else if (CityService.Cities.Count == 0)
 {
     <MudText Class="mt-13" Color="Color.Dark" Align="Align.Center" Typo="Typo.h6">Parece que no tienes ninguna ciudad añadida.</MudText>
 }
@@ -44,20 +31,19 @@ else
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel="Ciudad">@context.Name</MudTd>
-            <MudTd DataLabel="Departamento">@(DepartmentService.Departments != null ? DepartmentService.Departments.Where(c => c.PkDepartment == context.FkDepartment).Select(s => s.Name).FirstOrDefault() : ".")</MudTd>
-            </RowTemplate>
-            <PagerContent>
-                <MudTablePager HidePageNumber="true" HorizontalAlignment="HorizontalAlignment.Left" />
-            </PagerContent>
-        </MudTable>
+            <MudTd DataLabel="Departamento">@context.Department!.Name</MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager HidePageNumber="true" HorizontalAlignment="HorizontalAlignment.Left" />
+        </PagerContent>
+    </MudTable>
 }
 
-<MudFab Class="z-33" Style="position: sticky; right: 3.5%; bottom: 10%; float: right" Label="Nueva Ciudad" Color="Color.Secondary" Size="Size.Large" StartIcon="@Icons.Material.Filled.Add" OnClick="@(() => NavigationManager.NavigateTo("city_details"))" />
+<MudFab Class="z-33" Style="position: sticky; right: 3.5%; bottom: 10%; float: right" Label="Nueva Ciudad" Color="Color.Secondary" Size="Size.Large" StartIcon="@Icons.Material.Rounded.Add" OnClick="@(() => NavigationManager.NavigateTo("city_details"))" />
 
 @code {
     protected override async Task OnInitializedAsync()
     {
         await CityService.GetCities();
-        await DepartmentService.GetDepartments();
     }
 }

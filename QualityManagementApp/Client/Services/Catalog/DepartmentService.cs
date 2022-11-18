@@ -1,50 +1,92 @@
-﻿using Microsoft.AspNetCore.Components;
-using QualityManagementApp.Shared;
-using static QualityManagementApp.Shared.Model;
-using System.Net.Http.Json;
-using QualityManagementApp.Client.Services.Contracts.Catalog;
+﻿namespace QualityManagementApp.Client.Services.Catalog;
 
-namespace QualityManagementApp.Client.Services.Catalog
+public class DepartmentService : IDepartmentService
 {
-    public class DepartmentService : IDepartmentService
+    private readonly HttpClient _http;
+    private readonly ISnackbar _snackbar;
+    private readonly ISecurityService _security;
+
+    public DepartmentService(HttpClient http, ISnackbar snackbar, ISecurityService security)
     {
-        private readonly HttpClient _http;
+        _http = http;
+        _snackbar = snackbar;
+        _security = security;
+    }
 
-        public DepartmentService(HttpClient http)
+    public bool IsBusy { get; set; } = false;
+    public Department Department { get; set; } = new();
+    public List<Department>? Departments { get; set; } = null;
+
+    public async Task AddDepartment()
+    {
+        IsBusy = true;
+
+        var response = await _http.PostAsJsonAsync("api/department/PostDepartment", Department);
+
+        if (response.StatusCode == System.Net.HttpStatusCode.OK)
         {
-            _http = http;
-        }
-
-        public bool IsBusy { get; set; } = false;
-        //public Snackbar Snackbar { get; set; } = new();
-        public Department Department { get; set; } = new();
-        public Department[]? Departments { get; set; } = null;
-
-        public async Task AddDepartment()
-        {
-            IsBusy = true;
-
-            await _http.PostAsJsonAsync("api/department/PostDepartment", Department);
+            IsBusy = false;
             await GetDepartments();
             Department = new();
-            //Snackbar.SnackbarIsOpen = true;
-            //Snackbar.Message = $"El Departamento fue agregado con exito";
 
-            IsBusy = false;
+            var department = await response.Content.ReadFromJsonAsync<Department>();
+            await _security.AddLog($"Ha añadido el departamento {department!.Name}");
+
+            _snackbar.Add("El departamento " + department!.Name + " fue Añadido.", Severity.Success, config => { config.HideIcon = true; });
         }
 
-        public async Task GetDepartment(int? departmentId)
+        IsBusy = false;
+    }
+
+    public async Task GetDepartment(int? departmentId)
+    {
+        IsBusy = true;
+        var department = await _http.GetFromJsonAsync<Department>($"api/department/GetDepartment/{departmentId}");
+        Department = department!;
+        IsBusy = false;
+    }
+
+    public async Task GetDepartments()
+    {
+        IsBusy = true;
+        Departments = await _http.GetFromJsonAsync<List<Department>>("api/department/GetDepartments");
+        IsBusy = false;
+    }
+
+    public async Task DeleteDepartment()
+    {
+        IsBusy = true;
+
+        var response = await _http.PostAsJsonAsync("api/department/DeleteDepartment", Department);
+        if (response.StatusCode == System.Net.HttpStatusCode.OK)
         {
-            IsBusy = true;
-            var department = await _http.GetFromJsonAsync<Department>($"api/department/GetDepartment/{departmentId}");
+            IsBusy = false;
+            await _security.AddLog($"Ha eliminado el departamento {Department!.Name}");
+
+            _snackbar.Add("El departamento " + Department!.Name + " fue Eliminado.", Severity.Error, config => { config.HideIcon = true; });
+            Department = new();
+            await GetDepartments();
+        }
+        IsBusy = false;
+    }
+
+    public async Task<bool> UpdateDepartment()
+    {
+        IsBusy = true;
+        var response = await _http.PostAsJsonAsync("api/department/UpdateDepartment", Department);
+
+        if (response.StatusCode == System.Net.HttpStatusCode.OK)
+        {
+            IsBusy = false;
+            var department = await response.Content.ReadFromJsonAsync<Department>();
             Department = department!;
-            IsBusy = false;
+
+            await _security.AddLog($"Ha modificado el departamento {Department.Name}");
+            _snackbar.Add("El departamento " + Department.Name + " fue Actualizado.", Severity.Info, config => { config.HideIcon = true; });
+            await GetDepartments();
         }
 
-        public async Task GetDepartments()
-        {
-            var departments = await _http.GetFromJsonAsync<Department[]>("api/department/GetDepartments");
-            Departments = departments!;
-        }
+        IsBusy = false;
+        return true;
     }
 }

@@ -1,0 +1,51 @@
+﻿@inject ISurveyService SurveyService
+
+<MudDialog>
+    <DialogContent>
+        <MudContainer Style="max-height: 300px; overflow-y: scroll">
+            @if (SurveyService.Observations == null || SurveyService.IsBusy == true)
+            {
+                <MudList Clickable="false">
+                    <MudListSubheader>
+                        <MudText Typo="Typo.h6" Color="Color.Dark">Lista de los comentarios de los encuestados</MudText>
+                    </MudListSubheader>
+                    <BusySkeleton IsList="true" />
+                </MudList>
+            }
+            else if (SurveyService.Observations.Count == 0)
+            {
+                <MudText Class="mt-13" Color="Color.Dark" Align="Align.Center" Typo="Typo.h6">Parece que no tienes comentarios.</MudText>
+            }
+            else
+            {
+                <MudList Clickable="false">
+                    <MudListSubheader>
+                        <MudText Typo="Typo.h6" Color="Color.Dark">Lista de los comentarios de los encuestados</MudText>
+                    </MudListSubheader>
+                    @foreach (var observation in SurveyService.Observations)
+                    {
+                        <MudListItem Class="mb-n6" Style="@($"color:#18a3b5")" Text="@observation.Name" />
+                        <MudListItem Class="mt-n6" Text="@observation.ObservationText" />
+                    }
+                </MudList>
+            }
+        </MudContainer>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Primary" OnClick="Submit">Cerrar</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await SurveyService.GetAllObservations(SurveyService.Survey.PkSurvey);
+    }
+
+    void Submit()
+    {
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+}

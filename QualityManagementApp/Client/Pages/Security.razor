@@ -1,0 +1,116 @@
+﻿@page "/security"
+@using System.Text.RegularExpressions
+@inject ISecurityService SecurityService
+
+<PageTitle>Seguridad</PageTitle>
+
+<MudStack Class="my-5" Row="true" Spacing="0" Justify="Justify.Center" AlignItems="AlignItems.Center">
+    <MudIcon Color="Color.Secondary" Icon="@Icons.Material.Rounded.VerifiedUser" Size="Size.Large" />
+    <MudText Color="Color.Secondary" Typo="Typo.h4">Perfil</MudText>
+</MudStack>
+
+<MudPaper Class="rounded-lg py-6" Elevation="6">
+    <MudStack Justify="Justify.Center" Spacing="0" AlignItems="AlignItems.Center">
+        <MudText Typo="Typo.h6">@LoginData.UserLogin!.Username</MudText>
+        <MudText Typo="Typo.caption">@(LoginData.UserLogin!.TypeUser == (int)ISecurityService.UserTypeEnum.Tecnico_Calidad ? "Técnico de Calidad" : "Director")</MudText>
+
+            <MudText Typo="Typo.caption">@("Ultima modificación: " + String.Format("{0:dd/MMMM/yyyy}", LoginData.UserLogin!.LastModificationDate))</MudText>
+            <MudText Typo="Typo.caption">@("Desde: " + String.Format("{0:dd/MMMM/yyyy}", LoginData.UserLogin!.CreationDate))</MudText>
+        </MudStack>
+
+        <MudForm Class="my-9" @ref="form" @bind-IsValid="@success">
+            <MudText Align="Align.Center" Typo="Typo.h6">Cambio de Credenciales</MudText>
+
+            <MudGrid Class="my-3" Spacing="3" Justify="Justify.Center">
+                <MudItem>
+                    <MudTextField Disabled="@(!editUsername)" Variant="Variant.Outlined" Label="Usuario" HelperText="Ingrese el nuevo usuario" Required="true" @bind-Value="@SecurityService.User.Username" For="@(() => SecurityService.User.Username)" MaxLength="10" />
+                    <MudCheckBox Size="Size.Medium" Label="Modificar usuario" @bind-Checked="@editUsername" Color="Color.Primary" CheckedIcon="@Icons.Material.Rounded.CheckBox" UncheckedIcon="@Icons.Material.Rounded.CheckBoxOutlineBlank" />
+                </MudItem>
+                <MudItem>
+                    <MudTextField Variant="Variant.Outlined" Label="Contraseña" HelperText="Ingrese la nueva contraseña" T="string" Validation="@(new Func<string, IEnumerable<string>>(PasswordStrength))" @ref="password" Required="true" MaxLength="15" InputType="InputType.Password" />
+                    <MudTextField Variant="Variant.Outlined" Label="Contraseña" HelperText="Repita la nueva contraseña" T="string" Validation="@(new Func<string, string>(PasswordMatch))" Required="true" InputType="InputType.Password" />
+                </MudItem>
+            </MudGrid>
+
+            <MudStack Justify="Justify.Center" Spacing="3" AlignItems="AlignItems.Center">
+                <MudButton StartIcon="@Icons.Material.Rounded.EditNote" Color="Color.Secondary" OnClick="@(async () => await UpdateUser())">Modificar credenciales</MudButton>
+                <MudAlert Severity="Severity.Warning" Dense="true">Recuerde y/o anote el usuario y la contraseña</MudAlert>
+            </MudStack>
+        </MudForm>
+    </MudPaper>
+
+@if (SecurityService.Logs == null || SecurityService.IsBusy == true)
+{
+    <MudList Class="my-6" Dense="true" Clickable="false">
+        <MudListSubheader>
+            <MudText Typo="Typo.h6">Historial del perfil</MudText>
+        </MudListSubheader>
+        <BusySkeleton IsList="true" />
+    </MudList>
+}
+else
+{
+    <MudList Class="my-6" Dense="true" Clickable="false">
+        <MudListSubheader>
+            <MudText Typo="Typo.h6">Historial del perfil</MudText>
+        </MudListSubheader>
+        @foreach (var log in SecurityService.Logs!)
+        {
+            <MudListItem>
+                <MudStack Row="true" Spacing="3">
+                    <MudIcon Icon="@Icons.Material.Rounded.Edit" Size="Size.Small" />
+                    <MudText Typo="Typo.body2">@(log.Description + " el " + String.Format("{0:dd/MMMM/yyyy}", log.CreationDate) + " a las " + String.Format("{0:hh:mm:ss tt}", log.CreationDate))</MudText>
+                    </MudStack>
+                </MudListItem>
+        }
+    </MudList>
+}
+
+@code {
+    bool editUsername, success;
+    MudTextField<string>? password = new();
+    MudForm? form = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        SecurityService.User.Username = LoginData.UserLogin!.Username!;
+        await SecurityService.GetLogs();
+    }
+
+    IEnumerable<string> PasswordStrength(string password)
+    {
+        if (string.IsNullOrWhiteSpace(password))
+        {
+            yield return "La contraseña es Requerida";
+            yield break;
+        }
+        if (password.Length < 8)
+            yield return "La contraseña debe tener mínimos 8 caracteres";
+        if (!Regex.IsMatch(password, @"[A-Z]"))
+            yield return "La contraseña debe tener mínimos 1 mayúscula";
+        if (!Regex.IsMatch(password, @"[a-z]"))
+            yield return "La contraseña debe tener mínimos 1 minúscula";
+        if (!Regex.IsMatch(password, @"[0-9]"))
+            yield return "La contraseña debe tener mínimos 1 número";
+    }
+
+    string PasswordMatch(string arg)
+    {
+        if (string.IsNullOrWhiteSpace(arg))
+        {
+            return "La contraseña es Requerida";
+        }
+        if (password!.Value != arg)
+            return "La contraseña no coincide";
+        return "";
+    }
+
+    async Task UpdateUser()
+    {
+        await form!.Validate();
+        if (success == true)
+        {
+            await SecurityService.UpdateUser(password!.Value);
+        }
+    }
+}

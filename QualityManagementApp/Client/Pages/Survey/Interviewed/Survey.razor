@@ -1,0 +1,56 @@
+﻿@layout EmptyLayout
+@page "/survey/{surveyId}"
+@inject ISurveyService SurveyService
+
+<PageTitle>Encuesta</PageTitle>
+
+<BusyOverlay @bind-visible="@SurveyService.IsBusy" />
+
+@if (dialogIsOpen == false)
+{
+    <MudPaper Elevation="0" Class="pa-13 rounded-lg" Width="100%" Style="background-color:#182b48">
+        <MudStack>
+            <MudText Typo="Typo.h4" Style="color:white">@SurveyService.SurveyToInterviewed.Title</MudText>
+            <MudText Typo="Typo.h6" Style="color:white">@SurveyService.SurveyToInterviewed.Description</MudText>
+            <MudText Typo="Typo.caption" Style="color:white">Elaborada el @String.Format("{0:dd/MMMM/yyyy}", SurveyService.SurveyToInterviewed.CreationDate)</MudText>
+        </MudStack>
+    </MudPaper>
+    @foreach (var question in SurveyService.SurveyToInterviewed.Questions!)
+    {
+        <MudPaper Outlined="true" Class="align-self-center my-9 pa-6 rounded-lg">
+            <MudText Typo="Typo.h6" Class="mb-3">@question.Question</MudText>
+
+            <MudRadioGroup T="int" SelectedOptionChanged="@((i) => SurveyService.AddSelectedAnswer(question.Id, i))">
+                @foreach (var answer in question.Answers!)
+                {
+                    <MudStack Spacing="3">
+                        <MudRadio Option="@answer.Id" Color="Color.Primary" Size="Size.Medium">@answer.Answer</MudRadio>
+                    </MudStack>
+                }
+            </MudRadioGroup>
+        </MudPaper>
+    }
+
+    <MudText Typo="Typo.h6" Class="mb-3">Comentario acerca de la encuesta</MudText>
+    <MudTextField Variant="Variant.Outlined" Lines="6" Label="Comentario" HelperText="Escriba algún comentario / observación" @bind-Value="@SurveyService.Interviewed.Observation" />
+
+    <MudButton Class="my-13" Variant="Variant.Filled" Color="@Color.Primary" Size="Size.Large" EndIcon="@Icons.Material.Rounded.Send" OnClick="@(() => SurveyService.AddSelectedAnswersInterviewed())">Enviar encuesta</MudButton>
+}
+
+@code {
+    [Parameter]
+    public string SurveyId { get; set; } = null!;
+
+    public bool dialogIsOpen;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        dialogIsOpen = true;
+
+        SurveyService.SurveyToInterviewed = new();
+        await SurveyService.GetSurvey(SurveyId, true);
+
+        var dialog = await DialogService.Show<InterviewedDialog>(SurveyService.SurveyToInterviewed.Title, new DialogOptions { CloseOnEscapeKey = false, CloseButton = false, DisableBackdropClick = true }).Result;
+        dialogIsOpen = Convert.ToBoolean(dialog.Data.ToString());
+    }
+}

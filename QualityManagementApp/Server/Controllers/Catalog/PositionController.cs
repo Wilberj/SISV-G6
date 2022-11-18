@@ -1,47 +1,69 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using QualityManagementApp.Shared;
-using static QualityManagementApp.Shared.Model;
+﻿namespace QualityManagementApp.Server.Controllers.Catalog;
 
-namespace QualityManagementApp.Server.Controllers.Catalog
+[Route("api/[controller]/[action]")]
+[ApiController]
+public class PositionController : ControllerBase
 {
-    [Route("api/[controller]/[action]")]
-    [ApiController]
-    public class PositionController : ControllerBase
+    public PositionController()
     {
-        public PositionController()
+        Auth.StartConnection();
+    }
+
+    [HttpGet]
+    public ActionResult GetPositions()
+    {
+        Position position = new();
+        return Ok(position.Get<Position>());
+    }
+
+    [HttpGet("{positionId}")]
+    public ActionResult GetPosition(int positionId)
+    {
+        Position position = new();
+        return Ok(position.Get<Position>("PkPosition = " + positionId).FirstOrDefault());
+    }
+
+    [HttpPost]
+    public ActionResult PostPosition(Position position)
+    {
+        try
         {
-            Auth.StartConnection();
+            var id = position.Save();
+            return GetPosition((int)id);
         }
-
-        [HttpGet]
-        public ActionResult GetPositions()
+        catch (Exception)
         {
-            Position position = new();
-            var ihsd = position.Get<Position>();
-            return Ok(ihsd);
+
+            throw;
         }
+    }
 
-        [HttpGet("{positionId}", Name = "GetPosition")]
-        public ActionResult GetPosition(int positionId)
+    [HttpPost]
+    public ActionResult DeletePosition(Position position)
+    {
+        try
         {
-            Position position = new();
-            return Ok(position.Get<Position>("PkPosition = '" + positionId + "'").FirstOrDefault());
+            return Ok(position.Delete());
         }
-
-        [HttpPost]
-        public ActionResult PostPosition(Position position)
+        catch (Exception)
         {
-            try
-            {
-                position.Save();
-                return Ok(new CreatedAtRouteResult("GetPosition", new { positionId = position.PkPosition }, position));
-            }
-            catch (Exception)
-            {
 
-                throw;
-            }
+            throw;
+        }
+    }
+
+    [HttpPost]
+    public ActionResult Updateposition(Position position)
+    {
+        try
+        {
+            position.Update("PkPosition");
+            return GetPosition((int)position.PkPosition!);
+        }
+        catch (Exception)
+        {
+
+            throw;
         }
     }
 }

@@ -1,33 +1,33 @@
 ﻿@layout EmptyLayout
 @page "/"
-@inject ILoginService LoginService
+@inject ISecurityService SecurityService
 
 <PageTitle>Iniciar sesión</PageTitle>
-<BusyOverlay @bind-visible="@LoginService.IsBusy" />
+<BusyOverlay @bind-visible="@SecurityService.IsBusy" />
 
-<MudGrid Spacing="0" Class="mt-16" Justify="Justify.Center">
+<MudGrid Spacing="0" Justify="Justify.Center">
     <MudItem />
     <MudItem>
-        <MudPaper Width="100%" Outlined="true" Class="rounded-lg px-16 py-6" Style="@($"background-color:{Color.Surface};")">
+        <MudPaper Width="100%" Outlined="true" Class="rounded-lg px-16 py-6">
             <div class="d-flex justify-center">
-                <MudImage Src="images/logo.png" Alt="Logo" Width="80" Height="80" Fluid="true" />
+                <MudImage Src="icon-192.png" Alt="Logo" Width="80" Height="80" Fluid="true" />
             </div>
             <MudText Class="mt-n3" Typo="Typo.h6" Align="Align.Center">Gestión de la calidad</MudText>
 
-            <EditForm Model="LoginService.User" OnValidSubmit="@LoginService.Login">
+            <EditForm Model="SecurityService.User" OnValidSubmit="@SecurityService.Login">
                 <DataAnnotationsValidator />
 
-                <MudTextField Variant="Variant.Outlined" Label="Usuario" HelperText="Ingrese su usuario" Class="mt-8" @bind-Value="@LoginService.User.Username" For="@(() => LoginService.User.Username)" />
-                <MudTextField Variant="Variant.Outlined" Label="Contraseña" HelperText="Ingrese su contraseña" Class="mt-4" @bind-Value="@LoginService.User.Password" For="@(() => LoginService.User.Password)" InputType="InputType.Password" />
+                <MudTextField Variant="Variant.Outlined" Label="Usuario" HelperText="Ingrese su usuario" Class="mt-8" @bind-Value="@SecurityService.User.Username" For="@(() => SecurityService.User.Username)" />
+                <MudTextField Variant="Variant.Outlined" Label="Contraseña" HelperText="Ingrese su contraseña" Class="mt-4" @bind-Value="@SecurityService.User.Password" For="@(() => SecurityService.User.Password)" InputType="InputType.Password" />
 
                 <div class="d-flex justify-center my-5">
                     <MudButton ButtonType="ButtonType.Submit" Size="Size.Large" Variant="Variant.Filled" Color="Color.Primary">Iniciar sesion</MudButton>
                 </div>
             </EditForm>
 
-            @if (!string.IsNullOrEmpty(LoginService.Message))
+            @if (!string.IsNullOrEmpty(SecurityService.Message))
             {
-                <MudAlert Severity="Severity.Error" Dense="true">@LoginService.Message</MudAlert>
+                <MudAlert Severity="Severity.Error" Dense="true">@SecurityService.Message</MudAlert>
             }
 
         </MudPaper>
